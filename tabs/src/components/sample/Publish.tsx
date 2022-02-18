@@ -1,8 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Publish.css";
 import { Image } from "@fluentui/react-northstar";
+import { useAppInsightsContext } from "@microsoft/applicationinsights-react-js";
 
 export function Publish(props: { docsUrl?: string }) {
+  const appInsights = useAppInsightsContext();
+
+  useEffect(() => {
+    const mountTime = Date.now();
+    return () => {
+      const unmountTime = Date.now();
+
+      appInsights.trackMetric(
+        { average: unmountTime - mountTime, name: "Mounted time (ms)" },
+        { "Component name": "Graph" }
+      );
+    };
+  }, [appInsights]);
+
   const { docsUrl } = {
     docsUrl: "https://aka.ms/teamsfx-docs",
     ...props,
@@ -11,8 +26,9 @@ export function Publish(props: { docsUrl?: string }) {
     <div className="publish page">
       <h2>Publish to Teams</h2>
       <p>
-        Your app's resources and infrastructure are deployed and ready? Publish and register your
-        app to Teams app catalog to share your app with others in your organization!
+        Your app's resources and infrastructure are deployed and ready? Publish
+        and register your app to Teams app catalog to share your app with others
+        in your organization!
       </p>
       <Image src="publish.png" />
       <p>
