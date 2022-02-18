@@ -5,8 +5,8 @@
     "id": "{{state.fx-resource-appstudio.teamsAppId}}",
     "packageName": "com.microsoft.teams.extension",
     "developer": {
-        "name": "Teams App, Inc.",
-        "websiteUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}",
+        "name": "Watford Consulting Ltd.",
+        "websiteUrl": "https://watfordconsulting.com/",
         "privacyUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/privacy",
         "termsOfUseUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/termsofuse"
     },
@@ -19,8 +19,8 @@
         "full": "{{config.manifest.appName.full}}"
     },
     "description": {
-        "short": "Short description of {{config.manifest.appName.short}}",
-        "full": "Full description of {{config.manifest.appName.short}}"
+        "short": "Management of workforce",
+        "full": "Tools for management of the volunteer workforce"
     },
     "accentColor": "#FFFFFF",
     "bots": [],
@@ -30,19 +30,7 @@
             "configurationUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/config",
             "canUpdateConfiguration": true,
             "scopes": [
-                "team",
-                "groupchat"
-            ]
-        }
-    ],
-    "staticTabs": [
-        {
-            "entityId": "index",
-            "name": "Personal Tab",
-            "contentUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/tab",
-            "websiteUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/tab",
-            "scopes": [
-                "personal"
+                "team"
             ]
         }
     ],

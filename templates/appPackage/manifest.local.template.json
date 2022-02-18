@@ -5,8 +5,8 @@
     "id": "{{localSettings.teamsApp.teamsAppId}}",
     "packageName": "com.microsoft.teams.extension",
     "developer": {
-        "name": "Teams App, Inc.",
-        "websiteUrl": "{{{localSettings.frontend.tabEndpoint}}}",
+        "name": "Watford Consulting Ltd.",
+        "websiteUrl": "https://watfordconsulting.com/",
         "privacyUrl": "{{{localSettings.frontend.tabEndpoint}}}{{{localSettings.frontend.tabIndexPath}}}/privacy",
         "termsOfUseUrl": "{{{localSettings.frontend.tabEndpoint}}}{{{localSettings.frontend.tabIndexPath}}}/termsofuse"
     },
@@ -15,12 +15,12 @@
         "outline": "resources/outline.png"
     },
     "name": {
-        "short": "TabAuthTest2-local-debug",
-        "full": "TabAuthTest2-local-debug"
+        "short": "Workforce Backoffice Debug",
+        "full": "Workforce Backoffice for Teams"
     },
     "description": {
-        "short": "Short description of TabAuthTest2-local-debug",
-        "full": "Full description of TabAuthTest2-local-debug"
+        "short": "Management of workforce",
+        "full": "Tools for management of the volunteer workforce"
     },
     "accentColor": "#FFFFFF",
     "bots": [],
@@ -30,19 +30,7 @@
             "configurationUrl": "{{{localSettings.frontend.tabEndpoint}}}{{{localSettings.frontend.tabIndexPath}}}/config",
             "canUpdateConfiguration": true,
             "scopes": [
-                "team",
-                "groupchat"
-            ]
-        }
-    ],
-    "staticTabs": [
-        {
-            "entityId": "index",
-            "name": "Personal Tab",
-            "contentUrl": "{{{localSettings.frontend.tabEndpoint}}}{{{localSettings.frontend.tabIndexPath}}}/tab",
-            "websiteUrl": "{{{localSettings.frontend.tabEndpoint}}}{{{localSettings.frontend.tabIndexPath}}}/tab",
-            "scopes": [
-                "personal"
+                "team"
             ]
         }
     ],
