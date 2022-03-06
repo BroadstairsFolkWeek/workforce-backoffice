@@ -37,6 +37,7 @@
     },
     "fx-resource-appstudio": {
         "teamsAppId": "a6cf1075-53b6-4cb3-a771-f09238204bc8",
-        "teamsAppUpdatedAt": 1645199377703
+        "teamsAppUpdatedAt": 1645894913675,
+        "tenantId": "5630fe81-cf08-4710-a047-5ac3f6f7e50a"
     }
 }

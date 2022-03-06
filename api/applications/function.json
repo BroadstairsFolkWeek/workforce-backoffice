@@ -1,0 +1,22 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": ["get", "post"]
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "direction": "in",
+      "name": "teamsfxContext",
+      "type": "TeamsFx"
+    }
+  ],
+  "scriptFile": "../dist/applications/index.js"
+}

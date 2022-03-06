@@ -1,0 +1,42 @@
+{
+    "solution": {
+        "provisionSucceeded": true,
+        "needCreateResourceGroup": false,
+        "resourceNameSuffix": "6e3edd",
+        "resourceGroupName": "workforce-back-office",
+        "tenantId": "307daedd-210b-4896-8c94-7d94db08811e",
+        "subscriptionId": "c1204819-1eb0-432c-b71f-df4b7943176b",
+        "subscriptionName": "BFW Non-Profit Azure Sponsorship",
+        "location": "uksouth",
+        "teamsAppTenantId": "307daedd-210b-4896-8c94-7d94db08811e"
+    },
+    "fx-resource-frontend-hosting": {
+        "domain": "workforcebprod8ed667tab.z33.web.core.windows.net",
+        "endpoint": "https://workforcebprod8ed667tab.z33.web.core.windows.net",
+        "indexPath": "/index.html#",
+        "storageResourceId": "/subscriptions/c1204819-1eb0-432c-b71f-df4b7943176b/resourceGroups/workforce-back-office/providers/Microsoft.Storage/storageAccounts/workforcebprod8ed667tab"
+    },
+    "fx-resource-identity": {
+        "identityName": "workforcebprod8ed667",
+        "identityResourceId": "/subscriptions/c1204819-1eb0-432c-b71f-df4b7943176b/resourceGroups/workforce-back-office/providers/Microsoft.ManagedIdentity/userAssignedIdentities/workforcebprod8ed667",
+        "identityClientId": "8cc5936a-9a6f-4527-97b9-b93f3b4bc315"
+    },
+    "fx-resource-aad-app-for-teams": {
+        "clientId": "e7f1144d-81d5-46b9-be46-cbab660f99d9",
+        "objectId": "40b3f8ed-df22-4946-968f-8b41d62da967",
+        "oauth2PermissionScopeId": "5c6f3ffa-b111-463c-b276-7240949c9028",
+        "tenantId": "307daedd-210b-4896-8c94-7d94db08811e",
+        "oauthHost": "https://login.microsoftonline.com",
+        "oauthAuthority": "https://login.microsoftonline.com/307daedd-210b-4896-8c94-7d94db08811e",
+        "applicationIdUris": "api://workforcebprod8ed667tab.z33.web.core.windows.net/e7f1144d-81d5-46b9-be46-cbab660f99d9",
+        "clientSecret": "{{fx-resource-aad-app-for-teams.clientSecret}}"
+    },
+    "fx-resource-function": {
+        "functionAppResourceId": "/subscriptions/c1204819-1eb0-432c-b71f-df4b7943176b/resourceGroups/workforce-back-office/providers/Microsoft.Web/sites/workforcebprod8ed667api",
+        "functionEndpoint": "https://workforcebprod8ed667api.azurewebsites.net"
+    },
+    "fx-resource-appstudio": {
+        "teamsAppId": "b3672538-eed1-49a3-9a29-e5b7ab27a656",
+        "teamsAppUpdatedAt": 1645212365087
+    }
+}

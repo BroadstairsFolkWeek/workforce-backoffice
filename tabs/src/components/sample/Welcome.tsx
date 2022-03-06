@@ -11,7 +11,10 @@ import { useData } from "./lib/useData";
 import { Deploy } from "./Deploy";
 import { Publish } from "./Publish";
 
-export function Welcome(props: { showFunction?: boolean; environment?: string }) {
+export function Welcome(props: {
+  showFunction?: boolean;
+  environment?: string;
+}) {
   const { showFunction, environment } = {
     showFunction: true,
     environment: window.location.hostname === "localhost" ? "local" : "azure",
@@ -38,18 +41,26 @@ export function Welcome(props: { showFunction?: boolean; environment?: string })
     };
   });
 
-  const { isInTeams } = useTeamsFx();
+  const { isInTeams, context } = useTeamsFx();
   const userProfile = useData(async () => {
     const credential = new TeamsUserCredential();
     return isInTeams ? await credential.getUserInfo() : undefined;
   })?.data;
+
   const userName = userProfile ? userProfile.displayName : "";
   return (
     <div className="welcome page">
       <div className="narrow page-padding">
         <Image src="hello.png" />
-        <h1 className="center">Congratulations{userName ? ", " + userName : ""}!</h1>
-        <p className="center">Your app is running in your {friendlyEnvironmentName}</p>
+        <h1 className="center">
+          Congratulations{userName ? ", " + userName : ""}!
+        </h1>
+        <p className="center">
+          Your app is running in your {friendlyEnvironmentName}
+        </p>
+        <div>
+          <pre>{context ? JSON.stringify(context, null, 2) : "No context"}</pre>
+        </div>
         <Menu defaultActiveIndex={0} items={items} underlined secondary />
         <div className="sections">
           {selectedMenuItem === "local" && (

@@ -1,19 +1,21 @@
 {
-    "name": "workforce-backoffice-teams-api",
-    "version": "1.0.0",
-    "scripts": {
-        "build": "tsc",
-        "watch": "tsc -w",
-        "prestart": "npm run build",
-        "start": "npx func start"
-    },
-    "dependencies": {
-        "@azure/functions": "^1.2.2",
-        "@microsoft/microsoft-graph-client": "^3.0.0",
-        "@microsoft/teamsfx": "^0.5.0",
-        "isomorphic-fetch": "^3.0.0"
-    },
-    "devDependencies": {
-        "typescript": "^3.3.3"
-    }
+  "name": "workforce-backoffice-teams-api",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "prestart": "npm run build",
+    "start": "npx func start"
+  },
+  "dependencies": {
+    "@azure/functions": "^1.2.2",
+    "@microsoft/microsoft-graph-client": "^3.0.2",
+    "@microsoft/teamsfx": "^0.5.1",
+    "isomorphic-fetch": "^3.0.0",
+    "runtypes": "^6.5.1"
+  },
+  "devDependencies": {
+    "@microsoft/microsoft-graph-types": "^2.16.0",
+    "typescript": "^3.3.3"
+  }
 }
