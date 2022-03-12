@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppInsightsContext } from "@microsoft/applicationinsights-react-js";
-import { Welcome } from "./sample/Welcome";
-
-var showFunction = Boolean(process.env.REACT_APP_FUNC_NAME);
+import { ApplicationsContextProvider } from "../components/contexts/applications-context";
+import ApplicationList from "./ApplicationList";
 
 export default function Tab() {
   const appInsights = useAppInsightsContext();
@@ -20,8 +19,10 @@ export default function Tab() {
   }, [appInsights]);
 
   return (
-    <div>
-      <Welcome showFunction={showFunction} />
-    </div>
+    <ApplicationsContextProvider>
+      <div>
+        <ApplicationList />
+      </div>
+    </ApplicationsContextProvider>
   );
 }

@@ -1,8 +1,6 @@
-import { PersistedApplicationListItem } from "../model/interfaces/sp/application-sp";
 import { getApplications as graphGetApplications } from "../model/graph/applications-graph";
+import { PersistedApplication } from "../model/interfaces/application";
 
-export const getApplications = async (): Promise<
-  PersistedApplicationListItem[]
-> => {
+export const getApplications = async (): Promise<PersistedApplication[]> => {
   return graphGetApplications();
 };

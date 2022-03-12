@@ -16,7 +16,7 @@ export interface AddableListItem {
 export interface UpdatableListItem extends MakeUpdatable<AddableListItem> {}
 
 export interface PersistedListItem extends AddableListItem {
-  ID: number;
+  id: number;
   Created: string;
   Modified: string;
 }
