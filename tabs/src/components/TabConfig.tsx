@@ -1,52 +1,46 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import "./App.css";
 import * as microsoftTeams from "@microsoft/teams-js";
+import { useTeamsFx } from "./sample/lib/useTeamsFx";
 
-/**
- * The 'Config' component is used to display your group tabs
- * user configuration options.  Here you will allow the user to
- * make their choices and once they are done you will need to validate
- * their choices and communicate that to Teams to enable the save button.
- */
-class TabConfig extends React.Component {
-  render() {
-    // Initialize the Microsoft Teams SDK
-    microsoftTeams.initialize();
+const TabConfig: React.FC = () => {
+  const { loading, context } = useTeamsFx();
 
-    /**
-     * When the user clicks "Save", save the url for your configured tab.
-     * This allows for the addition of query string parameters based on
-     * the settings selected by the user.
-     */
-    microsoftTeams.settings.registerOnSaveHandler((saveEvent) => {
-      const baseUrl = `https://${window.location.hostname}:${window.location.port}`;
-      microsoftTeams.settings.setSettings({
-        suggestedDisplayName: "My Tab",
-        entityId: "Test",
-        contentUrl: baseUrl + "/index.html#/tab",
-        websiteUrl: baseUrl + "/index.html#/tab",
-      });
-      saveEvent.notifySuccess();
-    });
+  const saveHandler: Parameters<
+    typeof microsoftTeams.settings.registerOnSaveHandler
+  >[0] = useCallback(
+    (saveEvent) => {
+      if (!loading && context) {
+        const baseUrl = `https://${window.location.hostname}:${window.location.port}`;
+        const contextQueryArgs = `tenant=${context.tid}&group=${context?.groupId}`;
+        microsoftTeams.settings.setSettings({
+          suggestedDisplayName: "Applications",
+          entityId: "Applications",
+          contentUrl: baseUrl + `/index.html?${contextQueryArgs}#/applications`,
+          websiteUrl: baseUrl + `/index.html?${contextQueryArgs}#/applications`,
+        });
+        saveEvent.notifySuccess();
+      }
+    },
+    [loading, context]
+  );
 
-    /**
-     * After verifying that the settings for your tab are correctly
-     * filled in by the user you need to set the state of the dialog
-     * to be valid.  This will enable the save button in the configuration
-     * dialog.
-     */
-    microsoftTeams.settings.setValidityState(true);
+  useEffect(() => {
+    if (!loading) {
+      microsoftTeams.settings.registerOnSaveHandler(saveHandler);
+      microsoftTeams.settings.setValidityState(true);
+    }
+  }, [loading, saveHandler]);
 
-    return (
+  return (
+    <div>
+      <h1>Add Applications tab</h1>
       <div>
-        <h1>Tab Configuration</h1>
-        <div>
-          This is where you will add your tab configuration options the user can choose when the tab
-          is added to your team/group chat.
-        </div>
+        Click Save to add a new tab to this channel for processing workforce
+        applications.
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default TabConfig;

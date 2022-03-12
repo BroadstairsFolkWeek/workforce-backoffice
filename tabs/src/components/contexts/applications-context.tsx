@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useTeams } from "msteams-react-base-component";
 import { getApplications } from "../../model/application-repository";
 import { PersistedApplication } from "../../model/interfaces/application";
+import { useAppContext } from "./app-context-provider";
 
 export type IApplicationsContext = {
   loaded: boolean;
@@ -18,18 +18,17 @@ const ApplicationsContextProvider = ({
 }: {
   children: JSX.Element;
 }) => {
+  const { loaded: appContextLoaded, groupId } = useAppContext();
   const [loaded, setLoaded] = useState(false);
   const [applications, setApplications] = useState<PersistedApplication[]>([]);
 
-  const [result] = useTeams({});
-
   useEffect(() => {
-    const groupId = result.context?.groupId;
-    if (groupId)
+    if (appContextLoaded && groupId) {
       getApplications(groupId)
         .then(setApplications)
         .then(() => setLoaded(true));
-  }, [result.context?.groupId]);
+    }
+  }, [appContextLoaded, groupId]);
 
   return (
     <Context.Provider

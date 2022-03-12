@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useAppInsightsContext } from "@microsoft/applicationinsights-react-js";
 import { ApplicationsContextProvider } from "../components/contexts/applications-context";
 import ApplicationList from "./ApplicationList";
+import { AppContextProvider } from "./contexts/app-context-provider";
 
 export default function Tab() {
   const appInsights = useAppInsightsContext();
@@ -19,10 +20,12 @@ export default function Tab() {
   }, [appInsights]);
 
   return (
-    <ApplicationsContextProvider>
-      <div>
-        <ApplicationList />
-      </div>
-    </ApplicationsContextProvider>
+    <AppContextProvider>
+      <ApplicationsContextProvider>
+        <div>
+          <ApplicationList />
+        </div>
+      </ApplicationsContextProvider>
+    </AppContextProvider>
   );
 }

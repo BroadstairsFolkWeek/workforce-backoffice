@@ -31,7 +31,7 @@ export default function App() {
       >
         <Router>
           <Route exact path="/">
-            <Redirect to="/tab" />
+            <Redirect to="/applications" />
           </Route>
           {loading ? (
             <Loader style={{ margin: 100 }} />
@@ -39,7 +39,7 @@ export default function App() {
             <>
               <Route exact path="/privacy" component={Privacy} />
               <Route exact path="/termsofuse" component={TermsOfUse} />
-              <Route exact path="/tab" component={Tab} />
+              <Route exact path="/applications" component={Tab} />
               <Route exact path="/config" component={TabConfig} />
             </>
           )}
