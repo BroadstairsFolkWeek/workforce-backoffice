@@ -84,7 +84,7 @@ const applicationToTableCells = (
       ),
     },
 
-    { content: "" },
+    { content: asTableCellBox(<Text>{application.status}</Text>) },
   ];
 };
 
@@ -99,7 +99,7 @@ const ApplicationList = () => {
       "Contact",
       "Requested teams",
       "Availability",
-      "Options",
+      "Status / Options",
     ],
   };
 
