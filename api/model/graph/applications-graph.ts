@@ -108,7 +108,7 @@ const listItemToApplication = (
 
 export const getApplications = async () => {
   const context = getAppAsyncContext();
-  const graphClient = getOboGraphClient(context.teamsfxContext);
+  const graphClient = getOboGraphClient();
 
   const site: Site = await graphClient
     .api(`/groups/${context.groupId}/sites/root`)

@@ -4,20 +4,33 @@ import {
   getResourceConfiguration,
   ResourceType,
 } from "@microsoft/teamsfx";
+import { URLSearchParams } from "url";
 
-export const callApiGet = async (functionName: string, groupId: string) => {
+export const callApiGet = async (
+  functionName: string,
+  groupId: string,
+  urlSearchParams?: URLSearchParams,
+  responseType: axios.ResponseType = "json"
+) => {
   try {
     const credential = new TeamsUserCredential();
     const accessToken = await credential.getToken("");
     const apiConfig = getResourceConfiguration(ResourceType.API);
-    const response = await axios.default.get(
-      apiConfig.endpoint + "/api/" + functionName + "?groupId=" + groupId,
-      {
-        headers: {
-          authorization: "Bearer " + accessToken?.token || "",
-        },
-      }
-    );
+
+    const url = new URL(apiConfig.endpoint + "/api/" + functionName, undefined);
+    url.searchParams.append("groupId", groupId);
+    if (urlSearchParams) {
+      urlSearchParams.forEach((value, name) =>
+        url.searchParams.append(name, value)
+      );
+    }
+
+    const response = await axios.default.get(url.href, {
+      headers: {
+        authorization: "Bearer " + accessToken?.token || "",
+      },
+      responseType,
+    });
     return response.data;
   } catch (err: unknown) {
     if (axios.default.isAxiosError(err)) {
