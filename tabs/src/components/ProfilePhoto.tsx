@@ -20,7 +20,6 @@ const ProfilePhoto: React.FC<{ photoId: string; groupId: string }> = ({
     <Image
       fluid
       src={photoDataSrcUrl}
-      avatar
       styles={{ maxHeight: "100%", maxWidth: "100%" }}
     />
   );
