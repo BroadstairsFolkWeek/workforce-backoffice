@@ -1,10 +1,10 @@
-import { getAppAsyncContext } from "../../context/app-async-context";
-import { List, Site } from "@microsoft/microsoft-graph-types";
+import { List } from "@microsoft/microsoft-graph-types";
 import { logTrace } from "../../utilities/logging";
 import { getOboGraphClient } from "../../services/graph-client";
 import { PersistedApplicationListItem } from "../interfaces/sp/application-sp";
 import { PersistedApplication } from "../interfaces/application";
 import { PersistedGraphListItem } from "../interfaces/graph/graph-items";
+import { getSiteBaseApiPathForCurrentGroup } from "./site-graph";
 
 const listItemToTShirtSize = (
   item: PersistedApplicationListItem
@@ -108,17 +108,11 @@ const listItemToApplication = (
 
 export const getApplications = async () => {
   logTrace("In applications-graph: getApplications");
-  const context = getAppAsyncContext();
+  const siteBaseApiPath = await getSiteBaseApiPathForCurrentGroup();
+
   const graphClient = getOboGraphClient();
 
-  const groupRootSiteApiPath = `/groups/${context.groupId}/sites/root`;
-  logTrace("Looking up site for group via Graph: " + groupRootSiteApiPath);
-  const site: Site = await graphClient.api(groupRootSiteApiPath).get();
-  logTrace("Site from group: " + JSON.stringify(site, null, 2));
-
-  const siteId = site.id;
-
-  const listByTitleApiPath = `/sites/${siteId}/lists/Workforce Applications`;
+  const listByTitleApiPath = `${siteBaseApiPath}/lists/Workforce Applications`;
   logTrace(
     "Looking up Workforce Applications list via Graph: " + listByTitleApiPath
   );
@@ -133,7 +127,7 @@ export const getApplications = async () => {
   const workforceApplicationsListId = workforceApplicationsList.id;
   logTrace("Workforce Applications list ID: " + workforceApplicationsListId);
 
-  const listItemsApiPath = `/sites/${siteId}/lists/${workforceApplicationsListId}/items`;
+  const listItemsApiPath = `${siteBaseApiPath}/lists/${workforceApplicationsListId}/items`;
   logTrace("Lookup up application list items via Graph: " + listItemsApiPath);
   const workforceApplicationListItems: PersistedGraphListItem<PersistedApplicationListItem>[] =
     (await graphClient.api(listItemsApiPath).expand("fields").get()).value;

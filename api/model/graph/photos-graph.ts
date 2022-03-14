@@ -9,7 +9,7 @@ import {
   ACCEPTED_MIME_TYPE_FILE_EXTENSIONS_MAPPING,
   isAcceptedMimeType,
 } from "../../interfaces/sp/sp-files";
-import { getSiteBaseApiForCurrentGroup } from "./site-graph";
+import { getSiteBaseApiPathForCurrentGroup } from "./site-graph";
 
 export const getFileForUniqueId = async (
   uniqueId: string
@@ -44,11 +44,6 @@ export const getFileForUniqueId = async (
   }
 
   return null;
-
-  // const web = Web(site);
-  // const file = web.usingCaching().getFileById(uniqueId);
-  // const fileInfo = await file.get();
-  // return [fileInfo.Name, await file.getBuffer()];
 };
 
 const fileResultToImageResult = (
@@ -96,7 +91,7 @@ export const getImageFileForUniqueId = async (
 export const getProfilePhotoFileByPhotoId = async (
   photoId: string
 ): Promise<[string, ArrayBuffer, ACCEPTED_IMAGE_MIME_TYPES] | null> => {
-  const siteBaseApiPath = await getSiteBaseApiForCurrentGroup();
+  const siteBaseApiPath = await getSiteBaseApiPathForCurrentGroup();
 
   const photosListApiPath = siteBaseApiPath + "/lists/Workforce Photos";
 

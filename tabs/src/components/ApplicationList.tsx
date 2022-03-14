@@ -6,8 +6,9 @@ import {
   TableRowProps,
   Text,
 } from "@fluentui/react-northstar";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useCallback, useMemo } from "react";
 import { PersistedApplication } from "../model/interfaces/application";
+import { PersistedProfile } from "../model/interfaces/profile";
 import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
 import { useAppContext } from "./contexts/app-context-provider";
 import { useApplications } from "./contexts/applications-context";
@@ -28,6 +29,7 @@ const asTableCellBox = (
 
 const applicationToTableCells = (
   application: PersistedApplication,
+  profile: PersistedProfile | undefined,
   groupId: string
 ): TableCellProps[] => {
   return [
@@ -55,9 +57,15 @@ const applicationToTableCells = (
     },
 
     {
-      content: asTableCellBox(<div>{application.telephone}</div>),
+      content: asTableCellBox(
+        <div>
+          {profile ? <div>{profile.email}</div> : null}
+          <div>{application.telephone}</div>
+        </div>
+      ),
       styles: {
         alignSelf: "stretch",
+        overflowX: "hidden",
       },
     },
 
@@ -90,7 +98,11 @@ const applicationToTableCells = (
 
 const ApplicationList = () => {
   const { groupId } = useAppContext();
-  const { loaded: applicationsLoaded, applications } = useApplications();
+  const {
+    loaded: applicationsLoaded,
+    applications,
+    profiles,
+  } = useApplications();
 
   const header = {
     items: [
@@ -103,17 +115,28 @@ const ApplicationList = () => {
     ],
   };
 
+  const getProfile = useCallback(
+    (profileId: string) => {
+      return profiles.find((profile) => profile.profileId === profileId);
+    },
+    [profiles]
+  );
+
   const tableItems: TableRowProps[] = useMemo(() => {
     return applications.map((application, index) => {
       return {
-        items: applicationToTableCells(application, groupId),
+        items: applicationToTableCells(
+          application,
+          getProfile(application.profileId),
+          groupId
+        ),
 
         styles: {
           height: "7rem",
         },
       } as TableRowProps;
     });
-  }, [applications, groupId]);
+  }, [applications, groupId, getProfile]);
 
   if (applicationsLoaded) {
     return <Table header={header} rows={tableItems} />;
