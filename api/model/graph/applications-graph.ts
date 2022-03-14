@@ -107,30 +107,37 @@ const listItemToApplication = (
 };
 
 export const getApplications = async () => {
+  logTrace("In applications-graph: getApplications");
   const context = getAppAsyncContext();
   const graphClient = getOboGraphClient();
 
-  const site: Site = await graphClient
-    .api(`/groups/${context.groupId}/sites/root`)
-    .get();
-
+  const groupRootSiteApiPath = `/groups/${context.groupId}/sites/root`;
+  logTrace("Looking up site for group via Graph: " + groupRootSiteApiPath);
+  const site: Site = await graphClient.api(groupRootSiteApiPath).get();
   logTrace("Site from group: " + JSON.stringify(site, null, 2));
 
   const siteId = site.id;
 
+  const listByTitleApiPath = `/sites/${siteId}/lists/Workforce Applications`;
+  logTrace(
+    "Looking up Workforce Applications list via Graph: " + listByTitleApiPath
+  );
   const workforceApplicationsList: List = await graphClient
-    .api(`/sites/${siteId}/lists/Workforce Applications`)
+    .api(listByTitleApiPath)
     .get();
+  logTrace(
+    "List lookup response: " +
+      JSON.stringify(workforceApplicationsList, null, 2)
+  );
 
   const workforceApplicationsListId = workforceApplicationsList.id;
+  logTrace("Workforce Applications list ID: " + workforceApplicationsListId);
 
+  const listItemsApiPath = `/sites/${siteId}/lists/${workforceApplicationsListId}/items`;
+  logTrace("Lookup up application list items via Graph: " + listItemsApiPath);
   const workforceApplicationListItems: PersistedGraphListItem<PersistedApplicationListItem>[] =
-    (
-      await graphClient
-        .api(`/sites/${siteId}/lists/${workforceApplicationsListId}/items`)
-        .expand("fields")
-        .get()
-    ).value;
+    (await graphClient.api(listItemsApiPath).expand("fields").get()).value;
+  logTrace("Returned items count: " + workforceApplicationListItems.length);
 
   return workforceApplicationListItems.map((item) =>
     listItemToApplication(item.fields)
