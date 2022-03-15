@@ -18,7 +18,6 @@ const ProfilePhoto: React.FC<{ photoId: string; groupId: string }> = ({
 
   return (
     <Image
-      fluid
       src={photoDataSrcUrl}
       styles={{ maxHeight: "100%", maxWidth: "100%" }}
     />
