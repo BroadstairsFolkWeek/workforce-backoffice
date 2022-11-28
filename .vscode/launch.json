@@ -27,9 +27,7 @@
       "request": "launch",
       "url": "https://teams.microsoft.com/l/app/${localTeamsAppId}?installAppPackage=true&webjoin=true&${account-hint}",
       "preLaunchTask": "Start Frontend",
-      "cascadeTerminateToConfigurations": [
-        "Start and Attach to Backend"
-      ],
+      "cascadeTerminateToConfigurations": ["Start and Attach to Backend"],
       "presentation": {
         "group": "all",
         "hidden": true
@@ -41,9 +39,7 @@
       "request": "launch",
       "url": "https://teams.microsoft.com/l/app/${localTeamsAppId}?installAppPackage=true&webjoin=true&${account-hint}",
       "preLaunchTask": "Start Frontend",
-      "cascadeTerminateToConfigurations": [
-        "Start and Attach to Backend"
-      ],
+      "cascadeTerminateToConfigurations": ["Start and Attach to Backend"],
       "presentation": {
         "group": "all",
         "hidden": true
@@ -71,6 +67,16 @@
     }
   ],
   "compounds": [
+    {
+      "name": "Debug Backend",
+      "configurations": ["Start and Attach to Backend"],
+      "preLaunchTask": "Pre Debug Check",
+      "presentation": {
+        "group": "all",
+        "order": 2
+      },
+      "stopAll": true
+    },
     {
       "name": "Debug (Edge)",
       "configurations": [

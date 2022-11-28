@@ -29,7 +29,8 @@
         "oauthHost": "https://login.microsoftonline.com",
         "oauthAuthority": "https://login.microsoftonline.com/5630fe81-cf08-4710-a047-5ac3f6f7e50a",
         "applicationIdUris": "api://workforcesdev4edaf9tab.z33.web.core.windows.net/b3859c5d-57d3-4f97-a656-1e703dc8758d",
-        "clientSecret": "{{fx-resource-aad-app-for-teams.clientSecret}}"
+        "clientSecret": "{{fx-resource-aad-app-for-teams.clientSecret}}",
+        "frontendEndpoint": "https://workforcesdev4edaf9tab.z33.web.core.windows.net"
     },
     "fx-resource-function": {
         "functionAppResourceId": "/subscriptions/c1204819-1eb0-432c-b71f-df4b7943176b/resourceGroups/workforce-back-office-dev/providers/Microsoft.Web/sites/workforcesdev4edaf9api",
@@ -37,7 +38,7 @@
     },
     "fx-resource-appstudio": {
         "teamsAppId": "a6cf1075-53b6-4cb3-a771-f09238204bc8",
-        "teamsAppUpdatedAt": 1645894913675,
+        "teamsAppUpdatedAt": 1663086583469,
         "tenantId": "5630fe81-cf08-4710-a047-5ac3f6f7e50a"
     }
 }
