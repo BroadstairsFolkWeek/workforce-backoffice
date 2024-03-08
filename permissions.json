@@ -1,7 +1,0 @@
-[
-  {
-    "resource": "Microsoft Graph",
-    "delegated": ["User.Read", "Sites.ReadWrite.All"],
-    "application": []
-  }
-]
