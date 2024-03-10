@@ -1,4 +1,8 @@
-import { makeStyles, mergeClasses } from "@fluentui/react-components";
+import {
+  makeStyles,
+  mergeClasses,
+  shorthands,
+} from "@fluentui/react-components";
 import { useMemo } from "react";
 import { PersistedApplication } from "../../model/interfaces/application";
 
@@ -6,12 +10,14 @@ const useStyles = makeStyles({
   root: {
     display: "flex",
     flexDirection: "row",
+    height: "100%",
+    width: "100%",
   },
 
   booleanBlockIndicator: {
     flexGrow: 1,
-    // borderWidth: 1,
-    // borderStyle: "dashed",
+    ...shorthands.borderWidth("1px"),
+    ...shorthands.borderStyle("dashed"),
   },
 
   booleanBlockIndicatorTrue: {

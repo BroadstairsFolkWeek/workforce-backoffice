@@ -9,6 +9,7 @@ import {
   TableColumnDefinition,
   Text,
   createTableColumn,
+  makeStyles,
 } from "@fluentui/react-components";
 import { useCallback, useEffect, useState } from "react";
 import { PersistedApplication } from "../../model/interfaces/application";
@@ -21,6 +22,12 @@ type Item = {
   application: PersistedApplication;
   profile: PersistedProfile;
 };
+
+const useStyles = makeStyles({
+  cell: {
+    height: "100px",
+  },
+});
 
 const columns: TableColumnDefinition<Item>[] = [
   createTableColumn<Item>({
@@ -41,10 +48,10 @@ const columns: TableColumnDefinition<Item>[] = [
     renderCell: (item) => (
       <div>
         <div>
-          <Text weight="semibold">{item.profile.displayName}</Text>
+          <Text weight="semibold">{item.profile?.displayName}</Text>
         </div>
         <div>
-          <Text>{item.profile.address}</Text>
+          <Text>{item.profile?.address}</Text>
         </div>
       </div>
     ),
@@ -56,7 +63,7 @@ const columns: TableColumnDefinition<Item>[] = [
     renderCell: (item) => (
       <div>
         <div>
-          <Text>{item.profile.email}</Text>
+          <Text>{item.profile?.email}</Text>
           <Text>{item.application.telephone}</Text>
         </div>
       </div>
@@ -97,6 +104,7 @@ const columns: TableColumnDefinition<Item>[] = [
 ];
 
 const ApplicationList = () => {
+  const classes = useStyles();
   const {
     loaded: applicationsLoaded,
     applications,
@@ -150,7 +158,9 @@ const ApplicationList = () => {
               }}
             >
               {({ renderCell }) => (
-                <DataGridCell>{renderCell(item)}</DataGridCell>
+                <DataGridCell className={classes.cell}>
+                  {renderCell(item)}
+                </DataGridCell>
               )}
             </DataGridRow>
           )}
