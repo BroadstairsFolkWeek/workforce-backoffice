@@ -25,7 +25,7 @@ type Item = {
 
 const useStyles = makeStyles({
   cell: {
-    height: "100px",
+    height: "150px",
   },
 });
 
@@ -64,6 +64,8 @@ const columns: TableColumnDefinition<Item>[] = [
       <div>
         <div>
           <Text>{item.profile?.email}</Text>
+        </div>
+        <div>
           <Text>{item.application.telephone}</Text>
         </div>
       </div>
@@ -141,6 +143,12 @@ const ApplicationList = () => {
         getRowId={(item) => item.application.applicationId}
         focusMode="none"
         selectionMode="single"
+        resizableColumns
+        columnSizingOptions={{
+          photo: { minWidth: 100 },
+          name: { minWidth: 200 },
+          contact: { minWidth: 300 },
+        }}
       >
         <DataGridHeader>
           <DataGridRow>
