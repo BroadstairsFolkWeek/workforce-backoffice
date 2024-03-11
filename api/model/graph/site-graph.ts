@@ -5,7 +5,7 @@ import config from "../../config";
 
 const cache: { [groupId: string]: string } = {};
 
-export const getSiteBaseApiPathForCurrentGroup = async () => {
+export const getSiteBaseApiPath = async () => {
   logTrace("In site-graph: getSiteBaseApiPathForCurrentGroup");
   const groupId = config.groupId;
 

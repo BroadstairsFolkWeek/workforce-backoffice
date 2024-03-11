@@ -4,7 +4,7 @@ import { getOboGraphClient } from "../../services/graph-client";
 import { PersistedApplicationListItem } from "../interfaces/sp/application-sp";
 import { PersistedApplication } from "../interfaces/application";
 import { PersistedGraphListItem } from "../interfaces/graph/graph-items";
-import { getSiteBaseApiPathForCurrentGroup } from "./site-graph";
+import { getSiteBaseApiPath } from "./site-graph";
 
 const listItemToTShirtSize = (
   item: PersistedApplicationListItem
@@ -108,7 +108,7 @@ const listItemToApplication = (
 
 export const getApplications = async () => {
   logTrace("In applications-graph: getApplications");
-  const siteBaseApiPath = await getSiteBaseApiPathForCurrentGroup();
+  const siteBaseApiPath = await getSiteBaseApiPath();
 
   const graphClient = getOboGraphClient();
 

@@ -1,16 +1,16 @@
 import { ListItem } from "@microsoft/microsoft-graph-types";
-import { logWarn } from "../../utilities/logging";
 import { getOboGraphClient } from "../../services/graph-client";
 import {
   ACCEPTED_IMAGE_MIME_TYPES,
   isAcceptedMimeType,
 } from "../../interfaces/sp/sp-files";
-import { getSiteBaseApiPathForCurrentGroup } from "./site-graph";
+import { getSiteBaseApiPath } from "./site-graph";
+import { logWarn } from "../../utilities/logging";
 
 export const getProfilePhotoFileByPhotoId = async (
   photoId: string
 ): Promise<[string, ArrayBuffer, ACCEPTED_IMAGE_MIME_TYPES] | null> => {
-  const siteBaseApiPath = await getSiteBaseApiPathForCurrentGroup();
+  const siteBaseApiPath = await getSiteBaseApiPath();
 
   const photosListApiPath = siteBaseApiPath + "/lists/Workforce Photos";
 

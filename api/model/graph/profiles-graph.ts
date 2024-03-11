@@ -2,7 +2,7 @@ import { List } from "@microsoft/microsoft-graph-types";
 import { logTrace } from "../../utilities/logging";
 import { getOboGraphClient } from "../../services/graph-client";
 import { PersistedGraphListItem } from "../interfaces/graph/graph-items";
-import { getSiteBaseApiPathForCurrentGroup } from "./site-graph";
+import { getSiteBaseApiPath } from "./site-graph";
 import { PersistedProfile } from "../interfaces/profile";
 import { PersistedProfileListItem } from "../interfaces/sp/profile-sp";
 
@@ -24,7 +24,7 @@ const listItemToProfile = (
 
 export const getProfiles = async () => {
   logTrace("In profiles-graph: getProfiles");
-  const siteBaseApiPath = await getSiteBaseApiPathForCurrentGroup();
+  const siteBaseApiPath = await getSiteBaseApiPath();
 
   const graphClient = getOboGraphClient();
 
