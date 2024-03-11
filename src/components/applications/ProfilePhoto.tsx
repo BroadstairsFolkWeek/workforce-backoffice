@@ -4,8 +4,9 @@ import { useApplications } from "./ApplicationsContextProvider";
 
 const useStyles = makeStyles({
   root: {
-    maxHeight: "100%",
-    maxWidth: "100%",
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
   },
 });
 

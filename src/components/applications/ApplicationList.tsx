@@ -11,7 +11,7 @@ import {
   createTableColumn,
   makeStyles,
 } from "@fluentui/react-components";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PersistedApplication } from "../../model/interfaces/application";
 import { PersistedProfile } from "../../model/interfaces/profile";
 import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
@@ -25,85 +25,24 @@ type Item = {
 
 const useStyles = makeStyles({
   cell: {
-    height: "150px",
+    height: "200px",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "stretch",
+  },
+  photoCell: {
+    height: "100%",
+    width: "100%",
+  },
+  img: {
+    height: "175px",
+    width: "100%",
+  },
+  availabilityIndicator: {
+    height: "25px",
   },
 });
-
-const columns: TableColumnDefinition<Item>[] = [
-  createTableColumn<Item>({
-    columnId: "photo",
-    renderHeaderCell: () => "Photo",
-    renderCell: (item) =>
-      item.application.photoId ? (
-        <ProfilePhoto photoId={item.application.photoId} />
-      ) : null,
-  }),
-
-  createTableColumn<Item>({
-    columnId: "name",
-    compare: (a, b) => {
-      return a.profile.displayName.localeCompare(b.profile.displayName);
-    },
-    renderHeaderCell: () => "Name / Address",
-    renderCell: (item) => (
-      <div>
-        <div>
-          <Text weight="semibold">{item.profile?.displayName}</Text>
-        </div>
-        <div>
-          <Text>{item.profile?.address}</Text>
-        </div>
-      </div>
-    ),
-  }),
-
-  createTableColumn<Item>({
-    columnId: "contact",
-    renderHeaderCell: () => "Contact",
-    renderCell: (item) => (
-      <div>
-        <div>
-          <Text>{item.profile?.email}</Text>
-        </div>
-        <div>
-          <Text>{item.application.telephone}</Text>
-        </div>
-      </div>
-    ),
-  }),
-
-  createTableColumn<Item>({
-    columnId: "requestedTeams",
-    renderHeaderCell: () => "Requested teams",
-    renderCell: (item) => (
-      <div>
-        <div>
-          <Text>{item.application.teamPreference1}</Text>
-        </div>
-        <div>
-          <Text>{item.application.teamPreference2}</Text>
-        </div>
-        <div>
-          <Text>{item.application.teamPreference3}</Text>
-        </div>
-      </div>
-    ),
-  }),
-
-  createTableColumn<Item>({
-    columnId: "availability",
-    renderHeaderCell: () => "Availability",
-    renderCell: (item) => (
-      <ApplicationAvailabilityIndicator application={item.application} />
-    ),
-  }),
-
-  createTableColumn<Item>({
-    columnId: "status",
-    renderHeaderCell: () => "Status / Options",
-    renderCell: (item) => <Text>{item.application.status}</Text>,
-  }),
-];
 
 const ApplicationList = () => {
   const classes = useStyles();
@@ -114,6 +53,85 @@ const ApplicationList = () => {
   } = useApplications();
 
   const [items, setItems] = useState<Item[]>([]);
+
+  const columns: TableColumnDefinition<Item>[] = useMemo(
+    () => [
+      createTableColumn<Item>({
+        columnId: "photo",
+        renderHeaderCell: () => "Photo",
+        renderCell: (item) => (
+          <div className={classes.photoCell}>
+            <div className={classes.img}>
+              {item.application.photoId ? (
+                <ProfilePhoto photoId={item.application.photoId} />
+              ) : null}
+            </div>
+            <div className={classes.availabilityIndicator}>
+              <ApplicationAvailabilityIndicator
+                application={item.application}
+              />
+            </div>
+          </div>
+        ),
+      }),
+
+      createTableColumn<Item>({
+        columnId: "name",
+        compare: (a, b) => {
+          return a.profile.displayName.localeCompare(b.profile.displayName);
+        },
+        renderHeaderCell: () => "Name / Address",
+        renderCell: (item) => (
+          <>
+            <Text as="strong" weight="semibold">
+              {item.profile?.displayName}
+            </Text>
+            <Text>{item.profile?.address}</Text>
+          </>
+        ),
+      }),
+
+      createTableColumn<Item>({
+        columnId: "contact",
+        renderHeaderCell: () => "Contact",
+        renderCell: (item) => (
+          <div>
+            <div>
+              <Text>{item.profile?.email}</Text>
+            </div>
+            <div>
+              <Text>{item.application.telephone}</Text>
+            </div>
+          </div>
+        ),
+      }),
+
+      createTableColumn<Item>({
+        columnId: "requestedTeams",
+        renderHeaderCell: () => "Requested teams",
+        renderCell: (item) => (
+          <div>
+            <div>
+              <Text>{item.application.teamPreference1}</Text>
+            </div>
+            <div>
+              <Text>{item.application.teamPreference2}</Text>
+            </div>
+            <div>
+              <Text>{item.application.teamPreference3}</Text>
+            </div>
+          </div>
+        ),
+      }),
+
+      createTableColumn<Item>({
+        columnId: "status",
+        renderHeaderCell: () => "Status / Options",
+        renderCell: (item) => <Text>{item.application.status}</Text>,
+      }),
+    ],
+    [classes.availabilityIndicator, classes.img, classes.photoCell]
+  );
 
   const getProfile = useCallback(
     (profileId: string) => {
