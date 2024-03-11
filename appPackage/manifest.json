@@ -5,8 +5,8 @@
   "id": "${{TEAMS_APP_ID}}",
   "packageName": "com.microsoft.teams.extension",
   "developer": {
-    "name": "Teams App, Inc.",
-    "websiteUrl": "${{TAB_ENDPOINT}}",
+    "name": "Watford Consulting Ltd.",
+    "websiteUrl": "https://watfordconsulting.com/",
     "privacyUrl": "${{TAB_ENDPOINT}}/index.html#/privacy",
     "termsOfUseUrl": "${{TAB_ENDPOINT}}/index.html#/termsofuse"
   },
@@ -16,11 +16,11 @@
   },
   "name": {
     "short": "workforce-backoffice${{APP_NAME_SUFFIX}}",
-    "full": "Full name for workforce-backoffice"
+    "full": "Workforce Backoffice M365 App"
   },
   "description": {
-    "short": "Short description of workforce-backoffice",
-    "full": "Full description of workforce-backoffice"
+    "short": "Workforce applciations list",
+    "full": "Workforce applciations list"
   },
   "accentColor": "#FFFFFF",
   "bots": [],
@@ -29,7 +29,7 @@
   "staticTabs": [
     {
       "entityId": "index",
-      "name": "Personal Tab",
+      "name": "Applications",
       "contentUrl": "${{TAB_ENDPOINT}}/index.html#/tab",
       "websiteUrl": "${{TAB_ENDPOINT}}/index.html#/tab",
       "scopes": ["personal"]
