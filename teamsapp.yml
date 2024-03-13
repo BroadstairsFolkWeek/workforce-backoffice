@@ -156,7 +156,7 @@ deploy:
     with:
       workingDirectory: api
       args: run build --if-present
-  # Install development tool(s)
+  # Install or locate development tool(s)
   - uses: devTool/install
     with:
       dotnet: true

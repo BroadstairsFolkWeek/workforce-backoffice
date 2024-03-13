@@ -1,35 +1,58 @@
 name: "Deploy"
 
 on:
-  # When new commits are pushed onto the main branch.
-  push:
-    branches:
-      - main
-    tags:
-      - prod
+  workflow_call:
+    inputs:
+      tenantId:
+        required: true
+        type: string
+        description: "The ID of the tenant to deploy to."
+      azureServicePrincipalClientId:
+        required: true
+        type: string
+        description: "The client ID of the service principal to use for deployment."
+      teamsFxEnvironment:
+        required: true
+        type: string
+        description: "The environment to deploy to."
+    secrets:
+      azureServicePrincipalClientSecret:
+        required: true
+        description: "The client secret of the service principal to use for deployment."
 
 jobs:
-  buildAndPublish:
+  buildAndDeploy:
     runs-on: ubuntu-latest
 
     steps:
       # Setup environment.
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
         with:
           node-version: "18"
 
       - name: Checkout the code
-        uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: npm ci
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
       - name: Sign in to Azure
         run: |
-          npm exec --package @microsoft/teamsapp-cli -- teamsapp auth login azure --service-principal true \
-          --tenant ${{vars.AZURE_TENANT_ID}} --username ${{vars.AZURE_SERVICE_PRINCIPAL_CLIENT_ID}} \
-          --password ${{secrets.AZURE_SERVICE_PRINCIPAL_CLIENT_SECRET}}
+          npm exec --yes --package @microsoft/teamsapp-cli -- teamsapp auth login azure --service-principal true \
+          --tenant ${{inputs.tenantId}} --username ${{inputs.azureServicePrincipalClientId}} \
+          --password ${{secrets.azureServicePrincipalClientSecret}}
+
+      - name: Setup .NET SDK for use by Azure Functions
+        uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3
+        env:
+          DOTNET_INSTALL_DIR: /usr/share/dotnet
+        with:
+          # dotnet-version: "3.1.x"
+          dotnet-version: "6.x"
+
+      # Create the dotnet.json file so that the tools/install deployment step from teamsapp.yml can find the dotnet executable.
+      - name: Create ~/.fx/dotnet.json file
+        run: |
+          mkdir -p ~/.fx
+          echo "{\"dotnetExecutablePath\":\"/usr/share/dotnet/dotnet\"}" > ~/.fx/dotnet.json
 
       - name: Deploy to hosting environment
         run: |
-          npm exec --package @microsoft/teamsapp-cli -- teamsapp deploy --env ${{vars.TEAMSFX_ENV_NAME}} --interactive false
+          npm exec --yes --package @microsoft/teamsapp-cli -- teamsapp deploy --debug --env ${{inputs.teamsFxEnvironment}} --interactive false
