@@ -3,6 +3,10 @@ name: "Deploy"
 on:
   workflow_call:
     inputs:
+      environmentName:
+        required: true
+        type: string
+        description: "The name of the environment to deploy to."
       tenantId:
         required: true
         type: string
@@ -11,10 +15,6 @@ on:
         required: true
         type: string
         description: "The client ID of the service principal to use for deployment."
-      teamsFxEnvironment:
-        required: true
-        type: string
-        description: "The environment to deploy to."
     secrets:
       azureServicePrincipalClientSecret:
         required: true
@@ -23,6 +23,7 @@ on:
 jobs:
   buildAndDeploy:
     runs-on: ubuntu-latest
+    environment: ${{inputs.environmentName}}
 
     steps:
       # Setup environment.
@@ -55,4 +56,4 @@ jobs:
 
       - name: Deploy to hosting environment
         run: |
-          npm exec --yes --package @microsoft/teamsapp-cli -- teamsapp deploy --debug --env ${{inputs.teamsFxEnvironment}} --interactive false
+          npm exec --yes --package @microsoft/teamsapp-cli -- teamsapp deploy --debug --env ${{vars.TEAMSFX_ENV_NAME}} --interactive false

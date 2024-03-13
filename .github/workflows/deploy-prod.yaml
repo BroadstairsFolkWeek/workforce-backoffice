@@ -8,11 +8,9 @@ on:
 
 jobs:
   buildAndDeployProd:
-    runs-on: ubuntu-latest
-    environment: PROD
     uses: ./.github/workflows/deploy.yaml
     with:
-      teamsFxEnvironment: ${{vars.TEAMSFX_ENV_NAME}}
+      environmentName: DEV
       tenantId: ${{vars.AZURE_TENANT_ID}}
       azureServicePrincipalClientId: ${{vars.AZURE_SERVICE_PRINCIPAL_CLIENT_ID}}
     secrets:
