@@ -1,0 +1,35 @@
+name: "Deploy"
+
+on:
+  # When new commits are pushed onto the main branch.
+  push:
+    branches:
+      - main
+    tags:
+      - prod
+
+jobs:
+  buildAndPublish:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Setup environment.
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sign in to Azure
+        run: |
+          npm exec --package @microsoft/teamsapp-cli -- teamsapp auth login azure --service-principal true \
+          --tenant ${{vars.AZURE_TENANT_ID}} --username ${{vars.AZURE_SERVICE_PRINCIPAL_CLIENT_ID}} \
+          --password ${{secrets.AZURE_SERVICE_PRINCIPAL_CLIENT_SECRET}}
+
+      - name: Deploy to hosting environment
+        run: |
+          npm exec --package @microsoft/teamsapp-cli -- teamsapp deploy --env ${{vars.TEAMSFX_ENV_NAME}} --interactive false
