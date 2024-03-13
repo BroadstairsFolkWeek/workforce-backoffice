@@ -10,7 +10,7 @@ jobs:
   buildAndDeployProd:
     uses: ./.github/workflows/deploy.yaml
     with:
-      environmentName: DEV
+      environmentName: PROD
       tenantId: ${{vars.AZURE_TENANT_ID}}
       azureServicePrincipalClientId: ${{vars.AZURE_SERVICE_PRINCIPAL_CLIENT_ID}}
     secrets:
