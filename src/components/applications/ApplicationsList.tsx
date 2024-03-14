@@ -15,6 +15,7 @@ import { FC, useMemo } from "react";
 import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
 import ProfilePhoto from "./ProfilePhoto";
 import { ApplicationData } from "../../interfaces/application-data";
+import { isNullOrUndefined } from "util";
 
 type Item = ApplicationData;
 
@@ -75,12 +76,17 @@ const ApplicationsList: FC<ApplicationsListProps> = ({ applications }) => {
             b.profile?.displayName || ""
           );
         },
-        renderHeaderCell: () => "Name / Address",
+        renderHeaderCell: () => "Name / Display name / Address",
         renderCell: (item) => (
           <>
             <Text as="strong" weight="semibold">
-              {item.profile?.displayName}
+              {item.profile?.givenName} {item.profile?.surname}
             </Text>
+            {item.profile?.displayName ? (
+              <Text as="i">({item.profile?.displayName})</Text>
+            ) : (
+              isNullOrUndefined
+            )}
             <Text>{item.profile?.address}</Text>
           </>
         ),
