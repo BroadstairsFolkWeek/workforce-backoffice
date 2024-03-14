@@ -1,4 +1,3 @@
-// https://fluentsite.z22.web.core.windows.net/quick-start
 import {
   FluentProvider,
   teamsLightTheme,
@@ -7,18 +6,10 @@ import {
   Spinner,
   tokens,
 } from "@fluentui/react-components";
-import {
-  HashRouter as Router,
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
 import { useTeamsUserCredential } from "@microsoft/teamsfx-react";
-import Privacy from "./Privacy";
-import TermsOfUse from "./TermsOfUse";
-import ApplicationsTab from "./ApplicationsTab";
 import { TeamsFxContext } from "./Context";
 import config from "./sample/lib/config";
+import AppRouter from "./AppRouter";
 
 /**
  * The main app which handles the initialization and routing
@@ -47,21 +38,7 @@ export default function App() {
         }
         style={{ background: tokens.colorNeutralBackground3 }}
       >
-        <Router>
-          {loading ? (
-            <Spinner style={{ margin: 100 }} />
-          ) : (
-            <Routes>
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/termsofuse" element={<TermsOfUse />} />
-              <Route path="/applications" element={<ApplicationsTab />} />
-              <Route
-                path="*"
-                element={<Navigate to={"/applications"} />}
-              ></Route>
-            </Routes>
-          )}
-        </Router>
+        {loading ? <Spinner style={{ margin: 100 }} /> : <AppRouter />}
       </FluentProvider>
     </TeamsFxContext.Provider>
   );
