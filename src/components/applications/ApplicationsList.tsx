@@ -9,6 +9,7 @@ import {
   Text,
   createTableColumn,
   makeStyles,
+  shorthands,
 } from "@fluentui/react-components";
 import { FC, useMemo } from "react";
 import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
@@ -28,14 +29,19 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "stretch",
+    ...shorthands.padding("4px"),
   },
   photoCell: {
     height: "100%",
     width: "100%",
+    display: "flex",
+    flexDirection: "column-reverse",
+    justifyContent: "start",
   },
   img: {
-    height: "175px",
-    width: "100%",
+    // Set the photo image to a very small height and utilise flexGrow to fill any remaining space in the cell.
+    height: "1%",
+    flexGrow: 1,
   },
   availabilityIndicator: {
     height: "25px",
