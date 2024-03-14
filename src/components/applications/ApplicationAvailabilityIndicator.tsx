@@ -31,12 +31,10 @@ const useStyles = makeStyles({
 
 const BooleanBlockIndicator: React.FC<{ value: boolean; key: string }> = ({
   value,
-  key,
 }) => {
   const classes = useStyles();
   return (
     <div
-      key={key}
       className={mergeClasses(
         classes.booleanBlockIndicator,
         value
