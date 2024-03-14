@@ -1,5 +1,9 @@
 import { Outlet } from "react-router-dom";
-import { makeStyles, mergeClasses } from "@fluentui/react-components";
+import {
+  makeStyles,
+  mergeClasses,
+  shorthands,
+} from "@fluentui/react-components";
 import { useContext, useMemo } from "react";
 import { TeamsFxContext } from "../components/Context";
 
@@ -7,6 +11,7 @@ const useStyles = makeStyles({
   root: {
     height: "100vh",
     width: "98vw",
+    ...shorthands.padding("10px"),
   },
 });
 

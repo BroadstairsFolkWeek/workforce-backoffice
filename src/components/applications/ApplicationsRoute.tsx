@@ -4,16 +4,7 @@ import { useApplications } from "./ApplicationsContextProvider";
 import { PersistedProfile } from "../../model/interfaces/profile";
 import { PersistedApplication } from "../../model/interfaces/application";
 import { ApplicationData } from "../../interfaces/application-data";
-import { makeStyles } from "@fluentui/react-components";
-import ApplicationsList from "./ApplicationsList";
-import ApplicationsHeaderView from "./ApplicationsHeaderView";
-
-const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-  },
-});
+import ApplicationsView from "./ApplicationsView";
 
 const mergeApplicationsAndProfiles = (
   applications: PersistedApplication[],
@@ -62,7 +53,6 @@ const filterApplicationsByTerm = (
 };
 
 const ApplicationsRoute: React.FC = () => {
-  const classes = useStyles();
   const { applications, profiles } = useApplications();
 
   const applicationDatas = useMemo(
@@ -86,14 +76,11 @@ const ApplicationsRoute: React.FC = () => {
   }, [filterString, applicationDatas]);
 
   return (
-    <div className={classes.root}>
-      <ApplicationsHeaderView
-        filterString={filterString}
-        setFilterString={setFilterString}
-      />
-
-      <ApplicationsList applications={filteredApplications} />
-    </div>
+    <ApplicationsView
+      applications={filteredApplications}
+      filterString={filterString}
+      setFilterString={setFilterString}
+    />
   );
 };
 
