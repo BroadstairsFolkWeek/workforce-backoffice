@@ -4,3 +4,5 @@ import { PersistedProfile } from "../model/interfaces/profile";
 export interface ApplicationData extends PersistedApplication {
   profile: PersistedProfile | undefined;
 }
+
+export type ApplicationStatus = PersistedApplication["status"];
