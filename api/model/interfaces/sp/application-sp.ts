@@ -34,6 +34,9 @@ interface ApplicationListItem {
   AvailableThursday: boolean;
   AvailableLastFriday: boolean;
   Constraints?: string;
+  WhatsApp: boolean;
+  AcceptedTermsAndConditions: boolean;
+  ConsentNewlifeWills: boolean;
   PhotoId?: string;
   Version: number;
   Status: string;

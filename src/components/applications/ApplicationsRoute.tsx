@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { useApplications } from "./ApplicationsContextProvider";
 import { PersistedProfile } from "../../model/interfaces/profile";
@@ -87,6 +87,14 @@ const ApplicationsRoute: React.FC = () => {
     Set<ApplicationStatus>
   >(new Set());
 
+  const [selectedApplication, setSelectedApplication] = useState<
+    ApplicationData | undefined
+  >();
+
+  const clearSelectedApplication = useCallback(() => {
+    setSelectedApplication(undefined);
+  }, []);
+
   React.useEffect(() => {
     setFilteredApplications(
       filterApplicationsByTerm(
@@ -99,10 +107,13 @@ const ApplicationsRoute: React.FC = () => {
   return (
     <ApplicationsView
       applications={filteredApplications}
+      selectedApplication={selectedApplication}
       filterString={filterString}
       filterSelectedStatuses={filterSelectedStatuses}
       setFilterString={setFilterString}
       setFilterSelectedStatuses={setFilterSelectedStatuses}
+      applicationSelected={setSelectedApplication}
+      clearSelectedApplication={clearSelectedApplication}
     />
   );
 };

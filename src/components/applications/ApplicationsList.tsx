@@ -15,12 +15,14 @@ import { FC, useMemo } from "react";
 import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
 import ProfilePhoto from "./ProfilePhoto";
 import { ApplicationData } from "../../interfaces/application-data";
-import { isNullOrUndefined } from "util";
 
 type Item = ApplicationData;
 
 type ApplicationsListProps = {
   applications: ApplicationData[];
+  selectedApplication: ApplicationData | undefined;
+  applicationSelected: (application: ApplicationData) => void;
+  clearSelectedApplication: () => void;
 };
 
 const useStyles = makeStyles({
@@ -61,7 +63,12 @@ const useStyles = makeStyles({
   },
 });
 
-const ApplicationsList: FC<ApplicationsListProps> = ({ applications }) => {
+const ApplicationsList: FC<ApplicationsListProps> = ({
+  applications,
+  selectedApplication,
+  applicationSelected,
+  clearSelectedApplication,
+}) => {
   const classes = useStyles();
 
   const columns: TableColumnDefinition<Item>[] = useMemo(
@@ -96,9 +103,7 @@ const ApplicationsList: FC<ApplicationsListProps> = ({ applications }) => {
             </Text>
             {item.profile?.displayName ? (
               <Text as="i">({item.profile?.displayName})</Text>
-            ) : (
-              isNullOrUndefined
-            )}
+            ) : null}
             <Text>{item.profile?.address}</Text>
           </>
         ),
@@ -160,6 +165,20 @@ const ApplicationsList: FC<ApplicationsListProps> = ({ applications }) => {
         photo: { minWidth: 100 },
         name: { minWidth: 200 },
         contact: { minWidth: 300 },
+      }}
+      selectedItems={
+        selectedApplication ? [selectedApplication.applicationId] : []
+      }
+      onSelectionChange={(e, data) => {
+        if (data.selectedItems.size > 0) {
+          applicationSelected(
+            applications.find((app) =>
+              data.selectedItems.has(app.applicationId)
+            )!
+          );
+        } else {
+          clearSelectedApplication();
+        }
       }}
     >
       <DataGridHeader>
