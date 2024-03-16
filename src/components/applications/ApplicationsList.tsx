@@ -24,6 +24,18 @@ type ApplicationsListProps = {
 };
 
 const useStyles = makeStyles({
+  grid: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: 1,
+  },
+  gridBody: {
+    overflowY: "scroll",
+    flexGrow: 1,
+    flexShrink: 1,
+    height: "100px",
+  },
   cell: {
     height: "200px",
     width: "100%",
@@ -136,6 +148,7 @@ const ApplicationsList: FC<ApplicationsListProps> = ({ applications }) => {
 
   return (
     <DataGrid
+      className={classes.grid}
       items={applications}
       columns={columns}
       sortable
@@ -156,7 +169,7 @@ const ApplicationsList: FC<ApplicationsListProps> = ({ applications }) => {
           )}
         </DataGridRow>
       </DataGridHeader>
-      <DataGridBody<Item>>
+      <DataGridBody<Item> className={classes.gridBody}>
         {({ item, rowId }) => (
           <DataGridRow<Item>
             key={rowId}

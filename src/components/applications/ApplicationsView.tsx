@@ -18,6 +18,7 @@ interface ApplicationsViewProps {
 
 const useStyles = makeStyles({
   root: {
+    height: "98%",
     display: "flex",
     flexDirection: "column",
     rowGap: "8px",
