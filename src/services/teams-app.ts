@@ -1,4 +1,3 @@
-import { app } from "@microsoft/teams-js";
 import { TeamsUserCredential } from "@microsoft/teamsfx";
 
 let teamsUserCredential: TeamsUserCredential;
