@@ -9,7 +9,6 @@ import { tokens } from "@fluentui/react-theme";
 import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
 import ProfilePhoto from "./ProfilePhoto";
 import { ApplicationData } from "../../interfaces/application-data";
-import { app } from "@microsoft/teams-js";
 
 type ApplicationsDetailsProps = {
   application: ApplicationData;
@@ -109,8 +108,7 @@ const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
           <Text>Email</Text>
           <div>
             <div>
-              <a
-                href="#"
+              <Button
                 onClick={(e) => {
                   e.preventDefault();
                   if (application.profile?.email) {
@@ -118,8 +116,8 @@ const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
                   }
                 }}
               >
-                <Text>{application.profile?.email}</Text>
-              </a>
+                {application.profile?.email}
+              </Button>
             </div>
           </div>
           <Text>Telephone</Text>
