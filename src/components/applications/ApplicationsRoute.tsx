@@ -96,9 +96,16 @@ const ApplicationsRoute: React.FC = () => {
     setSelectedApplication(undefined);
   }, []);
 
-  const emailSelected = useCallback(async (email: string) => {
-    await draftAndDisplayWorkforceMail(email, "John", "Doe");
-  }, []);
+  const emailSelected = useCallback(
+    async (_: string) => {
+      await draftAndDisplayWorkforceMail(
+        selectedApplication?.profile?.email,
+        selectedApplication?.profile?.givenName || "",
+        selectedApplication?.profile?.surname || ""
+      );
+    },
+    [selectedApplication]
+  );
 
   React.useEffect(() => {
     setFilteredApplications(
