@@ -7,8 +7,8 @@
   "developer": {
     "name": "Watford Consulting Ltd.",
     "websiteUrl": "https://watfordconsulting.com/",
-    "privacyUrl": "${{TAB_ENDPOINT}}/index.html#/privacy",
-    "termsOfUseUrl": "${{TAB_ENDPOINT}}/index.html#/termsofuse"
+    "privacyUrl": "https://watfordconsulting.com/privacy-policy/",
+    "termsOfUseUrl": "https://watfordconsulting.com/privacy-policy/"
   },
   "icons": {
     "color": "color.png",
@@ -19,8 +19,8 @@
     "full": "Workforce Backoffice M365 App"
   },
   "description": {
-    "short": "Workforce applciations list",
-    "full": "Workforce applciations list"
+    "short": "Workforce applications",
+    "full": "Workforce applications management"
   },
   "accentColor": "#FFFFFF",
   "bots": [],
@@ -30,8 +30,8 @@
     {
       "entityId": "index",
       "name": "Applications",
-      "contentUrl": "${{TAB_ENDPOINT}}/index.html#/tab",
-      "websiteUrl": "${{TAB_ENDPOINT}}/index.html#/tab",
+      "contentUrl": "${{TAB_ENDPOINT}}/index.html#/applications",
+      "websiteUrl": "${{TAB_ENDPOINT}}/index.html#/applications",
       "scopes": ["personal"]
     }
   ],

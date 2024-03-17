@@ -1,12 +1,19 @@
 import { FC } from "react";
-import { Text, makeStyles, shorthands } from "@fluentui/react-components";
+import {
+  Button,
+  Text,
+  makeStyles,
+  shorthands,
+} from "@fluentui/react-components";
 import { tokens } from "@fluentui/react-theme";
 import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
 import ProfilePhoto from "./ProfilePhoto";
 import { ApplicationData } from "../../interfaces/application-data";
+import { app } from "@microsoft/teams-js";
 
 type ApplicationsDetailsProps = {
   application: ApplicationData;
+  emailSelected: (email: string) => void;
 };
 
 const useStyles = makeStyles({
@@ -69,7 +76,10 @@ const useStyles = makeStyles({
   },
 });
 
-const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({ application }) => {
+const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
+  application,
+  emailSelected,
+}) => {
   const classes = useStyles();
 
   return (
@@ -97,7 +107,21 @@ const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({ application }) => {
             {application.profile?.address}
           </Text>
           <Text>Email</Text>
-          <Text>{application.profile?.email}</Text>
+          <div>
+            <div>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (application.profile?.email) {
+                    emailSelected(application.profile.email);
+                  }
+                }}
+              >
+                <Text>{application.profile?.email}</Text>
+              </a>
+            </div>
+          </div>
           <Text>Telephone</Text>
           <Text>{application.profile?.telephone}</Text>
           <Text>Age group</Text>

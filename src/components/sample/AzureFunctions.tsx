@@ -2,9 +2,13 @@ import { useContext, useState } from "react";
 import { Button, Spinner } from "@fluentui/react-components";
 import { useData } from "@microsoft/teamsfx-react";
 import * as axios from "axios";
-import { BearerTokenAuthProvider, createApiClient, TeamsUserCredential } from "@microsoft/teamsfx";
+import {
+  BearerTokenAuthProvider,
+  createApiClient,
+  TeamsUserCredential,
+} from "@microsoft/teamsfx";
 import { TeamsFxContext } from "../Context";
-import config from "./lib/config";
+import config from "../config";
 
 const functionName = config.apiName || "myFunc";
 
@@ -14,7 +18,9 @@ async function callFunction(teamsUserCredential: TeamsUserCredential) {
     // createApiClient(...) creates an Axios instance which uses BearerTokenAuthProvider to inject token to request header
     const apiClient = createApiClient(
       apiBaseUrl,
-      new BearerTokenAuthProvider(async () => (await teamsUserCredential.getToken(""))!.token)
+      new BearerTokenAuthProvider(
+        async () => (await teamsUserCredential.getToken(""))!.token
+      )
     );
     const response = await apiClient.get(functionName);
     return response.data;
@@ -74,8 +80,8 @@ export function AzureFunctions(props: { codePath?: string; docsUrl?: string }) {
     <div>
       <h2>Call your Azure Function</h2>
       <p>
-        An Azure Functions app is running. Authorize this app and click below to call it for a
-        response:
+        An Azure Functions app is running. Authorize this app and click below to
+        call it for a response:
       </p>
       {!loading && (
         <Button appearance="primary" disabled={loading} onClick={reload}>
@@ -87,9 +93,13 @@ export function AzureFunctions(props: { codePath?: string; docsUrl?: string }) {
           <Spinner />
         </pre>
       )}
-      {!loading && !!data && !error && <pre className="fixed">{JSON.stringify(data, null, 2)}</pre>}
+      {!loading && !!data && !error && (
+        <pre className="fixed">{JSON.stringify(data, null, 2)}</pre>
+      )}
       {!loading && !data && !error && <pre className="fixed"></pre>}
-      {!loading && !!error && <div className="error fixed">{(error as any).toString()}</div>}
+      {!loading && !!error && (
+        <div className="error fixed">{(error as any).toString()}</div>
+      )}
       <h4>How to edit the Azure Function</h4>
       <p>
         See the code in <code>{codePath}</code> to add your business logic.

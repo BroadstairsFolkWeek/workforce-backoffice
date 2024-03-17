@@ -8,6 +8,7 @@ import {
   ApplicationStatus,
 } from "../../interfaces/application-data";
 import ApplicationsView from "./ApplicationsView";
+import { draftAndDisplayWorkforceMail } from "../../services/mail";
 
 const mergeApplicationsAndProfiles = (
   applications: PersistedApplication[],
@@ -95,6 +96,10 @@ const ApplicationsRoute: React.FC = () => {
     setSelectedApplication(undefined);
   }, []);
 
+  const emailSelected = useCallback(async (email: string) => {
+    await draftAndDisplayWorkforceMail(email, "John", "Doe");
+  }, []);
+
   React.useEffect(() => {
     setFilteredApplications(
       filterApplicationsByTerm(
@@ -114,6 +119,7 @@ const ApplicationsRoute: React.FC = () => {
       setFilterSelectedStatuses={setFilterSelectedStatuses}
       applicationSelected={setSelectedApplication}
       clearSelectedApplication={clearSelectedApplication}
+      emailSelected={emailSelected}
     />
   );
 };

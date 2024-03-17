@@ -1,5 +1,5 @@
 import React from "react";
-import config from "./lib/config";
+import config from "../config";
 
 const functionName = config.apiName || "myFunc";
 
@@ -19,7 +19,8 @@ export function EditCode(props: {
       <h2>Change this code</h2>
       <p>
         The front end is a <code>create-react-app</code>. The entry point is{" "}
-        <code>{tabCodeEntry}</code>. Just save any file and this page will reload automatically.
+        <code>{tabCodeEntry}</code>. Just save any file and this page will
+        reload automatically.
       </p>
       {showFunction && (
         <p>

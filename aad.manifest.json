@@ -25,6 +25,10 @@
           "type": "Scope"
         },
         {
+          "id": "Mail.ReadWrite",
+          "type": "Scope"
+        },
+        {
           "id": "Sites.ReadWrite.All",
           "type": "Scope"
         }

@@ -27,6 +27,7 @@ interface ApplicationsViewProps {
   setFilterSelectedStatuses: (statuses: Set<ApplicationStatus>) => void;
   applicationSelected: (application: ApplicationData) => void;
   clearSelectedApplication: () => void;
+  emailSelected: (email: string) => void;
 }
 
 const useStyles = makeStyles({
@@ -53,6 +54,7 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
   setFilterSelectedStatuses,
   applicationSelected,
   clearSelectedApplication,
+  emailSelected,
 }) => {
   const classes = useStyles();
 
@@ -97,7 +99,10 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
             </DrawerHeaderTitle>
           </DrawerHeader>
           <DrawerBody className={classes.drawerBody}>
-            <ApplicationsDetails application={selectedApplication} />
+            <ApplicationsDetails
+              application={selectedApplication}
+              emailSelected={emailSelected}
+            />
           </DrawerBody>
         </OverlayDrawer>
       ) : null}
