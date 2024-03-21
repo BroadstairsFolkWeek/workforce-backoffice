@@ -1,6 +1,9 @@
-import { AzureFunction, Context, HttpRequest } from "@azure/functions";
+import {
+  HttpRequest,
+  HttpResponseInit,
+  InvocationContext,
+} from "@azure/functions";
 import { runAsAuthenticatedUser } from "../common-handlers/authenticated-user-http-response-handler";
-import { TeamsfxContext } from "../interfaces/teams-context";
 import { draftMail } from "../services/mail-service";
 import { logTrace } from "../utilities/logging";
 import { DraftMailRequest, DraftMailResult } from "../interfaces/mail";
@@ -9,7 +12,7 @@ const handlePostDraftMail = async function (
   recipientEmailAddress: string,
   recipientGivenName: string,
   recipientSurname: string
-): Promise<Context["res"]> {
+): Promise<HttpResponseInit> {
   if (recipientEmailAddress) {
     const draftMailUrl = await draftMail(
       recipientEmailAddress,
@@ -22,7 +25,7 @@ const handlePostDraftMail = async function (
     if (draftMailUrl) {
       return {
         status: 200,
-        body: result,
+        jsonBody: result,
       };
     } else {
       return {
@@ -37,15 +40,14 @@ const handlePostDraftMail = async function (
   }
 };
 
-const httpTrigger: AzureFunction = async function (
-  context: Context,
+export const httpTrigger = async function (
   req: HttpRequest,
-  teamsfxContext: TeamsfxContext
-): Promise<void> {
-  context.res = await runAsAuthenticatedUser(
+  context: InvocationContext
+): Promise<HttpResponseInit> {
+  return await runAsAuthenticatedUser(
     context,
     req,
-    teamsfxContext,
+
     async () => {
       if (req.method !== "POST") {
         logTrace(`draftMail: Invalid HTTP method: ${req.method}`);
@@ -57,7 +59,8 @@ const httpTrigger: AzureFunction = async function (
         };
       }
 
-      const requestBody: DraftMailRequest = req.body;
+      const requestBody: DraftMailRequest =
+        (await req.json()) as DraftMailRequest;
 
       logTrace(
         `draftMail: Received request for ${requestBody.recipient.emailAddress}`

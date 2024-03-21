@@ -1,4 +1,8 @@
-import { AzureFunction, Context, HttpRequest } from "@azure/functions";
+import {
+  InvocationContext,
+  HttpRequest,
+  HttpResponseInit,
+} from "@azure/functions";
 import { runAsAuthenticatedUser } from "../common-handlers/authenticated-user-http-response-handler";
 import { TeamsfxContext } from "../interfaces/teams-context";
 import { getProfilePicture } from "../services/profile-service";
@@ -6,14 +10,13 @@ import { logTrace } from "../utilities/logging";
 
 const handleGetProfilePhoto = async function (
   combinedId: string
-): Promise<Context["res"]> {
+): Promise<HttpResponseInit> {
   if (combinedId) {
     const result = await getProfilePicture(combinedId);
     if (result) {
       return {
         status: 200,
         body: new Uint8Array(result.content),
-        isRaw: true,
         headers: {
           "Content-Type": result.mimeType,
           "Cache-Control": "public, max-age=604800",
@@ -32,44 +35,38 @@ const handleGetProfilePhoto = async function (
   }
 };
 
-const httpTrigger: AzureFunction = async function (
-  context: Context,
+export const httpTrigger = async function (
   req: HttpRequest,
-  teamsfxContext: TeamsfxContext
-): Promise<void> {
-  context.res = await runAsAuthenticatedUser(
-    context,
-    req,
-    teamsfxContext,
-    async () => {
-      if (
-        req.method !== "GET" &&
-        req.method !== "POST" &&
-        req.method !== "DELETE"
-      ) {
-        logTrace(`profilePhoto: Invalid HTTP method: ${req.method}`);
-        return {
-          status: 405,
-          headers: {
-            Allow: "GET, POST, DELETE",
-          },
-        };
-      }
-
-      if (req.method === "GET") {
-        const id = req.query.id;
-        return handleGetProfilePhoto(id);
-      } else {
-        // Temporary 405 until methods are implemented.
-        return {
-          status: 405,
-          headers: {
-            Allow: "GET, POST, DELETE",
-          },
-        };
-      }
+  context: InvocationContext
+): Promise<HttpResponseInit> {
+  return await runAsAuthenticatedUser(context, req, async () => {
+    if (
+      req.method !== "GET" &&
+      req.method !== "POST" &&
+      req.method !== "DELETE"
+    ) {
+      logTrace(`profilePhoto: Invalid HTTP method: ${req.method}`);
+      return {
+        status: 405,
+        headers: {
+          Allow: "GET, POST, DELETE",
+        },
+      };
     }
-  );
+
+    if (req.method === "GET") {
+      const id = req.query["id"];
+      return handleGetProfilePhoto(id);
+    } else {
+      // Temporary 405 until methods are implemented.
+      return {
+        status: 405,
+        headers: {
+          Allow: "GET, POST, DELETE",
+        },
+      };
+    }
+  });
 };
 
 export default httpTrigger;

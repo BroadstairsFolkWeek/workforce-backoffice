@@ -1,7 +1,7 @@
 import {
   SaveApplicationChangesRequest,
   SaveApplicationChangesRequestRunType,
-} from "./interfaces/applications-api";
+} from "../functions/interfaces/applications-api";
 
 const API_SANITISE_SERVICE_ERROR_TYPE_VAL =
   "sanitise-service-error-5285b9b9-b97e-4585-a0ee-bb4e8e311ea4";

@@ -1,4 +1,4 @@
-import { Context, HttpRequest } from "@azure/functions";
+import { HttpRequest, InvocationContext } from "@azure/functions";
 import { runWithAppAsyncContext } from "../context/app-async-context";
 import { runWithLoggingAsyncContext } from "../context/logging-context";
 import { TeamsfxContext } from "../interfaces/teams-context";
@@ -10,18 +10,19 @@ type ResponseObject = {
 };
 
 export const runAsAuthenticatedUser = async <R, TArgs extends any[]>(
-  context: Context,
+  invocationContext: InvocationContext,
   req: HttpRequest,
-  teamsfxContext: TeamsfxContext,
   callback: (...args: TArgs) => R,
   ...args: TArgs
 ): Promise<ResponseObject> => {
-  return runWithLoggingAsyncContext({ logger: context.log }, () => {
+  return runWithLoggingAsyncContext({ logger: invocationContext }, () => {
     logTrace(
-      context.executionContext.functionName +
-        ": entry. Invocation ID: " +
-        context.executionContext.invocationId
+      `${invocationContext.functionName}: entry. Invocation ID: ${invocationContext.invocationId}`
     );
+
+    const teamsfxContext: TeamsfxContext = invocationContext.extraInputs.get(
+      "teamsfxContext"
+    ) as TeamsfxContext;
 
     if (!isAuthenticated(teamsfxContext)) {
       return { status: 401 };

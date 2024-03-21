@@ -1,9 +1,8 @@
-import { Logger } from "@azure/functions";
 import { AsyncLocalStorage } from "async_hooks";
-import { registerGetLogger } from "../utilities/logging";
+import { FunctionLogger, registerGetLogger } from "../utilities/logging";
 
 export type LoggingAsyncContext = {
-  logger: Logger;
+  logger: FunctionLogger;
 };
 
 const asyncLocalStorage = new AsyncLocalStorage<LoggingAsyncContext>();

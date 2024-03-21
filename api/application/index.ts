@@ -2,19 +2,22 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as T from "fp-ts/lib/Task";
 import { pipe } from "fp-ts/lib/function";
 
-import { AzureFunction, Context, HttpRequest } from "@azure/functions";
-import { TeamsfxContext } from "../interfaces/teams-context";
+import {
+  HttpRequest,
+  HttpResponseInit,
+  InvocationContext,
+} from "@azure/functions";
 import { runAsAuthenticatedUser } from "../common-handlers/authenticated-user-http-response-handler";
 import {
   getApplicationTE,
   saveApplicationChanges,
 } from "../model/applications-repository";
 import { logTrace } from "../utilities/logging";
-import { SaveApplicationChangesRequest } from "../api/interfaces/applications-api";
+import { SaveApplicationChangesRequest } from "../functions/interfaces/applications-api";
 
 const handleGetApplication = async function (
   applicationId: string
-): Promise<Context["res"]> {
+): Promise<HttpResponseInit> {
   const getApplicationResponseTask = pipe(
     applicationId,
     getApplicationTE,
@@ -46,7 +49,7 @@ const handleGetApplication = async function (
 const handlePatchApplication = async function (
   applicationId: string,
   changeRequest: SaveApplicationChangesRequest
-): Promise<Context["res"]> {
+): Promise<HttpResponseInit> {
   const applyToVersion = changeRequest.changedVersion;
   const changes = changeRequest.changes;
 
@@ -81,42 +84,37 @@ const handlePatchApplication = async function (
   return await patchApplicationResponseTask();
 };
 
-const httpTrigger: AzureFunction = async function (
-  context: Context,
+export const httpTrigger = async function (
   req: HttpRequest,
-  teamsfxContext: TeamsfxContext
-): Promise<void> {
-  context.res = await runAsAuthenticatedUser(
-    context,
-    req,
-    teamsfxContext,
-    async () => {
-      if (req.method !== "GET" && req.method !== "PATCH") {
-        logTrace(`application: Invalid HTTP method: ${req.method}`);
-        return {
-          status: 405,
-          headers: {
-            Allow: "GET, PATCH",
-          },
-        };
-      }
-
-      const applicationId: string = context.bindingData.applicationId;
-      if (!applicationId) {
-        return {
-          status: 400,
-          body: "Missing applicationId path parameter",
-        };
-      }
-
-      if (req.method === "GET") {
-        return await handleGetApplication(applicationId);
-      } else {
-        const changeRequest: SaveApplicationChangesRequest = req.body;
-        return await handlePatchApplication(applicationId, changeRequest);
-      }
+  context: InvocationContext
+): Promise<HttpResponseInit> {
+  return await runAsAuthenticatedUser(context, req, async () => {
+    if (req.method !== "GET" && req.method !== "PATCH") {
+      logTrace(`application: Invalid HTTP method: ${req.method}`);
+      return {
+        status: 405,
+        headers: {
+          Allow: "GET, PATCH",
+        },
+      };
     }
-  );
+
+    const applicationId: string = req.params.applicationId;
+    if (!applicationId) {
+      return {
+        status: 400,
+        body: "Missing applicationId path parameter",
+      };
+    }
+
+    if (req.method === "GET") {
+      return await handleGetApplication(applicationId);
+    } else {
+      const changeRequest: SaveApplicationChangesRequest =
+        (await req.json()) as SaveApplicationChangesRequest;
+      return await handlePatchApplication(applicationId, changeRequest);
+    }
+  });
 };
 
 export default httpTrigger;
