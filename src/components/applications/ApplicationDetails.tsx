@@ -13,6 +13,7 @@ import { ApplicationData } from "../../interfaces/application-data";
 type ApplicationsDetailsProps = {
   application: ApplicationData;
   emailSelected: (email: string) => void;
+  testSelected: () => void;
 };
 
 const useStyles = makeStyles({
@@ -78,11 +79,13 @@ const useStyles = makeStyles({
 const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
   application,
   emailSelected,
+  testSelected,
 }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
+      <Button onClick={testSelected}>Test</Button>
       <div className={classes.personalDetailsSection}>
         <div className={classes.photoCell}>
           <div className={classes.img}>
@@ -200,7 +203,7 @@ const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
           <Text>{application.constraints}</Text>
 
           <Text>Join WhatsApp group</Text>
-          <Text>{application.whatsapp ? "Yes" : "No"}</Text>
+          <Text>{application.whatsApp ? "Yes" : "No"}</Text>
 
           <Text>Consent NewLife Wills</Text>
           <Text>{application.consentNewlifeWills ? "Yes" : "No"}</Text>

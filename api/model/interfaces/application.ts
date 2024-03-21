@@ -26,8 +26,17 @@ export const AgeGroupRunType = Union(
   Literal("66+")
 );
 
-// Application Data Transfer Object for data posted to the API.
-export const ApplicationDtoRunType = Record({
+export const ApplicationStatusRunType = Union(
+  Literal("info-required"),
+  Literal("profile-required"),
+  Literal("photo-required"),
+  Literal("documents-required"),
+  Literal("ready-to-submit"),
+  Literal("submitted"),
+  Literal("complete")
+);
+
+export const CoreApplicationRunType = Record({
   telephone: Optional(String),
   address: Optional(String),
   emergencyContactName: Optional(String),
@@ -55,32 +64,42 @@ export const ApplicationDtoRunType = Record({
   availableThursday: Boolean,
   availableLastFriday: Boolean,
   constraints: Optional(String),
-  whatsapp: Boolean,
+  whatsApp: Boolean,
   acceptedTermsAndConditions: Boolean,
   consentNewlifeWills: Boolean,
+  newlifeHaveWillInPlace: Boolean,
+  newlifeHavePoaInPlace: Boolean,
+  newlifeWantFreeReview: Boolean,
   version: Number,
+  profileId: String,
+  photoId: Optional(String),
+  status: ApplicationStatusRunType,
 });
 
-export type ApplicationDto = Static<typeof ApplicationDtoRunType>;
+export const ApplicationMetadataRunType = Record({
+  applicationId: String,
+});
 
-export type AddableApplication = ApplicationDto & {
-  title: string;
-  applicationId: string;
-  profileId: string;
-  photoId?: string;
-  status:
-    | "info-required"
-    | "profile-required"
-    | "photo-required"
-    | "documents-required"
-    | "ready-to-submit"
-    | "submitted"
-    | "complete";
-};
+export const ApplicationRunType = ApplicationMetadataRunType.extend(
+  CoreApplicationRunType.fields
+);
 
-export type UpdatableApplication = Partial<AddableApplication>;
+// Application ID and version should not be included in an update request as they are managed
+// by the model.
+export const ApplicationChangesRunType = ApplicationRunType.omit(
+  "applicationId",
+  "version"
+).asPartial();
 
-export type PersistedApplication = AddableApplication & {
-  dbId: number;
-  lastSaved: string;
-};
+export const PersistedApplicationRunType = ApplicationRunType.extend({
+  dbId: Number,
+  lastSaved: String,
+});
+
+export type Application = Static<typeof ApplicationRunType>;
+
+export type AddableApplication = Application;
+
+export type ApplicationChanges = Static<typeof ApplicationChangesRunType>;
+
+export type PersistedApplication = Static<typeof PersistedApplicationRunType>;

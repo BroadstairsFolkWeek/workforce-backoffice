@@ -17,6 +17,7 @@ import {
 import ApplicationsList from "./ApplicationsList";
 import ApplicationsHeaderView from "./ApplicationsHeaderView";
 import ApplicationsDetails from "./ApplicationDetails";
+import { apiTestexp } from "../../services/api";
 
 interface ApplicationsViewProps {
   applications: ApplicationData[];
@@ -28,6 +29,7 @@ interface ApplicationsViewProps {
   applicationSelected: (application: ApplicationData) => void;
   clearSelectedApplication: () => void;
   emailSelected: (email: string) => void;
+  testSelected: () => void;
 }
 
 const useStyles = makeStyles({
@@ -55,11 +57,14 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
   applicationSelected,
   clearSelectedApplication,
   emailSelected,
+  testSelected,
 }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
+      <Button onClick={() => apiTestexp()}>Test</Button>
+
       <ApplicationsHeaderView
         filterString={filterString}
         filterSelectedStatuses={filterSelectedStatuses}
@@ -102,6 +107,7 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
             <ApplicationsDetails
               application={selectedApplication}
               emailSelected={emailSelected}
+              testSelected={testSelected}
             />
           </DrawerBody>
         </OverlayDrawer>

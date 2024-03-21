@@ -2,16 +2,17 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { useApplications } from "./ApplicationsContextProvider";
 import { PersistedProfile } from "../../model/interfaces/profile";
-import { PersistedApplication } from "../../model/interfaces/application";
 import {
+  Application,
   ApplicationData,
   ApplicationStatus,
 } from "../../interfaces/application-data";
 import ApplicationsView from "./ApplicationsView";
 import { draftAndDisplayWorkforceMail } from "../../services/mail";
+import { apiUpdateApplication } from "../../services/api";
 
 const mergeApplicationsAndProfiles = (
-  applications: PersistedApplication[],
+  applications: Application[],
   profiles: PersistedProfile[]
 ): ApplicationData[] => {
   return applications.map((application) => {
@@ -107,6 +108,18 @@ const ApplicationsRoute: React.FC = () => {
     [selectedApplication]
   );
 
+  const testSelected = useCallback(async () => {
+    if (selectedApplication) {
+      await apiUpdateApplication(
+        selectedApplication.applicationId,
+        selectedApplication.version,
+        {
+          availableFirstFriday: !selectedApplication.availableFirstFriday,
+        }
+      );
+    }
+  }, [selectedApplication]);
+
   React.useEffect(() => {
     setFilteredApplications(
       filterApplicationsByTerm(
@@ -127,6 +140,7 @@ const ApplicationsRoute: React.FC = () => {
       applicationSelected={setSelectedApplication}
       clearSelectedApplication={clearSelectedApplication}
       emailSelected={emailSelected}
+      testSelected={testSelected}
     />
   );
 };

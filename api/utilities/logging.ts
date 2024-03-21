@@ -1,3 +1,5 @@
+import * as IO from "fp-ts/lib/IO";
+
 import { Logger } from "@azure/functions";
 
 let getLogger: () => Logger = () => {
@@ -13,3 +15,8 @@ export const logWarn = (...args: any[]) => getLogger().warn(...args);
 export const logInfo = (...args: any[]) => getLogger().info(...args);
 export const logVerbose = (...args: any[]) => getLogger().verbose(...args);
 export const logTrace = (...args: any[]) => getLogger()(...args);
+
+export const logTraceIO = (message: string) => {
+  logTrace(message);
+  return IO.of(undefined);
+};

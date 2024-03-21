@@ -1,12 +1,15 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { applicationsContextUninitialisedSymbol } from "./symbols";
-import { PersistedApplication } from "../../../api/model/interfaces/application";
 import { PersistedProfile } from "../../../api/model/interfaces/profile";
 import { useApiAccess } from "../../services/ApiContext";
+import {
+  Application,
+  ApplicationData,
+} from "../../interfaces/application-data";
 
 export type IApplicationsContext = {
   loaded: boolean;
-  applications: PersistedApplication[];
+  applications: Application[];
   profiles: PersistedProfile[];
   getPhoto: (photoId: string) => Promise<string>;
 };
@@ -22,7 +25,7 @@ const ApplicationsContextProvider = ({
 }) => {
   const { callApiGet } = useApiAccess();
   const [loaded, setLoaded] = useState(false);
-  const [applications, setApplications] = useState<PersistedApplication[]>([]);
+  const [applications, setApplications] = useState<ApplicationData[]>([]);
   const [profiles, setProfiles] = useState<PersistedProfile[]>([]);
 
   const getPhoto = useCallback(

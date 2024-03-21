@@ -5,8 +5,8 @@
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
-      "methods": ["get"],
-      "route": "applications"
+      "methods": ["get", "patch"],
+      "route": "applications/{applicationId}"
     },
     {
       "type": "http",
@@ -19,5 +19,5 @@
       "type": "TeamsFx"
     }
   ],
-  "scriptFile": "../dist/applications/index.js"
+  "scriptFile": "../dist/application/index.js"
 }

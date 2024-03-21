@@ -4,9 +4,10 @@ import { URLSearchParams } from "url";
 import { getTeamsUserCredential } from "./teams-app";
 import config from "../components/config";
 import { DraftMailResult } from "../../api/interfaces/mail";
+import { ApplicationChanges } from "../interfaces/application-data";
 
 const callApi = async <ResponseDataType = any>(
-  method: "GET" | "POST",
+  method: "GET" | "POST" | "PATCH",
   functionName: string,
   body?: any,
   urlSearchParams?: URLSearchParams,
@@ -96,6 +97,21 @@ export const callApiPost = <ResponseDataType = any>(
   );
 };
 
+export const callApiPatch = <ResponseDataType = any>(
+  functionName: string,
+  body?: any,
+  urlSearchParams?: URLSearchParams,
+  responseType: ResponseType = "json"
+) => {
+  return callApi<ResponseDataType>(
+    "PATCH",
+    functionName,
+    body,
+    urlSearchParams,
+    responseType
+  );
+};
+
 export const apiDraftWorkforceMail = async (
   emailAddress: any,
   givenName: string,
@@ -109,4 +125,26 @@ export const apiDraftWorkforceMail = async (
     },
   });
   return result.draftMailUrl;
+};
+
+export const apiTestexp = async () => {
+  const result = await callApiGet("testexp");
+  return result;
+};
+
+export const apiGetApplication = async (applicationId: string) => {
+  const result = await callApiGet(`applications/${applicationId}`);
+  return result;
+};
+
+export const apiUpdateApplication = async (
+  applicationId: string,
+  version: number,
+  changes: ApplicationChanges
+) => {
+  const result = await callApiPatch(`applications/${applicationId}`, {
+    changes,
+    changedVersion: version,
+  });
+  return result;
 };
