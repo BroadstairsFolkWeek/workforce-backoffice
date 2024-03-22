@@ -1,4 +1,4 @@
-import { Image, makeStyles } from "@fluentui/react-components";
+import { makeStyles } from "@fluentui/react-components";
 import { useEffect, useState } from "react";
 import { useApplications } from "./ApplicationsContextProvider";
 
@@ -21,7 +21,9 @@ const ProfilePhoto: React.FC<{ photoId: string }> = ({ photoId }) => {
     getPhoto(photoId).then((dataSrcUrl) => setPhotoDataSrcUrl(dataSrcUrl));
   }, [getPhoto, photoId]);
 
-  return <img className={classes.root} src={photoDataSrcUrl} loading="lazy" />;
+  return (
+    <img className={classes.root} src={photoDataSrcUrl} alt="" loading="lazy" />
+  );
 };
 
 export default ProfilePhoto;
