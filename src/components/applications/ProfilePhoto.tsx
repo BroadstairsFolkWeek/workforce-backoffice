@@ -21,7 +21,7 @@ const ProfilePhoto: React.FC<{ photoId: string }> = ({ photoId }) => {
     getPhoto(photoId).then((dataSrcUrl) => setPhotoDataSrcUrl(dataSrcUrl));
   }, [getPhoto, photoId]);
 
-  return <Image className={classes.root} src={photoDataSrcUrl} />;
+  return <img className={classes.root} src={photoDataSrcUrl} loading="lazy" />;
 };
 
 export default ProfilePhoto;
