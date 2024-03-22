@@ -1,7 +1,8 @@
 import {
+  Application,
   SaveApplicationChangesRequest,
   SaveApplicationChangesRequestRunType,
-} from "../functions/interfaces/applications-api";
+} from "../interfaces/applications-api";
 
 const API_SANITISE_SERVICE_ERROR_TYPE_VAL =
   "sanitise-service-error-5285b9b9-b97e-4585-a0ee-bb4e8e311ea4";
@@ -83,4 +84,8 @@ export const sanitiseSaveApplicationRequest = (
   };
 
   return sanitisedUpdateApplicationRequestDto;
+};
+
+export const sanitiseApplication = (maybeApplication: any) => {
+  return Application.decode(maybeApplication);
 };
