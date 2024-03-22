@@ -17,7 +17,6 @@ import {
 import ApplicationsList from "./ApplicationsList";
 import ApplicationsHeaderView from "./ApplicationsHeaderView";
 import ApplicationsDetails from "./ApplicationDetails";
-import { apiTestexp } from "../../services/api";
 
 interface ApplicationsViewProps {
   applications: ApplicationData[];
@@ -63,8 +62,6 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
 
   return (
     <div className={classes.root}>
-      <Button onClick={() => apiTestexp()}>Test</Button>
-
       <ApplicationsHeaderView
         filterString={filterString}
         filterSelectedStatuses={filterSelectedStatuses}

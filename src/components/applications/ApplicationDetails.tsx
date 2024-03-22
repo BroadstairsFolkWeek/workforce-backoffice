@@ -102,7 +102,6 @@ const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
 
   return (
     <div className={classes.root}>
-      <Button onClick={testSelected}>Test</Button>
       <div className={classes.personalDetailsSection}>
         <div className={classes.photoCell}>
           <div className={classes.img}>
