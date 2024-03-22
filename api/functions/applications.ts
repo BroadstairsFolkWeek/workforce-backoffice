@@ -8,7 +8,7 @@ import {
 } from "@azure/functions";
 import { getApplications } from "../services/application-service";
 import { runAsAuthenticatedUser } from "../common-handlers/authenticated-user-http-response-handler";
-import { sanitiseApplication } from "./utilities/api-sanitise-service";
+import { sanitiseApplication } from "./utilities/applications-api-sanitise";
 import { logError } from "../utilities/logging";
 
 export const applicationsHttpTrigger = async function (

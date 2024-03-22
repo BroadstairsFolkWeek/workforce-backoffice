@@ -8,6 +8,7 @@ import {
   Static,
   Optional,
 } from "runtypes";
+import { ProfileRunType } from "./profile";
 
 export const TShirtSizeRunType = Union(
   Literal("S"),
@@ -84,6 +85,10 @@ export const ApplicationRunType = ApplicationMetadataRunType.extend(
   CoreApplicationRunType.fields
 );
 
+export const ApplicationInfoRunType = ApplicationRunType.extend({
+  profile: ProfileRunType,
+});
+
 // Application ID and version should not be included in an update request as they are managed
 // by the model.
 export const ApplicationChangesRunType = ApplicationRunType.omit(
@@ -97,6 +102,8 @@ export const PersistedApplicationRunType = ApplicationRunType.extend({
 });
 
 export type Application = Static<typeof ApplicationRunType>;
+
+export type ApplicationInfo = Static<typeof ApplicationInfoRunType>;
 
 export type AddableApplication = Application;
 

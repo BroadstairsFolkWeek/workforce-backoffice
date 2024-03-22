@@ -1,14 +1,11 @@
 import {
-  Application as apiApplication,
-  ApplicationChanges as apiApplicationChanges,
-} from "../../api/model/interfaces/application";
-import { PersistedProfile } from "../model/interfaces/profile";
+  ApplicationInfo as apiApplication,
+  ApplicationUpdates as apiApplicationChanges,
+} from "../../api/functions/interfaces/applications-api";
 
 export type Application = apiApplication;
 
-export interface ApplicationData extends Application {
-  profile: PersistedProfile | undefined;
-}
+export interface ApplicationData extends Application {}
 
 export type ApplicationStatus = Application["status"];
 

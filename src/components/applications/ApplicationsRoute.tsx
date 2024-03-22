@@ -1,30 +1,13 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { useApplications } from "./ApplicationsContextProvider";
-import { PersistedProfile } from "../../model/interfaces/profile";
 import {
-  Application,
   ApplicationData,
   ApplicationStatus,
 } from "../../interfaces/application-data";
 import ApplicationsView from "./ApplicationsView";
 import { draftAndDisplayWorkforceMail } from "../../services/mail";
 import { apiUpdateApplication } from "../../services/api";
-
-const mergeApplicationsAndProfiles = (
-  applications: Application[],
-  profiles: PersistedProfile[]
-): ApplicationData[] => {
-  return applications.map((application) => {
-    const profile = profiles.find(
-      (profile) => profile.profileId === application.profileId
-    );
-    return {
-      ...application,
-      profile,
-    };
-  });
-};
 
 const filterValueByTerm = (
   value: string | undefined,
@@ -73,12 +56,7 @@ const filterApplicationsByStatus = (
 };
 
 const ApplicationsRoute: React.FC = () => {
-  const { applications, profiles } = useApplications();
-
-  const applicationDatas = useMemo(
-    () => mergeApplicationsAndProfiles(applications, profiles),
-    [applications, profiles]
-  );
+  const { applications: applicationDatas } = useApplications();
 
   const [filterString, setFilterString] = React.useState("");
   const [filteredApplications, setFilteredApplications] = React.useState<

@@ -1,10 +1,11 @@
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 
-import { logTrace } from "../utilities/logging";
+import { logTrace, logWarn } from "../utilities/logging";
 import {
   Application,
   ApplicationChanges,
+  ApplicationInfo,
   PersistedApplication,
 } from "./interfaces/application";
 import {
@@ -16,6 +17,7 @@ import {
   getApplicationGraphListItems,
   saveApplicationGraphListItemChanges,
 } from "./graph/applications-repository-graph";
+import { getProfileById, getProfilesByIds } from "./profiles-repository";
 
 const listItemToTShirtSize = (
   item: PersistedApplicationListItem
@@ -120,7 +122,40 @@ const listItemToApplication = (
   };
 };
 
-export const getApplications = async (): Promise<Array<Application>> => {
+const addProfilesToApplications = async (
+  applications: Application[]
+): Promise<Array<ApplicationInfo>> => {
+  const profileIds = applications.map((application) => application.profileId);
+  const profiles = await getProfilesByIds(profileIds);
+
+  return applications.map((application) => {
+    const profile = profiles.find(
+      (profile) => profile.profileId === application.profileId
+    );
+    if (!profile) {
+      logWarn(
+        "Profile not found for application: " + application.applicationId
+      );
+    }
+
+    return {
+      ...application,
+      profile,
+    };
+  });
+};
+
+const addProfileToApplication = async (
+  application: Application
+): Promise<ApplicationInfo> => {
+  const profile = await getProfileById(application.profileId);
+  return {
+    ...application,
+    profile,
+  };
+};
+
+export const getApplications = async (): Promise<Array<ApplicationInfo>> => {
   logTrace("In applications: getApplications");
 
   const applicationGraphListItems = await getApplicationGraphListItems();
@@ -129,9 +164,11 @@ export const getApplications = async (): Promise<Array<Application>> => {
   );
   console.log(JSON.stringify(applicationChangesToListItem));
 
-  return applicationGraphListItems.map((item) =>
+  const applications = applicationGraphListItems.map((item) =>
     listItemToApplication(item.fields)
   );
+
+  return addProfilesToApplications(applications);
 };
 
 export const getApplication = async (
@@ -143,7 +180,8 @@ export const getApplication = async (
     applicationId
   );
   if (applicationGraphListItem) {
-    return listItemToApplication(applicationGraphListItem.fields);
+    const application = listItemToApplication(applicationGraphListItem.fields);
+    return addProfileToApplication(application);
   }
 
   return null;

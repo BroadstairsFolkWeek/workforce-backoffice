@@ -4,7 +4,7 @@ import {
   HttpResponseInit,
 } from "@azure/functions";
 import { runAsAuthenticatedUser } from "../common-handlers/authenticated-user-http-response-handler";
-import { getProfiles } from "../model/graph/profiles-graph";
+import { getProfiles } from "../model/profiles-repository";
 
 const profilesHttpTrigger = async function (
   req: HttpRequest,

@@ -1,5 +1,5 @@
 import {
-  Application,
+  ApplicationInfo,
   SaveApplicationChangesRequest,
   SaveApplicationChangesRequestRunType,
 } from "../interfaces/applications-api";
@@ -86,6 +86,6 @@ export const sanitiseSaveApplicationRequest = (
   return sanitisedUpdateApplicationRequestDto;
 };
 
-export const sanitiseApplication = (maybeApplication: any) => {
-  return Application.decode(maybeApplication);
+export const sanitiseApplication = (maybeApplicationInfo: any) => {
+  return ApplicationInfo.decode(maybeApplicationInfo);
 };

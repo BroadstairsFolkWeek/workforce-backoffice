@@ -53,7 +53,7 @@ const getApplicationGraphListItemsByFilters = async (
   filters: string[]
 ): Promise<Array<PersistedGraphListItem<PersistedApplicationListItem>>> => {
   logTrace(
-    "In applications-repository-graph: getApplicationListItemsByFilters"
+    "In applications-repository-graph: getApplicationGraphListItemsByFilters"
   );
 
   const graphClient = getOboGraphClient();
@@ -84,7 +84,7 @@ const getApplicationGraphListItemsByFilters = async (
 export const getApplicationGraphListItems = async (): Promise<
   Array<PersistedGraphListItem<PersistedApplicationListItem>>
 > => {
-  logTrace("In applications-repository-graph: getApplicationListItems");
+  logTrace("In applications-repository-graph: getApplicationGraphListItems");
   return getApplicationGraphListItemsByFilters([]);
 };
 

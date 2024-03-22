@@ -1,6 +1,6 @@
 import { getApplications as modelGetApplications } from "../model/applications-repository";
-import { Application } from "../model/interfaces/application";
+import { ApplicationInfo } from "../model/interfaces/application";
 
-export const getApplications = async (): Promise<Application[]> => {
+export const getApplications = async (): Promise<ApplicationInfo[]> => {
   return modelGetApplications();
 };

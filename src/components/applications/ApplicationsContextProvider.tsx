@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { applicationsContextUninitialisedSymbol } from "./symbols";
-import { PersistedProfile } from "../../../api/model/interfaces/profile";
 import { useApiAccess } from "../../services/ApiContext";
 import {
   Application,
@@ -10,7 +9,6 @@ import {
 export type IApplicationsContext = {
   loaded: boolean;
   applications: Application[];
-  profiles: PersistedProfile[];
   getPhoto: (photoId: string) => Promise<string>;
 };
 
@@ -26,7 +24,6 @@ const ApplicationsContextProvider = ({
   const { callApiGet } = useApiAccess();
   const [loaded, setLoaded] = useState(false);
   const [applications, setApplications] = useState<ApplicationData[]>([]);
-  const [profiles, setProfiles] = useState<PersistedProfile[]>([]);
 
   const getPhoto = useCallback(
     async (photoId: string) => {
@@ -50,11 +47,8 @@ const ApplicationsContextProvider = ({
   useEffect(() => {
     const applicationsPromise =
       callApiGet("applications").then(setApplications);
-    const profilesPromise = callApiGet("profiles").then(setProfiles);
 
-    Promise.all([applicationsPromise, profilesPromise]).then(() =>
-      setLoaded(true)
-    );
+    Promise.all([applicationsPromise]).then(() => setLoaded(true));
   }, [callApiGet]);
 
   return (
@@ -62,7 +56,6 @@ const ApplicationsContextProvider = ({
       value={{
         loaded,
         applications,
-        profiles,
         getPhoto,
       }}
     >

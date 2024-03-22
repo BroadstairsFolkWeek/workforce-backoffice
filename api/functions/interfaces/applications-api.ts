@@ -4,7 +4,7 @@ import {
   ApplicationChangesRunType,
   ApplicationRunType,
 } from "../../model/interfaces/application";
-import { IntFromString } from "io-ts-types";
+import { Profile } from "./profiles-api";
 
 export const SaveApplicationChangesRequestRunType = Record({
   changedVersion: Number,
@@ -94,15 +94,21 @@ const applicationRequiredFields = {
 };
 
 const applicationMetadata = {
+  applicationId: t.string,
   status: ApplicationStatus,
   version: t.number,
 };
 
 // Application type that is a combination of the optional and required fields.
-export const Application = t.intersection([
+const Application = t.intersection([
   t.partial(applicationPartialFields),
   t.type(applicationRequiredFields),
   t.type(applicationMetadata),
+]);
+
+export const ApplicationInfo = t.intersection([
+  Application,
+  t.partial({ profile: Profile }),
 ]);
 
 // Type of a collection of updates which can be applied to an application.
@@ -111,5 +117,5 @@ export const ApplicationUpdates = t.intersection([
   t.partial(applicationRequiredFields),
 ]);
 
-export type Application = t.TypeOf<typeof Application>;
+export type ApplicationInfo = t.TypeOf<typeof ApplicationInfo>;
 export type ApplicationUpdates = t.TypeOf<typeof ApplicationUpdates>;
