@@ -74,6 +74,23 @@ const useStyles = makeStyles({
       ...shorthands.padding("4px"),
     },
   },
+
+  idsSection: {
+    display: "grid",
+  },
+  idsDetailsGrid: {
+    display: "grid",
+    gridTemplateColumns: "150px 1fr",
+    "& > :nth-child(4n+1), & > :nth-child(4n+2)": {
+      backgroundColor: tokens.colorNeutralBackground3,
+    },
+    "& > :nth-child(4n+3), & > :nth-child(4n+4)": {
+      backgroundColor: tokens.colorNeutralBackground2,
+    },
+    "& > *": {
+      ...shorthands.padding("4px"),
+    },
+  },
 });
 
 const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
@@ -207,6 +224,18 @@ const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
 
           <Text>Consent NewLife Wills</Text>
           <Text>{application.consentNewlifeWills ? "Yes" : "No"}</Text>
+        </div>
+      </div>
+      <div className={classes.idsSection}>
+        <div className={classes.idsDetailsGrid}>
+          <Text size={100}>Application ID</Text>
+          <Text size={100}>{application.applicationId}</Text>
+
+          <Text size={100}>Profile ID</Text>
+          <Text size={100}>{application.profileId}</Text>
+
+          <Text size={100}>Photo ID</Text>
+          <Text size={100}>{application.photoId}</Text>
         </div>
       </div>
     </div>
