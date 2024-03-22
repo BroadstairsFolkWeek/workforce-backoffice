@@ -1,4 +1,4 @@
-import { Divider, makeStyles } from "@fluentui/react-components";
+import { CounterBadge, Divider, makeStyles } from "@fluentui/react-components";
 import { FC } from "react";
 import FilterInput from "../FilterInput";
 import SelectApplicationStatuses from "./SelectApplicationStatuses";
@@ -7,6 +7,7 @@ import { ApplicationStatus } from "../../interfaces/application-data";
 type ApplicationsHeaderViewProps = {
   filterString: string;
   filterSelectedStatuses: Set<ApplicationStatus>;
+  counterValue: number;
   setFilterString: (s: string) => void;
   setFilterSelectedStatuses: (statuses: Set<ApplicationStatus>) => void;
 };
@@ -25,6 +26,7 @@ const useStyles = makeStyles({
 const ApplicationsHeaderView: FC<ApplicationsHeaderViewProps> = ({
   filterString,
   filterSelectedStatuses,
+  counterValue,
   setFilterString,
   setFilterSelectedStatuses,
 }) => {
@@ -36,6 +38,7 @@ const ApplicationsHeaderView: FC<ApplicationsHeaderViewProps> = ({
         filterString={filterString}
         setFilterString={setFilterString}
       />
+      <CounterBadge count={counterValue} />
       <Divider className={classes.divider} vertical />
       <SelectApplicationStatuses
         selectedStatuses={filterSelectedStatuses}

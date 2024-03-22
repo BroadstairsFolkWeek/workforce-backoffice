@@ -65,6 +65,7 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
       <ApplicationsHeaderView
         filterString={filterString}
         filterSelectedStatuses={filterSelectedStatuses}
+        counterValue={applications.length}
         setFilterString={setFilterString}
         setFilterSelectedStatuses={setFilterSelectedStatuses}
       />
