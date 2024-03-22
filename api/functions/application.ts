@@ -13,7 +13,7 @@ import {
   saveApplicationChanges,
 } from "../model/applications-repository";
 import { logTrace } from "../utilities/logging";
-import { SaveApplicationChangesRequest } from "../functions/interfaces/applications-api";
+import { SaveApplicationChangesRequest } from "./interfaces/applications-api";
 
 const handleGetApplication = async function (
   applicationId: string
@@ -84,7 +84,7 @@ const handlePatchApplication = async function (
   return await patchApplicationResponseTask();
 };
 
-export const httpTrigger = async function (
+export const applicationHttpTrigger = async function (
   req: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
@@ -117,4 +117,4 @@ export const httpTrigger = async function (
   });
 };
 
-export default httpTrigger;
+export default applicationHttpTrigger;

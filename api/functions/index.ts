@@ -4,6 +4,7 @@ import applicationsHttpTrigger from "./applications";
 import profilesHttpTrigger from "./profiles";
 import profilePhotoHttpTrigger from "./profile-photos";
 import draftMailHttpTrigger from "./mail";
+import applicationHttpTrigger from "./application";
 
 const teamsFxContextInput = input.generic({
   type: "TeamsFx",
@@ -14,9 +15,15 @@ console.error("Preping API");
 
 app.http("applications", {
   methods: ["GET"],
-  route: "applications/",
   extraInputs: [teamsFxContextInput],
   handler: applicationsHttpTrigger,
+});
+
+app.http("application", {
+  methods: ["GET", "PATCH"],
+  route: "applications/{applicationId}",
+  extraInputs: [teamsFxContextInput],
+  handler: applicationHttpTrigger,
 });
 
 app.http("profiles", {
