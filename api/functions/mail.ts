@@ -40,7 +40,7 @@ const handlePostDraftMail = async function (
   }
 };
 
-export const httpTrigger = async function (
+export const draftMailHttpTrigger = async function (
   req: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
@@ -75,4 +75,4 @@ export const httpTrigger = async function (
   );
 };
 
-export default httpTrigger;
+export default draftMailHttpTrigger;
