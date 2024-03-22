@@ -39,7 +39,6 @@ export const profilePhotoHttpTrigger = async function (
   context: InvocationContext
 ): Promise<HttpResponseInit> {
   return await runAsAuthenticatedUser(context, req, async () => {
-    logError("In 4444");
     if (
       req.method !== "GET" &&
       req.method !== "POST" &&
