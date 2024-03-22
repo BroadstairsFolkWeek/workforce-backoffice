@@ -4,9 +4,8 @@ import {
   HttpResponseInit,
 } from "@azure/functions";
 import { runAsAuthenticatedUser } from "../common-handlers/authenticated-user-http-response-handler";
-import { TeamsfxContext } from "../interfaces/teams-context";
 import { getProfilePicture } from "../services/profile-service";
-import { logTrace } from "../utilities/logging";
+import { logError, logTrace } from "../utilities/logging";
 
 const handleGetProfilePhoto = async function (
   combinedId: string
@@ -35,17 +34,18 @@ const handleGetProfilePhoto = async function (
   }
 };
 
-export const httpTrigger = async function (
+export const profilePhotoHttpTrigger = async function (
   req: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
   return await runAsAuthenticatedUser(context, req, async () => {
+    logError("In 4444");
     if (
       req.method !== "GET" &&
       req.method !== "POST" &&
       req.method !== "DELETE"
     ) {
-      logTrace(`profilePhoto: Invalid HTTP method: ${req.method}`);
+      logTrace(`profilePhoto  : Invalid HTTP method: ${req.method}`);
       return {
         status: 405,
         headers: {
@@ -55,7 +55,10 @@ export const httpTrigger = async function (
     }
 
     if (req.method === "GET") {
-      const id = req.query["id"];
+      logTrace("Query args: " + JSON.stringify(req.query, null, 2));
+
+      const id = req.query.get("id");
+
       return handleGetProfilePhoto(id);
     } else {
       // Temporary 405 until methods are implemented.
@@ -69,4 +72,4 @@ export const httpTrigger = async function (
   });
 };
 
-export default httpTrigger;
+export default profilePhotoHttpTrigger;
