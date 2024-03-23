@@ -8,113 +8,239 @@ import {
   InvocationContext,
 } from "@azure/functions";
 import { runAsAuthenticatedUser } from "../common-handlers/authenticated-user-http-response-handler";
+import { logError, logInfo } from "../utilities/logging";
 import {
-  getApplicationTE,
-  saveApplicationChanges,
-} from "../model/applications-repository";
-import { logTrace } from "../utilities/logging";
-import { SaveApplicationChangesRequest } from "./interfaces/applications-api";
+  getApplication,
+  setApplicationStatus,
+  updateApplication,
+} from "../applications/application-service";
+import {
+  sanitiseApplicationStatusUpdateRequest,
+  sanitiseApplicationStatusUpdateResponse,
+  sanitiseApplicationUpdateRequest,
+  sanitiseGetApplicationResponse,
+} from "./utilities/sanitise-applications-api";
+import {
+  getJsonBody,
+  getRequestParam,
+  isMissingParamError,
+} from "./utilities/http-functions";
+import {
+  isApiInputValidationError,
+  isApiOutputValidationError,
+} from "./utilities/sanitise";
 
-const handleGetApplication = async function (
-  applicationId: string
-): Promise<HttpResponseInit> {
-  const getApplicationResponseTask = pipe(
-    applicationId,
-    getApplicationTE,
-    TE.fold(
-      (err) => {
-        if (err === "not-found") {
-          return T.of({
-            status: 404,
-          });
-        } else {
-          logTrace("Error: " + err);
-          return T.of({
-            status: 500,
-          });
-        }
-      },
-      (application) => {
-        return T.of({
-          status: 200,
-          body: JSON.stringify(application),
-        });
-      }
-    )
-  );
-
-  return await getApplicationResponseTask();
-};
-
-const handlePatchApplication = async function (
-  applicationId: string,
-  changeRequest: SaveApplicationChangesRequest
-): Promise<HttpResponseInit> {
-  const applyToVersion = changeRequest.changedVersion;
-  const changes = changeRequest.changes;
-
-  const patchApplicationResponseTask = pipe(
-    saveApplicationChanges(applicationId, changes, applyToVersion),
-    TE.fold(
-      (err) => {
-        if (err === "not-found") {
-          return T.of({
-            status: 404,
-          });
-        } else if (err === "conflict") {
-          return T.of({
-            status: 409,
-          });
-        } else {
-          logTrace("Error: " + err);
-          return T.of({
-            status: 500,
-          });
-        }
-      },
-      (application) => {
-        return T.of({
-          status: 200,
-          body: JSON.stringify(application),
-        });
-      }
-    )
-  );
-
-  return await patchApplicationResponseTask();
-};
-
-export const applicationHttpTrigger = async function (
+export const httpGetApplication = async function (
   req: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
   return await runAsAuthenticatedUser(context, req, async () => {
-    if (req.method !== "GET" && req.method !== "PATCH") {
-      logTrace(`application: Invalid HTTP method: ${req.method}`);
-      return {
-        status: 405,
-        headers: {
-          Allow: "GET, PATCH",
+    const loggingPrefix = "GET Application: ";
+
+    const task = pipe(
+      getRequestParam("applicationId")(req),
+      TE.fromEither,
+      TE.chainW(getApplication),
+      TE.map((application) => ({
+        application,
+      })),
+      TE.chainEitherKW(sanitiseGetApplicationResponse),
+      TE.fold(
+        (validationErr) => {
+          if (isMissingParamError(validationErr)) {
+            logInfo(
+              `${loggingPrefix} missing parameter: ${JSON.stringify(
+                validationErr.paramName
+              )}`
+            );
+            return T.of({
+              status: 400,
+              body: "Missing parameter: " + validationErr.paramName,
+            });
+          } else if (validationErr === "not-found") {
+            return T.of({ status: 404, body: "Application not found" });
+          } else if (isApiOutputValidationError(validationErr)) {
+            logError(
+              `${loggingPrefix} Error sanitising GetApplication response: ${JSON.stringify(
+                validationErr.errors
+              )}`
+            );
+            return T.of({ status: 500 });
+          } else {
+            logError(
+              `${loggingPrefix} Error: ${JSON.stringify(validationErr)}`
+            );
+            return T.of({ status: 500 });
+          }
         },
-      };
-    }
+        (response) =>
+          T.of({
+            status: 200,
+            jsonBody: response,
+          })
+      )
+    );
 
-    const applicationId: string = req.params.applicationId;
-    if (!applicationId) {
-      return {
-        status: 400,
-        body: "Missing applicationId path parameter",
-      };
-    }
-
-    if (req.method === "GET") {
-      return await handleGetApplication(applicationId);
-    } else {
-      const changeRequest: SaveApplicationChangesRequest =
-        (await req.json()) as SaveApplicationChangesRequest;
-      return await handlePatchApplication(applicationId, changeRequest);
-    }
+    return await task();
   });
 };
 
-export default applicationHttpTrigger;
+export const httpPatchApplication = async function (
+  req: HttpRequest,
+  context: InvocationContext
+): Promise<HttpResponseInit> {
+  return await runAsAuthenticatedUser(context, req, async () => {
+    const loggingPrefix = "PATCH Application: ";
+
+    const task = pipe(
+      getRequestParam("applicationId")(req),
+      TE.fromEither,
+      TE.bindTo("applicationId"),
+      TE.bindW("jsonBody", () => TE.fromTask(getJsonBody(req))),
+      TE.bindW("applicationUpdateRequest", ({ jsonBody }) =>
+        TE.fromEither(sanitiseApplicationUpdateRequest(jsonBody))
+      ),
+      TE.map(({ applicationId, applicationUpdateRequest }) => ({
+        applicationId,
+        version: applicationUpdateRequest.version,
+        changes: applicationUpdateRequest.changes,
+      })),
+      TE.chainW(({ applicationId, version, changes }) =>
+        updateApplication(applicationId)(version)(changes)
+      ),
+      TE.map((application) => ({
+        application,
+      })),
+      TE.chainEitherKW(sanitiseApplicationStatusUpdateResponse),
+      TE.fold(
+        (validationErr) => {
+          if (isApiInputValidationError(validationErr)) {
+            logInfo(
+              `${loggingPrefix} Cannot parse ApplicationUpdate request: ${JSON.stringify(
+                validationErr.errors
+              )}`
+            );
+            return T.of({
+              status: 400,
+              body:
+                "Invalid request body: " + JSON.stringify(validationErr.errors),
+            });
+          } else if (isMissingParamError(validationErr)) {
+            logInfo(
+              `${loggingPrefix} missing parameter: ${JSON.stringify(
+                validationErr.paramName
+              )}`
+            );
+            return T.of({
+              status: 400,
+              body: "Missing parameter: " + validationErr.paramName,
+            });
+          } else if (validationErr === "not-found") {
+            return T.of({ status: 404, body: "Application not found" });
+          } else if (validationErr === "conflict") {
+            return T.of({ status: 409, body: "Version number conflict" });
+          } else if (isApiOutputValidationError(validationErr)) {
+            logError(
+              `${loggingPrefix} Error sanitising ApplicationUpdate response: ${JSON.stringify(
+                validationErr.errors
+              )}`
+            );
+            return T.of({ status: 500 });
+          } else {
+            logError(
+              `${loggingPrefix} Error: ${JSON.stringify(validationErr)}`
+            );
+            return T.of({ status: 500 });
+          }
+        },
+        (response) =>
+          T.of({
+            status: 200,
+            jsonBody: response,
+          })
+      )
+    );
+
+    return await task();
+  });
+};
+
+export const httpPostApplicationStatus = async function (
+  req: HttpRequest,
+  context: InvocationContext
+): Promise<HttpResponseInit> {
+  return await runAsAuthenticatedUser(context, req, async () => {
+    const loggingPrefix = "POST ApplicationStatus: ";
+
+    const task = pipe(
+      getRequestParam("applicationId")(req),
+      TE.fromEither,
+      TE.bindTo("applicationId"),
+      TE.bindW("jsonBody", () => TE.fromTask(getJsonBody(req))),
+      TE.bindW("statusUpdateRequest", ({ jsonBody }) =>
+        TE.fromEither(sanitiseApplicationStatusUpdateRequest(jsonBody))
+      ),
+      TE.map(({ applicationId, statusUpdateRequest }) => ({
+        applicationId,
+        version: statusUpdateRequest.version,
+        status: statusUpdateRequest.status,
+      })),
+      TE.chainW(({ applicationId, version, status }) =>
+        setApplicationStatus(applicationId)(version)(status)
+      ),
+      TE.map((application) => ({
+        application,
+      })),
+      TE.chainEitherKW(sanitiseApplicationStatusUpdateResponse),
+      TE.fold(
+        (validationErr) => {
+          if (isApiInputValidationError(validationErr)) {
+            logInfo(
+              `${loggingPrefix} Cannot parse StatusUpdate request: ${JSON.stringify(
+                validationErr.errors
+              )}`
+            );
+            return T.of({
+              status: 400,
+              body:
+                "Invalid request body: " + JSON.stringify(validationErr.errors),
+            });
+          } else if (isMissingParamError(validationErr)) {
+            logInfo(
+              `${loggingPrefix} missing parameter: ${JSON.stringify(
+                validationErr.paramName
+              )}`
+            );
+            return T.of({
+              status: 400,
+              body: "Missing parameter: " + validationErr.paramName,
+            });
+          } else if (validationErr === "not-found") {
+            return T.of({ status: 404, body: "Application not found" });
+          } else if (validationErr === "conflict") {
+            return T.of({ status: 409, body: "Version number conflict" });
+          } else if (isApiOutputValidationError(validationErr)) {
+            logError(
+              `${loggingPrefix} Error sanitising StatusUpdate response: ${JSON.stringify(
+                validationErr.errors
+              )}`
+            );
+            return T.of({ status: 500 });
+          } else {
+            logError(
+              `${loggingPrefix} Error: ${JSON.stringify(validationErr)}`
+            );
+            return T.of({ status: 500 });
+          }
+        },
+        (response) =>
+          T.of({
+            status: 200,
+            jsonBody: response,
+          })
+      )
+    );
+
+    return await task();
+  });
+};

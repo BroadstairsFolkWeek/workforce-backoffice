@@ -5,6 +5,7 @@ import {
   Application,
   ApplicationData,
 } from "../../interfaces/application-data";
+import { apiGetApplications } from "../../services/api";
 
 export type IApplicationsContext = {
   loaded: boolean;
@@ -45,8 +46,9 @@ const ApplicationsContextProvider = ({
   );
 
   useEffect(() => {
-    const applicationsPromise =
-      callApiGet("applications").then(setApplications);
+    const applicationsPromise = apiGetApplications().then((result) =>
+      setApplications(result.applications)
+    );
 
     Promise.all([applicationsPromise]).then(() => setLoaded(true));
   }, [callApiGet]);

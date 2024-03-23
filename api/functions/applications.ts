@@ -1,45 +1,52 @@
-import * as A from "fp-ts/lib/Array";
-import * as E from "fp-ts/lib/Either";
+import * as T from "fp-ts/lib/Task";
+import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 import {
   HttpRequest,
   HttpResponseInit,
   InvocationContext,
 } from "@azure/functions";
-import { getApplications } from "../services/application-service";
+import { getApplicationsTE } from "../applications/application-service";
 import { runAsAuthenticatedUser } from "../common-handlers/authenticated-user-http-response-handler";
-import { sanitiseApplication } from "./utilities/applications-api-sanitise";
 import { logError } from "../utilities/logging";
+import { sanitiseGetApplicationsResponse } from "./utilities/sanitise-applications-api";
+import { isApiOutputValidationError } from "./utilities/sanitise";
 
-export const applicationsHttpTrigger = async function (
+export const httpGetApplications = async function (
   req: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
   return await runAsAuthenticatedUser(context, req, async () => {
-    const applications = await getApplications();
-
-    return pipe(
-      applications,
-      A.map(sanitiseApplication),
-      E.sequenceArray,
-      E.fold(
+    const task = pipe(
+      getApplicationsTE(),
+      TE.map((applications) => ({ applications })),
+      TE.chainEitherKW(sanitiseGetApplicationsResponse),
+      TE.fold(
         (validationErr) => {
-          logError(
-            "Error sanitising applications response: " +
-              JSON.stringify(validationErr)
-          );
-          return {
+          if (isApiOutputValidationError(validationErr)) {
+            logError(
+              "Error sanitising GetApplications response: " +
+                JSON.stringify(validationErr.errors)
+            );
+          } else {
+            logError(
+              "Error in GetApplications: " + JSON.stringify(validationErr)
+            );
+          }
+          return T.of({
             status: 500,
-          } as HttpResponseInit;
+          });
         },
-        (applications) =>
-          ({
+        (response) =>
+          T.of({
             status: 200,
-            jsonBody: applications,
-          } as HttpResponseInit)
+            jsonBody: response,
+          })
       )
     );
+
+    return await task();
   });
 };
 
-export default applicationsHttpTrigger;
+export default httpGetApplications;

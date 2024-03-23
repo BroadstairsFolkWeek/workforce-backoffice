@@ -1,29 +1,42 @@
 import { app, input } from "@azure/functions";
 
-import applicationsHttpTrigger from "./applications";
+import httpGetApplications from "./applications";
 import profilesHttpTrigger from "./profiles";
 import profilePhotoHttpTrigger from "./profile-photos";
 import draftMailHttpTrigger from "./mail";
-import applicationHttpTrigger from "./application";
+import {
+  httpGetApplication,
+  httpPatchApplication,
+  httpPostApplicationStatus,
+} from "./application";
 
 const teamsFxContextInput = input.generic({
   type: "TeamsFx",
   name: "teamsfxContext",
 });
 
-console.error("Preping API");
-
-app.http("applications", {
-  methods: ["GET"],
+app.get("applications-get", {
+  route: "applications",
   extraInputs: [teamsFxContextInput],
-  handler: applicationsHttpTrigger,
+  handler: httpGetApplications,
 });
 
-app.http("application", {
-  methods: ["GET", "PATCH"],
+app.get("application-get", {
   route: "applications/{applicationId}",
   extraInputs: [teamsFxContextInput],
-  handler: applicationHttpTrigger,
+  handler: httpGetApplication,
+});
+
+app.patch("application-patch", {
+  route: "applications/{applicationId}",
+  extraInputs: [teamsFxContextInput],
+  handler: httpPatchApplication,
+});
+
+app.post("application-status-post", {
+  route: "applications/{applicationId}/status",
+  extraInputs: [teamsFxContextInput],
+  handler: httpPostApplicationStatus,
 });
 
 app.http("profiles", {
@@ -43,6 +56,3 @@ app.http("draftMail", {
   extraInputs: [teamsFxContextInput],
   handler: draftMailHttpTrigger,
 });
-
-console.error("API is running...");
-console.error(JSON.stringify(app, null, 2));

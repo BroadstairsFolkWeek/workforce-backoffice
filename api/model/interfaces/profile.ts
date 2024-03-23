@@ -1,6 +1,6 @@
 import { String, Record, Static } from "runtypes";
 
-export const CoreProfileRunType = Record({
+export const ModelCoreProfileRunType = Record({
   displayName: String,
   email: String,
   givenName: String,
@@ -9,17 +9,17 @@ export const CoreProfileRunType = Record({
   telephone: String,
 });
 
-export const ProfileMetadataRunType = Record({
+export const ModelProfileMetadataRunType = Record({
   profileId: String,
 });
 
-export const ProfileRunType = ProfileMetadataRunType.extend(
-  CoreProfileRunType.fields
+export const ModelProfileRunType = ModelProfileMetadataRunType.extend(
+  ModelCoreProfileRunType.fields
 );
 
-export type Profile = Static<typeof ProfileRunType>;
+export type ModelProfile = Static<typeof ModelProfileRunType>;
 
-export type AddableProfile = {
+export type ModelAddableProfile = {
   profileId: string;
   displayName: string;
   email: string;
@@ -29,9 +29,9 @@ export type AddableProfile = {
   telephone: string;
 };
 
-export type UpdatableProfile = Partial<AddableProfile>;
+export type ModelUpdatableProfile = Partial<ModelAddableProfile>;
 
-export type PersistedProfile = AddableProfile & {
+export type ModelPersistedProfile = ModelAddableProfile & {
   dbId: number;
   lastSaved: string;
 };

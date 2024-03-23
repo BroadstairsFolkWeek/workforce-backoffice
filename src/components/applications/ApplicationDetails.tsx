@@ -1,6 +1,13 @@
-import { FC } from "react";
+import { FC, useMemo, useState } from "react";
 import {
   Button,
+  Menu,
+  MenuButtonProps,
+  MenuItem,
+  MenuList,
+  MenuPopover,
+  MenuTrigger,
+  SplitButton,
   Text,
   makeStyles,
   shorthands,
@@ -9,11 +16,13 @@ import { tokens } from "@fluentui/react-theme";
 import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
 import ProfilePhoto from "./ProfilePhoto";
 import { ApplicationData } from "../../interfaces/application-data";
+import { ApplicationStatus } from "../../../api/interfaces/applications";
 
 type ApplicationsDetailsProps = {
   application: ApplicationData;
   emailSelected: (email: string) => void;
   testSelected: () => void;
+  setStatus: (status: ApplicationStatus) => Promise<void>;
 };
 
 const useStyles = makeStyles({
@@ -21,6 +30,12 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     rowGap: "8px",
+  },
+
+  actionsSection: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 
   personalDetailsSection: {
@@ -93,15 +108,64 @@ const useStyles = makeStyles({
   },
 });
 
+const selectableStatusValues: ApplicationStatus[] = [
+  "info-required",
+  "documents-required",
+  "photo-required",
+  "ready-to-submit",
+  "submitted",
+  "complete",
+];
+
 const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
   application,
   emailSelected,
-  testSelected,
+  setStatus,
 }) => {
   const classes = useStyles();
 
+  const [statusButtonSelected, setStatusButtonSelected] = useState(
+    application.status
+  );
+
+  const setStatusButtonPrimaryActionProps = useMemo(
+    () => ({
+      onClick: () => setStatus(statusButtonSelected),
+    }),
+    [statusButtonSelected, setStatus]
+  );
+
+  const menuItemElements = useMemo(() => {
+    return selectableStatusValues.map((status) => (
+      <MenuItem key={status} onClick={() => setStatusButtonSelected(status)}>
+        {status}
+      </MenuItem>
+    ));
+  }, []);
+
   return (
     <div className={classes.root}>
+      <div className={classes.actionsSection}>
+        <Button>Set status</Button>
+        <Menu>
+          <MenuTrigger disableButtonEnhancement>
+            {(triggerProps: MenuButtonProps) => (
+              <SplitButton
+                menuButton={triggerProps}
+                primaryActionButton={setStatusButtonPrimaryActionProps}
+              >
+                {application.status === statusButtonSelected
+                  ? statusButtonSelected
+                  : `Set status to ${statusButtonSelected}`}
+              </SplitButton>
+            )}
+          </MenuTrigger>
+
+          <MenuPopover>
+            <MenuList>{menuItemElements}</MenuList>
+          </MenuPopover>
+        </Menu>
+      </div>
       <div className={classes.personalDetailsSection}>
         <div className={classes.photoCell}>
           <div className={classes.img}>

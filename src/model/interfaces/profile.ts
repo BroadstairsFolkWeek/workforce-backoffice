@@ -1,1 +1,1 @@
-export type { PersistedProfile } from "../../../api/model/interfaces/profile";
+export type { ModelPersistedProfile as PersistedProfile } from "../../../api/model/interfaces/profile";

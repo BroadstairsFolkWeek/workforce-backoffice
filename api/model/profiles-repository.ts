@@ -1,5 +1,5 @@
 import { logTrace } from "../utilities/logging";
-import { Profile } from "./interfaces/profile";
+import { ModelProfile } from "./interfaces/profile";
 import {
   getProfileGraphListItems,
   getProfileGraphListItemsByProfileId,
@@ -7,7 +7,7 @@ import {
 } from "./graph/profiles-repository-graph";
 import { PersistedProfileListItem } from "./interfaces/sp/profile-sp";
 
-const listItemToProfile = (item: PersistedProfileListItem): Profile => {
+const listItemToProfile = (item: PersistedProfileListItem): ModelProfile => {
   return {
     profileId: item.ProfileId,
     email: item.Email,
@@ -19,16 +19,16 @@ const listItemToProfile = (item: PersistedProfileListItem): Profile => {
   };
 };
 
-export const getProfiles = async (): Promise<Array<Profile>> => {
+export const modelGetProfiles = async (): Promise<Array<ModelProfile>> => {
   logTrace("In profiles-repository: getProfiles");
 
   const profileGraphListItems = await getProfileGraphListItems();
   return profileGraphListItems.map((item) => listItemToProfile(item.fields));
 };
 
-export const getProfilesByIds = async (
+export const modelGetProfilesByIds = async (
   profileIds: string[]
-): Promise<Array<Profile>> => {
+): Promise<Array<ModelProfile>> => {
   logTrace("In profiles-repository: getProfilesByIds");
 
   const profileGraphListItems = await getProfileGraphListItemsByProfileIds(
@@ -37,7 +37,9 @@ export const getProfilesByIds = async (
   return profileGraphListItems.map((item) => listItemToProfile(item.fields));
 };
 
-export const getProfileById = async (profileId: string): Promise<Profile> => {
+export const modelGetProfileById = async (
+  profileId: string
+): Promise<ModelProfile> => {
   logTrace("In profiles-repository: getProfilesById");
 
   const profileGraphListItem = await getProfileGraphListItemsByProfileId(

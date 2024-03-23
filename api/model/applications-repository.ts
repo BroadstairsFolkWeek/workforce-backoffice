@@ -1,11 +1,12 @@
+import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 
 import { logTrace, logWarn } from "../utilities/logging";
 import {
-  Application,
-  ApplicationChanges,
-  ApplicationInfo,
+  ModelApplication,
+  ModelApplicationChanges,
+  ModelApplicationInfo,
   PersistedApplication,
 } from "./interfaces/application";
 import {
@@ -17,7 +18,10 @@ import {
   getApplicationGraphListItems,
   saveApplicationGraphListItemChanges,
 } from "./graph/applications-repository-graph";
-import { getProfileById, getProfilesByIds } from "./profiles-repository";
+import {
+  modelGetProfileById,
+  modelGetProfilesByIds,
+} from "./profiles-repository";
 
 const listItemToTShirtSize = (
   item: PersistedApplicationListItem
@@ -79,7 +83,7 @@ const listItemToStatus = (
 
 const listItemToApplication = (
   item: PersistedApplicationListItem
-): Application => {
+): ModelApplication => {
   return {
     applicationId: item.ApplicationId,
     telephone: item.Telephone ?? undefined,
@@ -123,10 +127,10 @@ const listItemToApplication = (
 };
 
 const addProfilesToApplications = async (
-  applications: Application[]
-): Promise<Array<ApplicationInfo>> => {
+  applications: ModelApplication[]
+): Promise<Array<ModelApplicationInfo>> => {
   const profileIds = applications.map((application) => application.profileId);
-  const profiles = await getProfilesByIds(profileIds);
+  const profiles = await modelGetProfilesByIds(profileIds);
 
   return applications.map((application) => {
     const profile = profiles.find(
@@ -146,16 +150,23 @@ const addProfilesToApplications = async (
 };
 
 const addProfileToApplication = async (
-  application: Application
-): Promise<ApplicationInfo> => {
-  const profile = await getProfileById(application.profileId);
+  application: ModelApplication
+): Promise<ModelApplicationInfo> => {
+  const profile = await modelGetProfileById(application.profileId);
   return {
     ...application,
     profile,
   };
 };
 
-export const getApplications = async (): Promise<Array<ApplicationInfo>> => {
+const addProfileToApplicationTE = TE.tryCatchK(
+  addProfileToApplication,
+  E.toError
+);
+
+export const modelGetApplications = async (): Promise<
+  Array<ModelApplicationInfo>
+> => {
   logTrace("In applications: getApplications");
 
   const applicationGraphListItems = await getApplicationGraphListItems();
@@ -171,9 +182,14 @@ export const getApplications = async (): Promise<Array<ApplicationInfo>> => {
   return addProfilesToApplications(applications);
 };
 
-export const getApplication = async (
+export const modelGetApplicationsTE = TE.tryCatchK(
+  modelGetApplications,
+  E.toError
+);
+
+export const modelGetApplication = async (
   applicationId: string
-): Promise<Application | null> => {
+): Promise<ModelApplication | null> => {
   logTrace(`In applications: getApplication(${applicationId})`);
 
   const applicationGraphListItem = await getApplicationGraphListItem(
@@ -187,12 +203,12 @@ export const getApplication = async (
   return null;
 };
 
-export const getApplicationTE = (
+export const modelGetApplicationTE = (
   applicationId: string
-): TE.TaskEither<Error | "not-found", Application> => {
+): TE.TaskEither<Error | "not-found", ModelApplication> => {
   return pipe(
     TE.tryCatch(
-      () => getApplication(applicationId),
+      () => modelGetApplication(applicationId),
       (error) => error as Error
     ),
     TE.chain((application) =>
@@ -202,7 +218,7 @@ export const getApplicationTE = (
 };
 
 const applicationChangesToListItem = (
-  changes: ApplicationChanges
+  changes: ModelApplicationChanges
 ): UpdatableApplicationListItem => {
   return {
     AcceptedTermsAndConditions: changes.acceptedTermsAndConditions,
@@ -244,30 +260,30 @@ const applicationChangesToListItem = (
   };
 };
 
-export const saveApplicationChanges = (
-  applicationId: string,
-  changes: ApplicationChanges,
-  applyToVersion: number
-): TE.TaskEither<
-  Error | "not-found" | "conflict",
-  PersistedApplicationListItem
-> => {
-  return pipe(
-    getApplicationTE(applicationId),
-    TE.chainW((application) =>
-      application.version === applyToVersion
-        ? TE.right(application)
-        : TE.left("conflict" as const)
-    ),
-    TE.bindTo("application"),
-    TE.bind("changedFields", () =>
-      TE.of({
-        ...applicationChangesToListItem(changes),
-        Version: applyToVersion + 1,
-      })
-    ),
-    TE.chainW(({ application, changedFields }) =>
-      saveApplicationGraphListItemChanges(applicationId, changedFields)
-    )
-  );
-};
+export const modelSaveApplicationChanges =
+  (applicationId: string) =>
+  (applyToVersion: number) =>
+  (
+    changes: ModelApplicationChanges
+  ): TE.TaskEither<Error | "not-found" | "conflict", ModelApplicationInfo> => {
+    return pipe(
+      modelGetApplicationTE(applicationId),
+      TE.chainW((application) =>
+        application.version === applyToVersion
+          ? TE.right(application)
+          : TE.left("conflict" as const)
+      ),
+      TE.bindTo("application"),
+      TE.bind("changedFields", () =>
+        TE.of({
+          ...applicationChangesToListItem(changes),
+          Version: applyToVersion + 1,
+        })
+      ),
+      TE.chainW(({ application, changedFields }) =>
+        saveApplicationGraphListItemChanges(applicationId, changedFields)
+      ),
+      TE.map(listItemToApplication),
+      TE.chain(addProfileToApplicationTE)
+    );
+  };

@@ -7,7 +7,10 @@ import {
 } from "../../interfaces/application-data";
 import ApplicationsView from "./ApplicationsView";
 import { draftAndDisplayWorkforceMail } from "../../services/mail";
-import { apiUpdateApplication } from "../../services/api";
+import {
+  apiSetApplicationStatus,
+  apiUpdateApplication,
+} from "../../services/api";
 
 const filterValueByTerm = (
   value: string | undefined,
@@ -86,6 +89,18 @@ const ApplicationsRoute: React.FC = () => {
     [selectedApplication]
   );
 
+  const setStatus = useCallback(
+    async (status: ApplicationStatus) => {
+      if (selectedApplication) {
+        const task = apiSetApplicationStatus(selectedApplication.applicationId)(
+          selectedApplication.version
+        )(status);
+        await task();
+      }
+    },
+    [selectedApplication]
+  );
+
   const testSelected = useCallback(async () => {
     if (selectedApplication) {
       await apiUpdateApplication(
@@ -119,6 +134,7 @@ const ApplicationsRoute: React.FC = () => {
       clearSelectedApplication={clearSelectedApplication}
       emailSelected={emailSelected}
       testSelected={testSelected}
+      setStatus={setStatus}
     />
   );
 };

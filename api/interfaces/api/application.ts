@@ -1,7 +1,7 @@
 import { Static } from "runtypes";
 import {
-  ApplicationChangesRunType as ModelUpdatableApplicationRunType,
-  PersistedApplicationRunType as ModelPersistedApplicationRunType,
+  ModelApplicationChangesRunType as ModelUpdatableApplicationRunType,
+  ModelPersistedApplicationRunType as ModelPersistedApplicationRunType,
 } from "../../model/interfaces/application";
 
 export const UpdateApplicationRequestDtoRunType =

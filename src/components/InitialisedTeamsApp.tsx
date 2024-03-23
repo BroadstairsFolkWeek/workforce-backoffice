@@ -12,6 +12,7 @@ import { setTeamsUserCredential } from "../services/teams-app";
 import config from "./config";
 import { TeamsFxContext } from "./Context";
 import AppRouter from "./AppRouter";
+import { TeamsUserCredential } from "@microsoft/teamsfx";
 
 // Ensures TeamsFX is initialised before rendering the rest of the app. Initialising TeamsFX
 // will also ensure the Teams JS SDK is initialised.
@@ -25,6 +26,12 @@ export default function InitialisedTeamsApp() {
       clientId: config.clientId!,
     });
 
+  // Keep track of when the TeamsUserCredential has been applied to the teams-app service. We do not
+  // start the app until this has been done.
+  const [appliedTeamsUserCredential, setAppliedTeamsUserCredential] = useState<
+    TeamsUserCredential | undefined
+  >(undefined);
+
   useEffect(() => {
     if (loading === false) {
       if (!inTeams) {
@@ -34,6 +41,7 @@ export default function InitialisedTeamsApp() {
       } else {
         if (teamsUserCredential) {
           setTeamsUserCredential(teamsUserCredential);
+          setAppliedTeamsUserCredential(teamsUserCredential);
         } else {
           setErrorMessage(
             "Failed to initialise the application. Please try refreshing the page/app."
@@ -47,7 +55,7 @@ export default function InitialisedTeamsApp() {
     return <div>{errorMessage}</div>;
   }
 
-  if (loading) {
+  if (loading || !appliedTeamsUserCredential) {
     return (
       <>
         <div>Initialising application</div>

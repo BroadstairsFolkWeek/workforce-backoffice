@@ -8,9 +8,9 @@ import {
   Static,
   Optional,
 } from "runtypes";
-import { ProfileRunType } from "./profile";
+import { ModelProfileRunType } from "./profile";
 
-export const TShirtSizeRunType = Union(
+export const ModelTShirtSizeRunType = Union(
   Literal("S"),
   Literal("M"),
   Literal("L"),
@@ -18,7 +18,7 @@ export const TShirtSizeRunType = Union(
   Literal("XXL")
 );
 
-export const AgeGroupRunType = Union(
+export const ModelAgeGroupRunType = Union(
   Literal("18-20"),
   Literal("21-25"),
   Literal("26-35"),
@@ -27,7 +27,7 @@ export const AgeGroupRunType = Union(
   Literal("66+")
 );
 
-export const ApplicationStatusRunType = Union(
+export const ModelApplicationStatusRunType = Union(
   Literal("info-required"),
   Literal("profile-required"),
   Literal("photo-required"),
@@ -37,7 +37,7 @@ export const ApplicationStatusRunType = Union(
   Literal("complete")
 );
 
-export const CoreApplicationRunType = Record({
+export const ModelCoreApplicationRunType = Record({
   telephone: Optional(String),
   address: Optional(String),
   emergencyContactName: Optional(String),
@@ -49,8 +49,8 @@ export const CoreApplicationRunType = Record({
   dbsDisclosureNumber: Optional(String),
   dbsDisclosureDate: Optional(String),
   camping: Optional(Boolean),
-  tShirtSize: Optional(TShirtSizeRunType),
-  ageGroup: Optional(AgeGroupRunType),
+  tShirtSize: Optional(ModelTShirtSizeRunType),
+  ageGroup: Optional(ModelAgeGroupRunType),
   otherInformation: Optional(String),
   teamPreference1: Optional(String),
   teamPreference2: Optional(String),
@@ -74,39 +74,47 @@ export const CoreApplicationRunType = Record({
   version: Number,
   profileId: String,
   photoId: Optional(String),
-  status: ApplicationStatusRunType,
+  status: ModelApplicationStatusRunType,
 });
 
-export const ApplicationMetadataRunType = Record({
+export const ModelApplicationMetadataRunType = Record({
   applicationId: String,
 });
 
-export const ApplicationRunType = ApplicationMetadataRunType.extend(
-  CoreApplicationRunType.fields
+export const ModelApplicationRunType = ModelApplicationMetadataRunType.extend(
+  ModelCoreApplicationRunType.fields
 );
 
-export const ApplicationInfoRunType = ApplicationRunType.extend({
-  profile: ProfileRunType,
+export const ModelApplicationInfoRunType = ModelApplicationRunType.extend({
+  profile: ModelProfileRunType,
 });
 
 // Application ID and version should not be included in an update request as they are managed
 // by the model.
-export const ApplicationChangesRunType = ApplicationRunType.omit(
+export const ModelApplicationChangesRunType = ModelApplicationRunType.omit(
   "applicationId",
   "version"
 ).asPartial();
 
-export const PersistedApplicationRunType = ApplicationRunType.extend({
+export const ModelPersistedApplicationRunType = ModelApplicationRunType.extend({
   dbId: Number,
   lastSaved: String,
 });
 
-export type Application = Static<typeof ApplicationRunType>;
+export type ModelApplicationStatus = Static<
+  typeof ModelApplicationStatusRunType
+>;
 
-export type ApplicationInfo = Static<typeof ApplicationInfoRunType>;
+export type ModelApplication = Static<typeof ModelApplicationRunType>;
 
-export type AddableApplication = Application;
+export type ModelApplicationInfo = Static<typeof ModelApplicationInfoRunType>;
 
-export type ApplicationChanges = Static<typeof ApplicationChangesRunType>;
+export type ModelAddableApplication = ModelApplication;
 
-export type PersistedApplication = Static<typeof PersistedApplicationRunType>;
+export type ModelApplicationChanges = Static<
+  typeof ModelApplicationChangesRunType
+>;
+
+export type PersistedApplication = Static<
+  typeof ModelPersistedApplicationRunType
+>;

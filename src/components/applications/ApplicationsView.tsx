@@ -29,6 +29,7 @@ interface ApplicationsViewProps {
   clearSelectedApplication: () => void;
   emailSelected: (email: string) => void;
   testSelected: () => void;
+  setStatus: (status: ApplicationStatus) => Promise<void>;
 }
 
 const useStyles = makeStyles({
@@ -57,6 +58,7 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
   clearSelectedApplication,
   emailSelected,
   testSelected,
+  setStatus,
 }) => {
   const classes = useStyles();
 
@@ -106,6 +108,7 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
               application={selectedApplication}
               emailSelected={emailSelected}
               testSelected={testSelected}
+              setStatus={setStatus}
             />
           </DrawerBody>
         </OverlayDrawer>
