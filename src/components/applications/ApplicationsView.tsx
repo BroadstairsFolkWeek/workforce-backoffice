@@ -16,9 +16,11 @@ import {
 } from "../../interfaces/application-data";
 import ApplicationsList from "./ApplicationsList";
 import ApplicationsHeaderView from "./ApplicationsHeaderView";
-import ApplicationsDetails from "./ApplicationDetails";
+import ApplicationsDetails, {
+  ApplicationsDetailsProps,
+} from "./ApplicationDetails";
 
-interface ApplicationsViewProps {
+type ApplicationsViewProps = Omit<ApplicationsDetailsProps, "application"> & {
   applications: ApplicationData[];
   selectedApplication: ApplicationData | undefined;
   filterString: string;
@@ -29,8 +31,7 @@ interface ApplicationsViewProps {
   clearSelectedApplication: () => void;
   emailSelected: (email: string) => void;
   testSelected: () => void;
-  setStatus: (status: ApplicationStatus) => Promise<void>;
-}
+};
 
 const useStyles = makeStyles({
   root: {
@@ -56,9 +57,7 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
   setFilterSelectedStatuses,
   applicationSelected,
   clearSelectedApplication,
-  emailSelected,
-  testSelected,
-  setStatus,
+  ...applicationDetailsProps
 }) => {
   const classes = useStyles();
 
@@ -105,10 +104,8 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
           </DrawerHeader>
           <DrawerBody className={classes.drawerBody}>
             <ApplicationsDetails
+              {...applicationDetailsProps}
               application={selectedApplication}
-              emailSelected={emailSelected}
-              testSelected={testSelected}
-              setStatus={setStatus}
             />
           </DrawerBody>
         </OverlayDrawer>

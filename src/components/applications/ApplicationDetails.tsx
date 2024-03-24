@@ -1,13 +1,6 @@
-import { FC, useMemo, useState } from "react";
+import { FC } from "react";
 import {
   Button,
-  Menu,
-  MenuButtonProps,
-  MenuItem,
-  MenuList,
-  MenuPopover,
-  MenuTrigger,
-  SplitButton,
   Text,
   makeStyles,
   shorthands,
@@ -17,13 +10,14 @@ import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator
 import ProfilePhoto from "./ProfilePhoto";
 import { ApplicationData } from "../../interfaces/application-data";
 import { ApplicationStatus } from "../../../api/interfaces/applications";
+import StatusSelection, { StatusSelectionProps } from "./StatusSelection";
 
-type ApplicationsDetailsProps = {
-  application: ApplicationData;
-  emailSelected: (email: string) => void;
-  testSelected: () => void;
-  setStatus: (status: ApplicationStatus) => Promise<void>;
-};
+export type ApplicationsDetailsProps =
+  StatusSelectionProps<ApplicationStatus> & {
+    application: ApplicationData;
+    emailSelected: (email: string) => void;
+    testSelected: () => void;
+  };
 
 const useStyles = makeStyles({
   root: {
@@ -108,63 +102,17 @@ const useStyles = makeStyles({
   },
 });
 
-const selectableStatusValues: ApplicationStatus[] = [
-  "info-required",
-  "documents-required",
-  "photo-required",
-  "ready-to-submit",
-  "submitted",
-  "complete",
-];
-
 const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
   application,
   emailSelected,
-  setStatus,
+  ...statusSelectProps
 }) => {
   const classes = useStyles();
-
-  const [statusButtonSelected, setStatusButtonSelected] = useState(
-    application.status
-  );
-
-  const setStatusButtonPrimaryActionProps = useMemo(
-    () => ({
-      onClick: () => setStatus(statusButtonSelected),
-    }),
-    [statusButtonSelected, setStatus]
-  );
-
-  const menuItemElements = useMemo(() => {
-    return selectableStatusValues.map((status) => (
-      <MenuItem key={status} onClick={() => setStatusButtonSelected(status)}>
-        {status}
-      </MenuItem>
-    ));
-  }, []);
 
   return (
     <div className={classes.root}>
       <div className={classes.actionsSection}>
-        <Button>Set status</Button>
-        <Menu>
-          <MenuTrigger disableButtonEnhancement>
-            {(triggerProps: MenuButtonProps) => (
-              <SplitButton
-                menuButton={triggerProps}
-                primaryActionButton={setStatusButtonPrimaryActionProps}
-              >
-                {application.status === statusButtonSelected
-                  ? statusButtonSelected
-                  : `Set status to ${statusButtonSelected}`}
-              </SplitButton>
-            )}
-          </MenuTrigger>
-
-          <MenuPopover>
-            <MenuList>{menuItemElements}</MenuList>
-          </MenuPopover>
-        </Menu>
+        <StatusSelection {...statusSelectProps} />
       </div>
       <div className={classes.personalDetailsSection}>
         <div className={classes.photoCell}>

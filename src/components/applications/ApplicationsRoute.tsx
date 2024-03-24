@@ -1,4 +1,6 @@
 import React, { useCallback, useState } from "react";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 
 import { useApplications } from "./ApplicationsContextProvider";
 import {
@@ -58,8 +60,18 @@ const filterApplicationsByStatus = (
   return applications.filter((application) => statuses.has(application.status));
 };
 
+const selectableStatusValues: ApplicationStatus[] = [
+  "info-required",
+  "documents-required",
+  "photo-required",
+  "ready-to-submit",
+  "submitted",
+  "complete",
+];
+
 const ApplicationsRoute: React.FC = () => {
-  const { applications: applicationDatas } = useApplications();
+  const { applications: applicationDatas, updateApplication } =
+    useApplications();
 
   const [filterString, setFilterString] = React.useState("");
   const [filteredApplications, setFilteredApplications] = React.useState<
@@ -73,6 +85,9 @@ const ApplicationsRoute: React.FC = () => {
   const [selectedApplication, setSelectedApplication] = useState<
     ApplicationData | undefined
   >();
+
+  const [statusButtonActionRunning, setStatusButtonActionRunning] =
+    useState(false);
 
   const clearSelectedApplication = useCallback(() => {
     setSelectedApplication(undefined);
@@ -89,16 +104,42 @@ const ApplicationsRoute: React.FC = () => {
     [selectedApplication]
   );
 
-  const setStatus = useCallback(
-    async (status: ApplicationStatus) => {
+  const setApplicationStatus = useCallback(
+    async (newStatus: ApplicationStatus) => {
       if (selectedApplication) {
-        const task = apiSetApplicationStatus(selectedApplication.applicationId)(
-          selectedApplication.version
-        )(status);
+        setStatusButtonActionRunning(true);
+        const task = pipe(
+          newStatus,
+          apiSetApplicationStatus(selectedApplication.applicationId)(
+            selectedApplication.version
+          ),
+          TE.match(
+            (err) => {
+              if (err === "conflict") {
+                alert(
+                  "Application status has been updated by another user. Please refresh the page."
+                );
+              } else if (err === "not-found") {
+                alert(
+                  "The server could not find the requested resource. Please refresh the page."
+                );
+              } else {
+                alert(
+                  "An error occurred. Please refresh the page and try again."
+                );
+              }
+            },
+            (result) => {
+              setSelectedApplication(result.application);
+              updateApplication(result.application);
+            }
+          )
+        );
         await task();
+        setStatusButtonActionRunning(false);
       }
     },
-    [selectedApplication]
+    [selectedApplication, updateApplication]
   );
 
   const testSelected = useCallback(async () => {
@@ -134,7 +175,10 @@ const ApplicationsRoute: React.FC = () => {
       clearSelectedApplication={clearSelectedApplication}
       emailSelected={emailSelected}
       testSelected={testSelected}
-      setStatus={setStatus}
+      currentStatus={selectedApplication?.status || "info-required"}
+      statuses={selectableStatusValues}
+      actionRunning={statusButtonActionRunning}
+      setStatus={setApplicationStatus}
     />
   );
 };

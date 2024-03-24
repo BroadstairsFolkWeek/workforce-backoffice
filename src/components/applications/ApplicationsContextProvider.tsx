@@ -10,6 +10,7 @@ import { apiGetApplications } from "../../services/api";
 export type IApplicationsContext = {
   loaded: boolean;
   applications: Application[];
+  updateApplication: (updatedApplication: Application) => void;
   getPhoto: (photoId: string) => Promise<string>;
 };
 
@@ -25,6 +26,16 @@ const ApplicationsContextProvider = ({
   const { callApiGet } = useApiAccess();
   const [loaded, setLoaded] = useState(false);
   const [applications, setApplications] = useState<ApplicationData[]>([]);
+
+  const updateApplication = useCallback((updatedApplication: Application) => {
+    setApplications((prevApplications) =>
+      prevApplications.map((application) =>
+        application.applicationId === updatedApplication.applicationId
+          ? updatedApplication
+          : application
+      )
+    );
+  }, []);
 
   const getPhoto = useCallback(
     async (photoId: string) => {
@@ -58,6 +69,7 @@ const ApplicationsContextProvider = ({
       value={{
         loaded,
         applications,
+        updateApplication,
         getPhoto,
       }}
     >
