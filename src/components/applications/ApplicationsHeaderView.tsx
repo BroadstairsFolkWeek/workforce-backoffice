@@ -38,7 +38,7 @@ const ApplicationsHeaderView: FC<ApplicationsHeaderViewProps> = ({
         filterString={filterString}
         setFilterString={setFilterString}
       />
-      <CounterBadge count={counterValue} />
+      <CounterBadge count={counterValue} overflowCount={999} />
       <Divider className={classes.divider} vertical />
       <SelectApplicationStatuses
         selectedStatuses={filterSelectedStatuses}
