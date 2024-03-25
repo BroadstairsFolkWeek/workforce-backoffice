@@ -98,6 +98,9 @@ export const ApplicationUpdates = t.intersection([
   t.partial(applicationRequiredFields),
 ]);
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type ApplicationInfo = t.TypeOf<typeof ApplicationInfo>;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type ApplicationStatus = t.TypeOf<typeof ApplicationStatus>;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type ApplicationUpdates = t.TypeOf<typeof ApplicationUpdates>;

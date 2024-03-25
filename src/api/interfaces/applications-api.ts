@@ -25,19 +25,25 @@ export const ApplicationUpdateRequest = t.type({
 });
 export const ApplicationUpdateResponse = GetApplicationResponse;
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type GetApplicationResponse = t.TypeOf<typeof GetApplicationResponse>;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type GetApplicationsResponse = t.TypeOf<typeof GetApplicationsResponse>;
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type ApplicationStatusUpdateRequest = t.TypeOf<
   typeof ApplicationStatusUpdateRequest
 >;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type ApplicationStatusUpdateResponse = t.TypeOf<
   typeof ApplicationStatusUpdateResponse
 >;
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type ApplicationUpdateRequest = t.TypeOf<
   typeof ApplicationUpdateRequest
 >;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type ApplicationUpdateResponse = t.TypeOf<
   typeof ApplicationUpdateResponse
 >;

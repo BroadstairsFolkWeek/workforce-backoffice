@@ -24,4 +24,5 @@ export const Profile = t.intersection([
   t.type(profileMetadata),
 ]);
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type Profile = t.TypeOf<typeof Profile>;
