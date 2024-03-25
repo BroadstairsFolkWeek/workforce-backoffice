@@ -6,26 +6,20 @@ import {
   GetApplicationResponse,
   GetApplicationsResponse,
 } from "../interfaces/applications-api";
-import { wrapInputDecoder, wrapOutputDecoder } from "./sanitise";
+import { wrapInputDecoder } from "./sanitise";
 
-export const sanitiseGetApplicationResponse = wrapOutputDecoder(
-  GetApplicationResponse.decode
-);
+export const sanitiseGetApplicationResponse = GetApplicationResponse.decode;
 
-export const sanitiseGetApplicationsResponse = wrapOutputDecoder(
-  GetApplicationsResponse.decode
-);
+export const sanitiseGetApplicationsResponse = GetApplicationsResponse.encode;
 
 export const sanitiseApplicationUpdateRequest = wrapInputDecoder(
   ApplicationUpdateRequest.decode
 );
-export const sanitiseApplicationUpdateResponse = wrapOutputDecoder(
-  ApplicationUpdateResponse.decode
-);
+export const sanitiseApplicationUpdateResponse =
+  ApplicationUpdateResponse.encode;
 
 export const sanitiseApplicationStatusUpdateRequest = wrapInputDecoder(
   ApplicationStatusUpdateRequest.decode
 );
-export const sanitiseApplicationStatusUpdateResponse = wrapOutputDecoder(
-  ApplicationStatusUpdateResponse.decode
-);
+export const sanitiseApplicationStatusUpdateResponse =
+  ApplicationStatusUpdateResponse.encode;

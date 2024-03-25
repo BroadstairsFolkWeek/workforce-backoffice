@@ -7,6 +7,7 @@ import {
   Union,
   Static,
   Optional,
+  InstanceOf,
 } from "runtypes";
 import { ModelProfileRunType } from "./profile";
 
@@ -75,6 +76,8 @@ export const ModelCoreApplicationRunType = Record({
   profileId: String,
   photoId: Optional(String),
   status: ModelApplicationStatusRunType,
+  createdDate: InstanceOf(Date),
+  modifiedDate: InstanceOf(Date),
 });
 
 export const ModelApplicationMetadataRunType = Record({

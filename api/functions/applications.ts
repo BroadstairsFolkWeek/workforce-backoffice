@@ -10,7 +10,6 @@ import { getApplicationsTE } from "../applications/application-service";
 import { runAsAuthenticatedUser } from "../common-handlers/authenticated-user-http-response-handler";
 import { logError } from "../utilities/logging";
 import { sanitiseGetApplicationsResponse } from "./utilities/sanitise-applications-api";
-import { isApiOutputValidationError } from "./utilities/sanitise";
 
 export const httpGetApplications = async function (
   req: HttpRequest,
@@ -20,19 +19,12 @@ export const httpGetApplications = async function (
     const task = pipe(
       getApplicationsTE(),
       TE.map((applications) => ({ applications })),
-      TE.chainEitherKW(sanitiseGetApplicationsResponse),
+      TE.map(sanitiseGetApplicationsResponse),
       TE.fold(
         (validationErr) => {
-          if (isApiOutputValidationError(validationErr)) {
-            logError(
-              "Error sanitising GetApplications response: " +
-                JSON.stringify(validationErr.errors)
-            );
-          } else {
-            logError(
-              "Error in GetApplications: " + JSON.stringify(validationErr)
-            );
-          }
+          logError(
+            "Error in GetApplications: " + JSON.stringify(validationErr)
+          );
           return T.of({
             status: 500,
           });

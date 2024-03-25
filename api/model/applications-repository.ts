@@ -1,6 +1,7 @@
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
+import { DateFromISOString } from "io-ts-types";
 
 import { logTrace, logWarn } from "../utilities/logging";
 import {
@@ -123,6 +124,14 @@ const listItemToApplication = (
     version: item.Version,
     profileId: item.ProfileId,
     status: listItemToStatus(item),
+    createdDate: pipe(
+      DateFromISOString.decode(item.Created),
+      E.getOrElse(() => new Date())
+    ),
+    modifiedDate: pipe(
+      DateFromISOString.decode(item.Modified),
+      E.getOrElse(() => new Date())
+    ),
   };
 };
 
@@ -175,9 +184,9 @@ export const modelGetApplications = async (): Promise<
   );
   console.log(JSON.stringify(applicationChangesToListItem));
 
-  const applications = applicationGraphListItems.map((item) =>
-    listItemToApplication(item.fields)
-  );
+  const applications = applicationGraphListItems
+    .map((gli) => gli.fields)
+    .map(listItemToApplication);
 
   return addProfilesToApplications(applications);
 };

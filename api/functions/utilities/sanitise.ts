@@ -17,23 +17,11 @@ export type ApiInputValidationError = ApiValidationError & {
   scope: "input";
 };
 
-export type ApiOutputValidationError = ApiValidationError & {
-  scope: "output";
-};
-
 const _wrapErrorWithApiInputValidationError = (
   errors: Errors
 ): ApiInputValidationError => ({
   type: VALIDATION_ERROR_TYPE_VAL,
   scope: "input",
-  errors,
-});
-
-const _wrapErrorWithApiOutputValidationError = (
-  errors: Errors
-): ApiOutputValidationError => ({
-  type: VALIDATION_ERROR_TYPE_VAL,
-  scope: "output",
   errors,
 });
 
@@ -43,20 +31,8 @@ export function isApiInputValidationError(
   return obj?.type === VALIDATION_ERROR_TYPE_VAL && obj.scope === "input";
 }
 
-export function isApiOutputValidationError(
-  obj: any
-): obj is ApiOutputValidationError {
-  return obj?.type === VALIDATION_ERROR_TYPE_VAL && obj.scope === "output";
-}
-
 export const wrapInputDecoder = <A>(decoderFn: (obj: any) => Validation<A>) =>
   flow(
     decoderFn,
     E.mapLeft((error) => _wrapErrorWithApiInputValidationError(error))
-  );
-
-export const wrapOutputDecoder = <A>(decoderFn: (obj: any) => Validation<A>) =>
-  flow(
-    decoderFn,
-    E.mapLeft((error) => _wrapErrorWithApiOutputValidationError(error))
   );

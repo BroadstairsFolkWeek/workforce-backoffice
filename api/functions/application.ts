@@ -8,7 +8,7 @@ import {
   InvocationContext,
 } from "@azure/functions";
 import { runAsAuthenticatedUser } from "../common-handlers/authenticated-user-http-response-handler";
-import { logError, logInfo } from "../utilities/logging";
+import { logError, logInfo, logTraceIO } from "../utilities/logging";
 import {
   getApplication,
   setApplicationStatus,
@@ -25,10 +25,7 @@ import {
   getRequestParam,
   isMissingParamError,
 } from "./utilities/http-functions";
-import {
-  isApiInputValidationError,
-  isApiOutputValidationError,
-} from "./utilities/sanitise";
+import { isApiInputValidationError } from "./utilities/sanitise";
 
 export const httpGetApplication = async function (
   req: HttpRequest,
@@ -59,13 +56,6 @@ export const httpGetApplication = async function (
             });
           } else if (validationErr === "not-found") {
             return T.of({ status: 404, body: "Application not found" });
-          } else if (isApiOutputValidationError(validationErr)) {
-            logError(
-              `${loggingPrefix} Error sanitising GetApplication response: ${JSON.stringify(
-                validationErr.errors
-              )}`
-            );
-            return T.of({ status: 500 });
           } else {
             logError(
               `${loggingPrefix} Error: ${JSON.stringify(validationErr)}`
@@ -111,7 +101,7 @@ export const httpPatchApplication = async function (
       TE.map((application) => ({
         application,
       })),
-      TE.chainEitherKW(sanitiseApplicationStatusUpdateResponse),
+      TE.map(sanitiseApplicationStatusUpdateResponse),
       TE.fold(
         (validationErr) => {
           if (isApiInputValidationError(validationErr)) {
@@ -139,13 +129,6 @@ export const httpPatchApplication = async function (
             return T.of({ status: 404, body: "Application not found" });
           } else if (validationErr === "conflict") {
             return T.of({ status: 409, body: "Version number conflict" });
-          } else if (isApiOutputValidationError(validationErr)) {
-            logError(
-              `${loggingPrefix} Error sanitising ApplicationUpdate response: ${JSON.stringify(
-                validationErr.errors
-              )}`
-            );
-            return T.of({ status: 500 });
           } else {
             logError(
               `${loggingPrefix} Error: ${JSON.stringify(validationErr)}`
@@ -191,7 +174,7 @@ export const httpPostApplicationStatus = async function (
       TE.map((application) => ({
         application,
       })),
-      TE.chainEitherKW(sanitiseApplicationStatusUpdateResponse),
+      TE.map(sanitiseApplicationStatusUpdateResponse),
       TE.fold(
         (validationErr) => {
           if (isApiInputValidationError(validationErr)) {
@@ -219,13 +202,6 @@ export const httpPostApplicationStatus = async function (
             return T.of({ status: 404, body: "Application not found" });
           } else if (validationErr === "conflict") {
             return T.of({ status: 409, body: "Version number conflict" });
-          } else if (isApiOutputValidationError(validationErr)) {
-            logError(
-              `${loggingPrefix} Error sanitising StatusUpdate response: ${JSON.stringify(
-                validationErr.errors
-              )}`
-            );
-            return T.of({ status: 500 });
           } else {
             logError(
               `${loggingPrefix} Error: ${JSON.stringify(validationErr)}`

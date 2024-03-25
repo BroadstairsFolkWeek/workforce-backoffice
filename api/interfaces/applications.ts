@@ -1,5 +1,6 @@
 import * as t from "io-ts";
 import { Profile } from "./profiles";
+import { DateFromISOString } from "io-ts-types";
 
 const TShirtSize = t.union([
   t.literal("S"),
@@ -75,6 +76,8 @@ const applicationMetadata = {
   applicationId: t.string,
   status: ApplicationStatus,
   version: t.number,
+  createdDate: DateFromISOString,
+  modifiedDate: DateFromISOString,
 };
 
 // Application type that is a combination of the optional and required fields.

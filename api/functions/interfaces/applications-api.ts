@@ -8,11 +8,11 @@ import {
 export { ApplicationInfo, ApplicationStatus, ApplicationUpdates };
 
 export const GetApplicationResponse = t.type({
-  application: ApplicationInfo,
+  application: t.exact(ApplicationInfo),
 });
 
 export const GetApplicationsResponse = t.type({
-  applications: t.array(ApplicationInfo),
+  applications: t.array(t.exact(ApplicationInfo)),
 });
 
 export const ApplicationStatusUpdateRequest = t.type({
