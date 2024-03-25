@@ -4,7 +4,7 @@ import {
   shorthands,
 } from "@fluentui/react-components";
 import { useMemo } from "react";
-import { Application } from "../../interfaces/application-data";
+import { ApplicationInfo } from "../../interfaces/application-data";
 
 const useStyles = makeStyles({
   root: {
@@ -68,7 +68,7 @@ const BooleanBlockIndicatorRow: React.FC<{
 };
 
 const ApplicationAvailabilityIndicator: React.FC<{
-  application: Application;
+  application: ApplicationInfo;
 }> = ({ application }) => {
   const values = useMemo(
     () => [

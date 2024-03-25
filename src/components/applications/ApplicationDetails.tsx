@@ -8,15 +8,14 @@ import {
 import { tokens } from "@fluentui/react-theme";
 import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
 import ProfilePhoto from "./ProfilePhoto";
-import { ApplicationData } from "../../interfaces/application-data";
 import { ApplicationStatus } from "../../../api/interfaces/applications";
 import StatusSelection, { StatusSelectionProps } from "./StatusSelection";
+import { ApplicationInfo } from "../../interfaces/application-data";
 
 export type ApplicationsDetailsProps =
   StatusSelectionProps<ApplicationStatus> & {
-    application: ApplicationData;
+    application: ApplicationInfo;
     emailSelected: (email: string) => void;
-    testSelected: () => void;
   };
 
 const useStyles = makeStyles({
@@ -84,10 +83,10 @@ const useStyles = makeStyles({
     },
   },
 
-  idsSection: {
+  metadataSection: {
     display: "grid",
   },
-  idsDetailsGrid: {
+  metaDetailsGrid: {
     display: "grid",
     gridTemplateColumns: "150px 1fr",
     "& > :nth-child(4n+1), & > :nth-child(4n+2)": {
@@ -237,8 +236,8 @@ const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
           <Text>{application.consentNewlifeWills ? "Yes" : "No"}</Text>
         </div>
       </div>
-      <div className={classes.idsSection}>
-        <div className={classes.idsDetailsGrid}>
+      <div className={classes.metadataSection}>
+        <div className={classes.metaDetailsGrid}>
           <Text size={100}>Application ID</Text>
           <Text size={100}>{application.applicationId}</Text>
 
@@ -247,6 +246,12 @@ const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
 
           <Text size={100}>Photo ID</Text>
           <Text size={100}>{application.photoId}</Text>
+
+          <Text size={100}>Created</Text>
+          <Text size={100}>{application.createdDate.toLocaleString()}</Text>
+
+          <Text size={100}>Modified</Text>
+          <Text size={100}>{application.modifiedDate.toLocaleString()}</Text>
         </div>
       </div>
     </div>

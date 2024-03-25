@@ -12,18 +12,12 @@ import axios, {
 } from "axios";
 import { URLSearchParams } from "url";
 
-import { getTeamsUserCredential, getTeamsUserCredentialIOE } from "./teams-app";
+import {
+  getTeamsUserCredential,
+  getTeamsUserCredentialIOE,
+} from "../services/teams-app";
 import config, { getApiEndpoint } from "../components/config";
 import { DraftMailResult } from "../../api/interfaces/mail";
-import { ApplicationChanges } from "../interfaces/application-data";
-import {
-  ApplicationStatusUpdateRequest,
-  ApplicationStatusUpdateResponse,
-  ApplicationUpdateRequest,
-  ApplicationUpdateResponse,
-  GetApplicationResponse,
-  GetApplicationsResponse,
-} from "../../api/functions/interfaces/applications-api";
 
 const getAccessToken = (): TE.TaskEither<Error, string> => {
   return pipe(
@@ -65,7 +59,7 @@ const doAxiosRequest = <ResponseDataType = any>(
       axios.isAxiosError(error) ? (error as AxiosError) : E.toError(error)
   );
 
-const commonAxiosErrorMapping = (error: Error | AxiosError) => {
+export const commonAxiosErrorMapping = (error: Error | AxiosError) => {
   if (axios.isAxiosError(error)) {
     if (error.response?.status === 404) {
       return "not-found";
@@ -77,34 +71,35 @@ const commonAxiosErrorMapping = (error: Error | AxiosError) => {
   return error;
 };
 
-const callApiTE = <ResponseDataType = any>(
-  method: "GET" | "POST" | "PATCH",
-  path: string,
-  body?: any,
-  urlSearchParams?: URLSearchParams,
-  responseType: ResponseType = "json"
-): TE.TaskEither<Error | AxiosError, ResponseDataType> => {
-  return pipe(
-    getUrlWithSearchParams(path)(urlSearchParams),
-    IOE.bindTo("url"),
-    TE.fromIOEither,
-    TE.bind("accessToken", () => getAccessToken()),
-    TE.map(
-      ({ url, accessToken }) =>
-        ({
-          url: url.href,
-          method,
-          headers: {
-            authorization: "Bearer " + accessToken,
-          },
-          data: body,
-          responseType,
-        } as AxiosRequestConfig)
-    ),
-    TE.chain(doAxiosRequest<ResponseDataType>),
-    TE.map((response) => response.data)
-  );
-};
+const callApiTE =
+  (method: "GET" | "POST" | "PATCH") =>
+  <ResponseDataType = any>(
+    path: string,
+    body?: any,
+    urlSearchParams?: URLSearchParams,
+    responseType: ResponseType = "json"
+  ): TE.TaskEither<Error | AxiosError, ResponseDataType> => {
+    return pipe(
+      getUrlWithSearchParams(path)(urlSearchParams),
+      IOE.bindTo("url"),
+      TE.fromIOEither,
+      TE.bind("accessToken", () => getAccessToken()),
+      TE.map(
+        ({ url, accessToken }) =>
+          ({
+            url: url.href,
+            method,
+            headers: {
+              authorization: "Bearer " + accessToken,
+            },
+            data: body,
+            responseType,
+          } as AxiosRequestConfig)
+      ),
+      TE.chain(doAxiosRequest<ResponseDataType>),
+      TE.map((response) => response.data)
+    );
+  };
 
 const callApi = async <ResponseDataType = any>(
   method: "GET" | "POST" | "PATCH",
@@ -197,34 +192,9 @@ export const callApiPost = <ResponseDataType = any>(
   );
 };
 
-export const callApiPostTE = <ResponseDataType = any>(
-  path: string,
-  body?: any,
-  urlSearchParams?: URLSearchParams,
-  responseType: ResponseType = "json"
-) =>
-  callApiTE<ResponseDataType>(
-    "POST",
-    path,
-    body,
-    urlSearchParams,
-    responseType
-  );
-
-export const callApiPatch = <ResponseDataType = any>(
-  functionName: string,
-  body?: any,
-  urlSearchParams?: URLSearchParams,
-  responseType: ResponseType = "json"
-) => {
-  return callApi<ResponseDataType>(
-    "PATCH",
-    functionName,
-    body,
-    urlSearchParams,
-    responseType
-  );
-};
+export const callApiGetTE = callApiTE("GET");
+export const callApiPostTE = callApiTE("POST");
+export const callApiPatchTE = callApiTE("PATCH");
 
 export const apiDraftWorkforceMail = async (
   emailAddress: any,
@@ -240,53 +210,3 @@ export const apiDraftWorkforceMail = async (
   });
   return result.draftMailUrl;
 };
-
-export const apiTestexp = async () => {
-  const result = await callApiGet("testexp");
-  return result;
-};
-
-export const apiGetApplications = async () => {
-  const result = await callApiGet<GetApplicationsResponse>(`applications`);
-  return result;
-};
-
-export const apiGetApplication = async (applicationId: string) => {
-  const result = await callApiGet<GetApplicationResponse>(
-    `applications/${applicationId}`
-  );
-  return result;
-};
-
-export const apiUpdateApplication = async (
-  applicationId: string,
-  version: number,
-  changes: ApplicationChanges
-) => {
-  const body: ApplicationUpdateRequest = {
-    changes,
-    version,
-  };
-
-  const result = await callApiPatch<ApplicationUpdateResponse>(
-    `applications/${applicationId}`,
-    body
-  );
-  return result;
-};
-
-export const apiSetApplicationStatus =
-  (applicationId: string) =>
-  (version: number) =>
-  (status: ApplicationStatusUpdateRequest["status"]) => {
-    return pipe(
-      callApiPostTE<ApplicationStatusUpdateResponse>(
-        `applications/${applicationId}/status`,
-        {
-          status,
-          version,
-        } as ApplicationStatusUpdateRequest
-      ),
-      TE.mapLeft(commonAxiosErrorMapping)
-    );
-  };

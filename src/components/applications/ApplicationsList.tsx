@@ -14,14 +14,14 @@ import {
 import { FC, useMemo } from "react";
 import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
 import ProfilePhoto from "./ProfilePhoto";
-import { ApplicationData } from "../../interfaces/application-data";
+import { ApplicationInfo } from "../../interfaces/application-data";
 
-type Item = ApplicationData;
+type Item = ApplicationInfo;
 
 type ApplicationsListProps = {
-  applications: ApplicationData[];
-  selectedApplication: ApplicationData | undefined;
-  applicationSelected: (application: ApplicationData) => void;
+  applications: ApplicationInfo[];
+  selectedApplication: ApplicationInfo | undefined;
+  applicationSelected: (application: ApplicationInfo) => void;
   clearSelectedApplication: () => void;
 };
 
@@ -146,6 +146,20 @@ const ApplicationsList: FC<ApplicationsListProps> = ({
         columnId: "status",
         renderHeaderCell: () => "Status / Options",
         renderCell: (item) => <Text>{item.status}</Text>,
+      }),
+
+      createTableColumn<Item>({
+        columnId: "createdDateTime",
+        renderHeaderCell: () => "Created",
+        renderCell: (item) => <Text>{item.createdDate.toLocaleString()}</Text>,
+        compare: (a, b) => a.createdDate.getTime() - b.createdDate.getTime(),
+      }),
+
+      createTableColumn<Item>({
+        columnId: "modifiedDateTime",
+        renderHeaderCell: () => "Modified",
+        renderCell: (item) => <Text>{item.modifiedDate.toLocaleString()}</Text>,
+        compare: (a, b) => a.modifiedDate.getTime() - b.modifiedDate.getTime(),
       }),
     ],
     [classes.availabilityIndicator, classes.img, classes.photoCell]

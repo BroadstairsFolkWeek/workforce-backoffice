@@ -41,7 +41,7 @@ export const httpGetApplication = async function (
       TE.map((application) => ({
         application,
       })),
-      TE.chainEitherKW(sanitiseGetApplicationResponse),
+      TE.map(sanitiseGetApplicationResponse),
       TE.fold(
         (validationErr) => {
           if (isMissingParamError(validationErr)) {

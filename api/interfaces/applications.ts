@@ -1,6 +1,7 @@
 import * as t from "io-ts";
-import { Profile } from "./profiles";
 import { DateFromISOString } from "io-ts-types";
+
+import { Profile } from "./profiles";
 
 const TShirtSize = t.union([
   t.literal("S"),

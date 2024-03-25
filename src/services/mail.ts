@@ -1,6 +1,6 @@
 import { app } from "@microsoft/teams-js";
 
-import { apiDraftWorkforceMail } from "./api";
+import { apiDraftWorkforceMail } from "../api/api";
 
 export const draftAndDisplayWorkforceMail = async (
   emailAddress: any,

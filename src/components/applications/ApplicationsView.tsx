@@ -11,7 +11,7 @@ import {
 import { Dismiss24Regular } from "@fluentui/react-icons";
 
 import {
-  ApplicationData,
+  ApplicationInfo,
   ApplicationStatus,
 } from "../../interfaces/application-data";
 import ApplicationsList from "./ApplicationsList";
@@ -21,16 +21,15 @@ import ApplicationsDetails, {
 } from "./ApplicationDetails";
 
 type ApplicationsViewProps = Omit<ApplicationsDetailsProps, "application"> & {
-  applications: ApplicationData[];
-  selectedApplication: ApplicationData | undefined;
+  applications: ApplicationInfo[];
+  selectedApplication: ApplicationInfo | undefined;
   filterString: string;
   filterSelectedStatuses: Set<ApplicationStatus>;
   setFilterString: (s: string) => void;
   setFilterSelectedStatuses: (statuses: Set<ApplicationStatus>) => void;
-  applicationSelected: (application: ApplicationData) => void;
+  applicationSelected: (application: ApplicationInfo) => void;
   clearSelectedApplication: () => void;
   emailSelected: (email: string) => void;
-  testSelected: () => void;
 };
 
 const useStyles = makeStyles({

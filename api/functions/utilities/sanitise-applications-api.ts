@@ -8,7 +8,7 @@ import {
 } from "../interfaces/applications-api";
 import { wrapInputDecoder } from "./sanitise";
 
-export const sanitiseGetApplicationResponse = GetApplicationResponse.decode;
+export const sanitiseGetApplicationResponse = GetApplicationResponse.encode;
 
 export const sanitiseGetApplicationsResponse = GetApplicationsResponse.encode;
 

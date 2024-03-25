@@ -10,7 +10,9 @@ import Privacy from "./Privacy";
 import TermsOfUse from "./TermsOfUse";
 import { ApiContextProvider } from "../services/ApiContext";
 import { ApplicationsContextProvider } from "./applications/ApplicationsContextProvider";
-import ApplicationsRoute from "./applications/ApplicationsRoute";
+import ApplicationsRoute, {
+  applicationsLoader,
+} from "./applications/ApplicationsRoute";
 import Root from "../routes/Root";
 import ErrorPage from "./Error";
 
@@ -21,7 +23,11 @@ const AppRouter: React.FC = () => {
         <Route errorElement={<ErrorPage />}>
           <Route path="privacy" element={<Privacy />} />
           <Route path="termsofuse" element={<TermsOfUse />} />
-          <Route path="applications" element={<ApplicationsRoute />} />
+          <Route
+            path="applications"
+            element={<ApplicationsRoute />}
+            loader={applicationsLoader}
+          />
           <Route path="*" element={<Navigate to={"/applications"} />}></Route>
         </Route>
       </Route>

@@ -1,16 +1,13 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { applicationsContextUninitialisedSymbol } from "./symbols";
 import { useApiAccess } from "../../services/ApiContext";
-import {
-  Application,
-  ApplicationData,
-} from "../../interfaces/application-data";
-import { apiGetApplications } from "../../services/api";
+import { ApplicationInfo } from "../../interfaces/application-data";
+import { apiGetApplications } from "../../api/applications-api";
 
 export type IApplicationsContext = {
   loaded: boolean;
-  applications: Application[];
-  updateApplication: (updatedApplication: Application) => void;
+  applications: ApplicationInfo[];
+  updateApplication: (updatedApplication: ApplicationInfo) => void;
   getPhoto: (photoId: string) => Promise<string>;
 };
 
@@ -25,17 +22,20 @@ const ApplicationsContextProvider = ({
 }) => {
   const { callApiGet } = useApiAccess();
   const [loaded, setLoaded] = useState(false);
-  const [applications, setApplications] = useState<ApplicationData[]>([]);
+  const [applications, setApplications] = useState<ApplicationInfo[]>([]);
 
-  const updateApplication = useCallback((updatedApplication: Application) => {
-    setApplications((prevApplications) =>
-      prevApplications.map((application) =>
-        application.applicationId === updatedApplication.applicationId
-          ? updatedApplication
-          : application
-      )
-    );
-  }, []);
+  const updateApplication = useCallback(
+    (updatedApplication: ApplicationInfo) => {
+      setApplications((prevApplications) =>
+        prevApplications.map((application) =>
+          application.applicationId === updatedApplication.applicationId
+            ? updatedApplication
+            : application
+        )
+      );
+    },
+    []
+  );
 
   const getPhoto = useCallback(
     async (photoId: string) => {
