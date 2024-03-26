@@ -1,6 +1,7 @@
 import * as t from "io-ts";
 import { DateFromISOString } from "io-ts-types";
 import { Profile } from "./profile-data";
+import { PhotoUrlSet } from "./photo-data";
 
 const TShirtSize = t.union([
   t.literal("S"),
@@ -90,6 +91,7 @@ const Application = t.intersection([
 export const ApplicationInfo = t.intersection([
   Application,
   t.partial({ profile: Profile }),
+  t.partial({ photo: PhotoUrlSet }),
 ]);
 
 // Type of a collection of updates which can be applied to an application.

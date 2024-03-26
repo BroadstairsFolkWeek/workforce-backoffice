@@ -10,6 +10,7 @@ import {
   InstanceOf,
 } from "runtypes";
 import { ModelProfileRunType } from "./profile";
+import { ModelPhotoUrlSetRunType } from "./photos";
 
 export const ModelTShirtSizeRunType = Union(
   Literal("S"),
@@ -90,6 +91,7 @@ export const ModelApplicationRunType = ModelApplicationMetadataRunType.extend(
 
 export const ModelApplicationInfoRunType = ModelApplicationRunType.extend({
   profile: ModelProfileRunType,
+  photo: Optional(ModelPhotoUrlSetRunType),
 });
 
 // Application ID and version should not be included in an update request as they are managed

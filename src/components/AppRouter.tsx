@@ -8,8 +8,6 @@ import {
 
 import Privacy from "./Privacy";
 import TermsOfUse from "./TermsOfUse";
-import { ApiContextProvider } from "../services/ApiContext";
-import { ApplicationsContextProvider } from "./applications/ApplicationsContextProvider";
 import ApplicationsRoute, {
   applicationsLoader,
 } from "./applications/ApplicationsRoute";
@@ -34,13 +32,7 @@ const AppRouter: React.FC = () => {
     )
   );
 
-  return (
-    <ApiContextProvider>
-      <ApplicationsContextProvider>
-        <RouterProvider router={router} />
-      </ApplicationsContextProvider>
-    </ApiContextProvider>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default AppRouter;

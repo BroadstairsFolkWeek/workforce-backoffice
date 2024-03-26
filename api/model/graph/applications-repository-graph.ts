@@ -111,7 +111,7 @@ export const getApplicationGraphListItemTE = (applicationId: string) => {
 
 const graphItemIdForApplicationId = (
   applicationId: string
-): TE.TaskEither<Error | "not-found", number> => {
+): TE.TaskEither<Error | "not-found", string> => {
   return pipe(
     getApplicationGraphListItemTE(applicationId),
     TE.map((item) => item.id),

@@ -1,5 +1,5 @@
 import { FileContentWithInfo } from "../interfaces/file";
-import { getProfilePhotoFileByPhotoId } from "../model/graph/photos-graph";
+import { getProfilePhotoFileByPhotoId } from "../model/graph/photos-repository-graph";
 
 const PROFILE_SERVICE_ERROR_TYPE_VAL =
   "profile-service-error-b2facf8d-038c-449b-8e24-d6cfe6680bd4";

@@ -3,7 +3,7 @@ import * as IO from "fp-ts/lib/IO";
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 
-import { Client } from "@microsoft/microsoft-graph-client";
+import { Client, GraphRequest } from "@microsoft/microsoft-graph-client";
 import {
   OnBehalfOfCredentialAuthConfig,
   OnBehalfOfUserCredential,
@@ -71,8 +71,11 @@ export const getOboGraphClientIO = () => {
   return IO.of(getOboGraphClient());
 };
 
+export const getFromGraphRequest = (graphRequest: GraphRequest) =>
+  TE.tryCatch(() => graphRequest.get(), E.toError);
+
 export const getFromGraphClient = (path: string) => (graphClient: Client) =>
-  TE.tryCatch(() => graphClient.api(path).get(), E.toError);
+  pipe(graphClient.api(path), getFromGraphRequest);
 
 export const getViaOboGraphClient = (path: string) =>
   pipe(

@@ -116,8 +116,8 @@ const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
       <div className={classes.personalDetailsSection}>
         <div className={classes.photoCell}>
           <div className={classes.img}>
-            {application.photoId ? (
-              <ProfilePhoto photoId={application.photoId} />
+            {application.photo ? (
+              <ProfilePhoto application={application} thumbnail={false} />
             ) : null}
           </div>
           <div className={classes.availabilityIndicator}>

@@ -1,3 +1,5 @@
+import * as A from "fp-ts/lib/Array";
+import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
@@ -23,6 +25,11 @@ import {
   modelGetProfileById,
   modelGetProfilesByIds,
 } from "./profiles-repository";
+import {
+  getPhotoUrlsByCombinedPhotoIds,
+  photoIdFromCombinedPhotoId,
+} from "./graph/photos-repository-graph";
+import { ModelPhotoUrlSet } from "./interfaces/photos";
 
 const listItemToTShirtSize = (
   item: PersistedApplicationListItem
@@ -135,6 +142,49 @@ const listItemToApplication = (
   };
 };
 
+const addPhotoUrlsToApplication =
+  (photoUrlSets: ModelPhotoUrlSet[]) =>
+  (application: ModelApplicationInfo): ModelApplicationInfo => {
+    return pipe(
+      photoUrlSets,
+      A.findFirst(
+        (photoUrlSet) =>
+          photoUrlSet.photoId ===
+          (application.photoId
+            ? photoIdFromCombinedPhotoId(application.photoId)
+            : undefined)
+      ),
+      O.map((photoUrlSet) => ({ ...application, photo: photoUrlSet })),
+      O.getOrElse(() => application)
+    );
+  };
+
+const addPhotosToApplications = (
+  applications: ModelApplicationInfo[]
+): TE.TaskEither<Error, ModelApplicationInfo[]> => {
+  const addFnTE = pipe(
+    applications,
+    A.filter((application) => application.photoId !== undefined),
+    A.map((application) => application.photoId),
+    getPhotoUrlsByCombinedPhotoIds,
+    TE.map(addPhotoUrlsToApplication)
+  );
+
+  return pipe(
+    addFnTE,
+    TE.map((addFn) => applications.map(addFn))
+  );
+};
+
+const addPhotoToApplication = (
+  application: ModelApplicationInfo
+): TE.TaskEither<Error, ModelApplicationInfo> => {
+  return pipe(
+    addPhotosToApplications([application]),
+    TE.map((applications) => applications[0])
+  );
+};
+
 const addProfilesToApplications = async (
   applications: ModelApplication[]
 ): Promise<Array<ModelApplicationInfo>> => {
@@ -191,12 +241,13 @@ export const modelGetApplications = async (): Promise<
   return addProfilesToApplications(applications);
 };
 
-export const modelGetApplicationsTE = TE.tryCatchK(
-  modelGetApplications,
-  E.toError
-);
+export const modelGetApplicationsTE = () =>
+  pipe(
+    TE.tryCatch(modelGetApplications, E.toError),
+    TE.chain(addPhotosToApplications)
+  );
 
-export const modelGetApplication = async (
+const modelGetApplication = async (
   applicationId: string
 ): Promise<ModelApplication | null> => {
   logTrace(`In applications: getApplication(${applicationId})`);
@@ -293,6 +344,7 @@ export const modelSaveApplicationChanges =
         saveApplicationGraphListItemChanges(applicationId, changedFields)
       ),
       TE.map(listItemToApplication),
-      TE.chain(addProfileToApplicationTE)
+      TE.chainW(addProfileToApplicationTE),
+      TE.chainW(addPhotoToApplication)
     );
   };

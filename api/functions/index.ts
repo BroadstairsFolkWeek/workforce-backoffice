@@ -2,7 +2,6 @@ import { app, input } from "@azure/functions";
 
 import httpGetApplications from "./applications";
 import profilesHttpTrigger from "./profiles";
-import profilePhotoHttpTrigger from "./profile-photos";
 import draftMailHttpTrigger from "./mail";
 import {
   httpGetApplication,
@@ -43,12 +42,6 @@ app.http("profiles", {
   methods: ["GET"],
   extraInputs: [teamsFxContextInput],
   handler: profilesHttpTrigger,
-});
-
-app.http("profilePhoto", {
-  methods: ["GET"],
-  extraInputs: [teamsFxContextInput],
-  handler: profilePhotoHttpTrigger,
 });
 
 app.http("draftMail", {

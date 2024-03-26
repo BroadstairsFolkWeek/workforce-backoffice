@@ -79,7 +79,9 @@ const ApplicationsList: FC<ApplicationsListProps> = ({
         renderCell: (item) => (
           <div className={classes.photoCell}>
             <div className={classes.img}>
-              {item.photoId ? <ProfilePhoto photoId={item.photoId} /> : null}
+              {item.photo ? (
+                <ProfilePhoto application={item} thumbnail={true} />
+              ) : null}
             </div>
             <div className={classes.availabilityIndicator}>
               <ApplicationAvailabilityIndicator application={item} />

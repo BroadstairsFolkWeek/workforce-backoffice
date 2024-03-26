@@ -1,6 +1,10 @@
 import { makeStyles } from "@fluentui/react-components";
-import { useEffect, useState } from "react";
-import { useApplications } from "./ApplicationsContextProvider";
+import { ApplicationInfo } from "../../interfaces/application-data";
+
+interface ProfilePhotoProps {
+  application: ApplicationInfo;
+  thumbnail: boolean;
+}
 
 const useStyles = makeStyles({
   root: {
@@ -10,20 +14,21 @@ const useStyles = makeStyles({
   },
 });
 
-const ProfilePhoto: React.FC<{ photoId: string }> = ({ photoId }) => {
+const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
+  application,
+  thumbnail,
+}) => {
   const classes = useStyles();
-  const { getPhoto } = useApplications();
-  const [photoDataSrcUrl, setPhotoDataSrcUrl] = useState<string | undefined>(
-    undefined
-  );
 
-  useEffect(() => {
-    getPhoto(photoId).then((dataSrcUrl) => setPhotoDataSrcUrl(dataSrcUrl));
-  }, [getPhoto, photoId]);
+  if (!application.photo) {
+    return null;
+  }
 
-  return (
-    <img className={classes.root} src={photoDataSrcUrl} alt="" loading="lazy" />
-  );
+  const srcUrl = thumbnail
+    ? application.photo.thumbnails.medium?.url
+    : application.photo.downloadUrl;
+
+  return <img className={classes.root} src={srcUrl} alt="" loading="lazy" />;
 };
 
 export default ProfilePhoto;
