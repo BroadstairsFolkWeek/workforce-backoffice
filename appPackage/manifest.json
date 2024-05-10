@@ -3,7 +3,6 @@
   "manifestVersion": "1.15",
   "version": "1.0.0",
   "id": "${{TEAMS_APP_ID}}",
-  "packageName": "com.microsoft.teams.extension",
   "developer": {
     "name": "Watford Consulting Ltd.",
     "websiteUrl": "https://watfordconsulting.com/",
@@ -20,7 +19,7 @@
   },
   "description": {
     "short": "Workforce applications",
-    "full": "Workforce applications management"
+    "full": "Browse and search through the list of applications to join the volunteer workforce. View an application's details and progress its status."
   },
   "accentColor": "#FFFFFF",
   "bots": [],
