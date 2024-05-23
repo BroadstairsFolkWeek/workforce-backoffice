@@ -16,7 +16,20 @@
   // "features": {},
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
+  "forwardPorts": [],
+  "portsAttributes": {
+    "7071": {
+      "label": "API",
+      "requireLocalPort": true,
+      "onAutoForward": "silent"
+    },
+    "53000": {
+      "label": "FrontEnd",
+      "requireLocalPort": true,
+      "onAutoForward": "silent"
+    }
+  },
+
 
   // Use 'postCreateCommand' to run commands after the container is created.
   // "postCreateCommand": "yarn install",
