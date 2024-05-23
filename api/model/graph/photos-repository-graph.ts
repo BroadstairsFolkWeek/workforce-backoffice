@@ -232,15 +232,21 @@ const getPhotoUrlsByPhotoIdBatch = (photoIds: string[]) =>
     getPhotoDriveItemUrlsByListItemsFilter
   );
 
-export const photoIdFromCombinedPhotoId = (combinedPhotoId: string): string =>
-  combinedPhotoId.split(":")[1];
+export const photoIdFromEncodedPhotoId = (encodedPhotoId: string) => {
+  const splitIds = encodedPhotoId.split(":");
+  if (splitIds.length > 1) {
+    return splitIds[1];
+  } else {
+    return splitIds[0];
+  }
+};
 
 export const getPhotoUrlsByCombinedPhotoIds = (
   combinedPhotoIds: string[]
 ): TE.TaskEither<Error, ModelPhotoUrlSet[]> =>
   pipe(
     combinedPhotoIds,
-    A.map(photoIdFromCombinedPhotoId),
+    A.map(photoIdFromEncodedPhotoId),
     A.chunksOf(10),
     A.map(getPhotoUrlsByPhotoIdBatch),
     TE.sequenceArray,

@@ -27,7 +27,7 @@ import {
 } from "./profiles-repository";
 import {
   getPhotoUrlsByCombinedPhotoIds,
-  photoIdFromCombinedPhotoId,
+  photoIdFromEncodedPhotoId,
 } from "./graph/photos-repository-graph";
 import { ModelPhotoUrlSet } from "./interfaces/photos";
 
@@ -151,7 +151,7 @@ const addPhotoUrlsToApplication =
         (photoUrlSet) =>
           photoUrlSet.photoId ===
           (application.photoId
-            ? photoIdFromCombinedPhotoId(application.photoId)
+            ? photoIdFromEncodedPhotoId(application.photoId)
             : undefined)
       ),
       O.map((photoUrlSet) => ({ ...application, photo: photoUrlSet })),
