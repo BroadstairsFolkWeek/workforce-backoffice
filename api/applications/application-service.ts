@@ -14,7 +14,7 @@ import {
 
 export const getApplicationsTE = (): TE.TaskEither<
   Error,
-  ApplicationInfo[]
+  readonly ApplicationInfo[]
 > => {
   return modelGetApplicationsTE();
 };

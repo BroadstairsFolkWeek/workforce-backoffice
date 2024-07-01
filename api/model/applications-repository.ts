@@ -1,4 +1,5 @@
 import * as A from "fp-ts/lib/Array";
+import * as ROA from "fp-ts/lib/ReadonlyArray";
 import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -143,11 +144,11 @@ const listItemToApplication = (
 };
 
 const addPhotoUrlsToApplication =
-  (photoUrlSets: ModelPhotoUrlSet[]) =>
+  (photoUrlSets: readonly ModelPhotoUrlSet[]) =>
   (application: ModelApplicationInfo): ModelApplicationInfo => {
     return pipe(
       photoUrlSets,
-      A.findFirst(
+      ROA.findFirst(
         (photoUrlSet) =>
           photoUrlSet.photoId ===
           (application.photoId
@@ -161,7 +162,7 @@ const addPhotoUrlsToApplication =
 
 const addPhotosToApplications = (
   applications: ModelApplicationInfo[]
-): TE.TaskEither<Error, ModelApplicationInfo[]> => {
+): TE.TaskEither<Error, readonly ModelApplicationInfo[]> => {
   const addFnTE = pipe(
     applications,
     A.filter((application) => application.photoId !== undefined),
@@ -271,8 +272,8 @@ export const modelGetApplicationTE = (
       () => modelGetApplication(applicationId),
       (error) => error as Error
     ),
-    TE.chain((application) =>
-      application ? TE.right(application) : TE.left("not-found")
+    TE.chainW((application) =>
+      application ? TE.right(application) : TE.left("not-found" as const)
     )
   );
 };

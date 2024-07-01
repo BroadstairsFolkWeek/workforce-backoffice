@@ -8,7 +8,7 @@ import {
   InvocationContext,
 } from "@azure/functions";
 import { runAsAuthenticatedUser } from "../common-handlers/authenticated-user-http-response-handler";
-import { logError, logInfo, logTraceIO } from "../utilities/logging";
+import { logError, logInfo } from "../utilities/logging";
 import {
   getApplication,
   setApplicationStatus,

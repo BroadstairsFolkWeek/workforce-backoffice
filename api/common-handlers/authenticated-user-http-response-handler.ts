@@ -1,18 +1,23 @@
-import { HttpRequest, InvocationContext } from "@azure/functions";
+import {
+  FunctionResult,
+  HttpRequest,
+  HttpResponseInit,
+  InvocationContext,
+} from "@azure/functions";
 import { runWithAppAsyncContext } from "../context/app-async-context";
 import { runWithLoggingAsyncContext } from "../context/logging-context";
 import { TeamsfxContext } from "../interfaces/teams-context";
 import { isAuthenticated } from "../services/graph-client";
 import { logTrace } from "../utilities/logging";
 
-type ResponseObject = {
-  [key: string]: any;
-};
-
-export const runAsAuthenticatedUser = async <R, TArgs extends any[]>(
+type ResponseObject = HttpResponseInit;
+export const runAsAuthenticatedUser = async <
+  R extends ResponseObject,
+  TArgs extends any[]
+>(
   invocationContext: InvocationContext,
   req: HttpRequest,
-  callback: (...args: TArgs) => R,
+  callback: (...args: TArgs) => FunctionResult<R>,
   ...args: TArgs
 ): Promise<ResponseObject> => {
   return runWithLoggingAsyncContext({ logger: invocationContext }, () => {

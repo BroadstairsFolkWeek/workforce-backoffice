@@ -12,9 +12,9 @@ registerGetLogger(() => {
   return context.logger;
 });
 
-export const runWithLoggingAsyncContext = (
+export const runWithLoggingAsyncContext = <T>(
   context: LoggingAsyncContext,
-  callback
+  callback: () => T
 ) => {
   return asyncLocalStorage.run(context, callback);
 };

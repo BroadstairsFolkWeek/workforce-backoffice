@@ -12,7 +12,7 @@ export const GetApplicationResponse = t.type({
 });
 
 export const GetApplicationsResponse = t.type({
-  applications: t.array(t.exact(ApplicationInfo)),
+  applications: t.readonlyArray(t.exact(ApplicationInfo)),
 });
 
 export const ApplicationStatusUpdateRequest = t.type({

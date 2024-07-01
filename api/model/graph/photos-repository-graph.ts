@@ -1,3 +1,5 @@
+import * as ROA from "fp-ts/lib/ReadonlyArray";
+import * as RONEA from "fp-ts/lib/ReadonlyNonEmptyArray";
 import * as A from "fp-ts/lib/Array";
 import * as NEA from "fp-ts/lib/NonEmptyArray";
 import * as E from "fp-ts/lib/Either";
@@ -152,7 +154,7 @@ const driveItemToUrlSet =
 
     return E.right({
       photoId: photoIdentifiersSet.photoId,
-      downloadUrl: driveItem["@microsoft.graph.downloadUrl"],
+      downloadUrl: (driveItem as any)["@microsoft.graph.downloadUrl"],
       thumbnails: driveItem.thumbnails[0],
     });
   };
@@ -192,19 +194,19 @@ const getPhotoDriveItemUrlsByIdentifierSetBatch = (
 
 const getPhotoDriveItemUrlsByIdentifierSets = (
   photoIdentifierSets: NEA.NonEmptyArray<PhotoIdentifiersSet>
-): TE.TaskEither<Error, ModelPhotoUrlSet[]> => {
+): TE.TaskEither<Error, readonly ModelPhotoUrlSet[]> => {
   return pipe(
     photoIdentifierSets,
     A.chunksOf(10),
     A.map(getPhotoDriveItemUrlsByIdentifierSetBatch),
     TE.sequenceArray,
-    TE.map(A.flatten)
+    TE.map(ROA.flatten)
   );
 };
 
 const getPhotoDriveItemUrlsByListItemsFilter = (
   listItemsFilter: string | undefined
-): TE.TaskEither<Error, ModelPhotoUrlSet[]> => {
+): TE.TaskEither<Error, readonly ModelPhotoUrlSet[]> => {
   return pipe(
     getPhotoIdentifiersByFilter(listItemsFilter),
     TE.chainOptionKW(() => "no-list-items-found" as const)(NEA.fromArray),
@@ -223,7 +225,7 @@ export const getPhotoUrls = () =>
 export const getPhotoUrlsByPhotoId = (photoId: string) =>
   pipe(
     getPhotoDriveItemUrlsByListItemsFilter(`fields/PhotoId eq '${photoId}'`),
-    TE.chainOptionKW(() => "photo-not-found" as const)(NEA.fromArray)
+    TE.chainOptionKW(() => "photo-not-found" as const)(RONEA.fromReadonlyArray)
   );
 
 const getPhotoUrlsByPhotoIdBatch = (photoIds: string[]) =>
@@ -243,12 +245,12 @@ export const photoIdFromEncodedPhotoId = (encodedPhotoId: string) => {
 
 export const getPhotoUrlsByCombinedPhotoIds = (
   combinedPhotoIds: string[]
-): TE.TaskEither<Error, ModelPhotoUrlSet[]> =>
+): TE.TaskEither<Error, readonly ModelPhotoUrlSet[]> =>
   pipe(
     combinedPhotoIds,
     A.map(photoIdFromEncodedPhotoId),
     A.chunksOf(10),
     A.map(getPhotoUrlsByPhotoIdBatch),
     TE.sequenceArray,
-    TE.map(A.flatten)
+    TE.map(ROA.flatten)
   );
