@@ -4,6 +4,9 @@
   "name": "Node.js & TypeScript",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/typescript-node:18",
+
+  "runArgs": ["--add-host=host.docker.internal:host-gateway"],
+
   "features": {
     "ghcr.io/devcontainers/features/azure-cli:1": {},
     "ghcr.io/jlaundry/devcontainer-features/azure-functions-core-tools:1": {},
