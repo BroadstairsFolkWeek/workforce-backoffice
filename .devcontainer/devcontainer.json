@@ -43,7 +43,8 @@
         "ms-vscode-remote.remote-containers",
         "ms-azuretools.vscode-azurefunctions",
         "TeamsDevApp.ms-teams-vscode-extension",
-        "ms-vscode.vscode-node-azure-pack"
+        "ms-vscode.vscode-node-azure-pack",
+        "ms-azuretools.vscode-bicep"
       ]
     }
   }
