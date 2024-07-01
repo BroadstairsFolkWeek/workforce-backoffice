@@ -37,6 +37,7 @@ jobs:
       - name: Sign in to Azure
         run: |
           npm exec --yes --package @microsoft/teamsapp-cli -- teamsapp auth login azure --service-principal true \
+          --interactive false \
           --tenant ${{inputs.tenantId}} --username ${{inputs.azureServicePrincipalClientId}} \
           --password ${{secrets.azureServicePrincipalClientSecret}}
 
