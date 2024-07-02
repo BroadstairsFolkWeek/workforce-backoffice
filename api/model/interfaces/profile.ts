@@ -50,6 +50,7 @@ export const ModelProfile2 = S.Struct({
   telephone: S.optional(S.String),
   version: S.Number,
   photoUrl: S.optional(S.String),
+  photoThumbnailUrl: S.optional(S.String),
   photoIds: S.optional(S.Array(S.String)),
   dbId: S.Number,
 });

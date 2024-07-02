@@ -25,7 +25,7 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
   }
 
   const srcUrl = thumbnail
-    ? application.profile.photoUrl
+    ? application.profile.photoThumbnailUrl
     : application.profile.photoUrl;
 
   return <img className={classes.root} src={srcUrl} alt="" loading="lazy" />;
