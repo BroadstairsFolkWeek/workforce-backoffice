@@ -2,6 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Attach to Node Functions",
+      "type": "node",
+      "request": "attach",
+      "port": 9229
+    },
+    {
       "name": "Launch Remote in Teams (Edge)",
       "type": "msedge",
       "request": "launch",

@@ -16,8 +16,12 @@
   },
   "dependencies": {
     "@azure/functions": "^4.3.0",
+    "@effect/platform": "^0.58.17",
+    "@effect/platform-node": "^0.53.16",
+    "@effect/schema": "^0.68.15",
     "@microsoft/microsoft-graph-client": "^3.0.1",
     "@microsoft/teamsfx": "^2.0.0",
+    "effect": "^3.4.6",
     "fp-ts": "^2.16.4",
     "io-ts": "^2.2.21",
     "io-ts-types": "^0.5.19",

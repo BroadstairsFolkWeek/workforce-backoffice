@@ -1,11 +1,31 @@
+import { Context, Effect } from "effect";
 import { logTrace } from "../utilities/logging";
-import { ModelProfile } from "./interfaces/profile";
+import {
+  ModelProfile,
+  ModelProfileId,
+  ModelProfile2,
+} from "./interfaces/profile";
 import {
   getProfileGraphListItems,
   getProfileGraphListItemsByProfileId,
   getProfileGraphListItemsByProfileIds,
 } from "./graph/profiles-repository-graph";
 import { PersistedProfileListItem } from "./interfaces/sp/profile-sp";
+
+export class ProfileNotFound {
+  readonly _tag = "ProfileNotFound";
+}
+
+export class ProfilesRepository extends Context.Tag("ProfilesRepository")<
+  ProfilesRepository,
+  {
+    readonly modelGetProfileByProfileId: (
+      profileId: ModelProfileId
+    ) => Effect.Effect<ModelProfile2, ProfileNotFound>;
+
+    readonly modelGetProfiles: () => Effect.Effect<readonly ModelProfile2[]>;
+  }
+>() {}
 
 const listItemToProfile = (item: PersistedProfileListItem): ModelProfile => {
   return {

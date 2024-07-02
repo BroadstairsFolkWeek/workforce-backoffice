@@ -186,29 +186,6 @@ const addPhotoToApplication = (
   );
 };
 
-const addProfilesToApplications = async (
-  applications: ModelApplication[]
-): Promise<Array<ModelApplicationInfo>> => {
-  const profileIds = applications.map((application) => application.profileId);
-  const profiles = await modelGetProfilesByIds(profileIds);
-
-  return applications.map((application) => {
-    const profile = profiles.find(
-      (profile) => profile.profileId === application.profileId
-    );
-    if (!profile) {
-      logWarn(
-        "Profile not found for application: " + application.applicationId
-      );
-    }
-
-    return {
-      ...application,
-      profile,
-    };
-  });
-};
-
 const addProfileToApplication = async (
   application: ModelApplication
 ): Promise<ModelApplicationInfo> => {
@@ -225,7 +202,7 @@ const addProfileToApplicationTE = TE.tryCatchK(
 );
 
 export const modelGetApplications = async (): Promise<
-  Array<ModelApplicationInfo>
+  Array<ModelApplication>
 > => {
   logTrace("In applications: getApplications");
 
@@ -235,18 +212,13 @@ export const modelGetApplications = async (): Promise<
   );
   console.log(JSON.stringify(applicationChangesToListItem));
 
-  const applications = applicationGraphListItems
+  return applicationGraphListItems
     .map((gli) => gli.fields)
     .map(listItemToApplication);
-
-  return addProfilesToApplications(applications);
 };
 
 export const modelGetApplicationsTE = () =>
-  pipe(
-    TE.tryCatch(modelGetApplications, E.toError),
-    TE.chain(addPhotosToApplications)
-  );
+  pipe(TE.tryCatch(modelGetApplications, E.toError));
 
 const modelGetApplication = async (
   applicationId: string
@@ -257,8 +229,7 @@ const modelGetApplication = async (
     applicationId
   );
   if (applicationGraphListItem) {
-    const application = listItemToApplication(applicationGraphListItem.fields);
-    return addProfileToApplication(application);
+    return listItemToApplication(applicationGraphListItem.fields);
   }
 
   return null;

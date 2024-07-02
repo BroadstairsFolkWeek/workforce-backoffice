@@ -8,6 +8,7 @@ const profilePartialFields = {
   surname: t.string,
   address: t.string,
   telephone: t.string,
+  photoUrl: t.string,
 };
 
 // Set of fields that must be present for a profile.

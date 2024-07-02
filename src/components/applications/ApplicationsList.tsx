@@ -79,7 +79,7 @@ const ApplicationsList: FC<ApplicationsListProps> = ({
         renderCell: (item) => (
           <div className={classes.photoCell}>
             <div className={classes.img}>
-              {item.photo ? (
+              {item.profile.photoUrl ? (
                 <ProfilePhoto application={item} thumbnail={true} />
               ) : null}
             </div>

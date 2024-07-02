@@ -17,6 +17,24 @@
     "aadAppOauthAuthorityHost": {
       "value": "${{AAD_APP_OAUTH_AUTHORITY_HOST}}"
     },
+    "wfApiUrl": {
+      "value": "${{WF_API_URL}}"
+    },
+    "wfApiClientAuthAuthority": {
+      "value": "${{WF_API_CLIENT_AUTH_AUTHORITY}}"
+    },
+    "wfApiClientAuthClientId": {
+      "value": "${{WF_API_CLIENT_AUTH_CLIENT_ID}}"
+    },
+    "wfApiClientAuthClientSecret": {
+      "value": "${{SECRET_WF_API_CLIENT_AUTH_CLIENT_SECRET}}"
+    },
+    "wfApiClientAuthScope": {
+      "value": "${{WF_API_CLIENT_AUTH_SCOPE}}"
+    },
+    "groupId": {
+      "value": "${{GROUP_ID}}"
+    },
     "functionAppSKU": {
       "value": "B1"
     },

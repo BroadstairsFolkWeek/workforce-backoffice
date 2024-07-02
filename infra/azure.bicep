@@ -9,6 +9,15 @@ param aadAppOauthAuthorityHost string
 @secure()
 param aadAppClientSecret string
 
+param wfApiUrl string
+param wfApiClientAuthAuthority string
+param wfApiClientAuthClientId string
+@secure()
+param wfApiClientAuthClientSecret string
+param wfApiClientAuthScope string
+
+param groupId string
+
 param storageName string = resourceBaseName
 param location string = resourceGroup().location
 param serverfarmsName string = resourceBaseName
@@ -66,7 +75,7 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
     siteConfig: {
       alwaysOn: true
       cors: {
-        allowedOrigins: [ tabEndpoint ]
+        allowedOrigins: [tabEndpoint]
       }
       appSettings: [
         {
@@ -125,6 +134,12 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
           name: 'WEBSITE_AUTH_AAD_ACL'
           value: '{"allowed_client_applications": [${allowedClientApplications}]}'
         }
+        { name: 'WF_API_URL', value: wfApiUrl }
+        { name: 'WF_API_CLIENT_AUTH_AUTHORITY', value: wfApiClientAuthAuthority }
+        { name: 'WF_API_CLIENT_AUTH_CLIENT_ID', value: wfApiClientAuthClientId }
+        { name: 'WF_API_CLIENT_AUTH_CLIENT_SECRET', value: wfApiClientAuthClientSecret }
+        { name: 'WF_API_CLIENT_AUTH_SCOPE', value: wfApiClientAuthScope }
+        { name: 'GROUP_ID', value: groupId }
       ]
       ftpsState: 'FtpsOnly'
     }
@@ -152,7 +167,7 @@ resource functionStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   kind: 'StorageV2'
   location: location
   sku: {
-    name: functionStorageSKU// You can follow https://aka.ms/teamsfx-bicep-add-param-tutorial to add functionStorageSKUproperty to provisionParameters to override the default value "Standard_LRS".
+    name: functionStorageSKU // You can follow https://aka.ms/teamsfx-bicep-add-param-tutorial to add functionStorageSKUproperty to provisionParameters to override the default value "Standard_LRS".
   }
 }
 

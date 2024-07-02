@@ -20,13 +20,13 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
 }) => {
   const classes = useStyles();
 
-  if (!application.photo) {
+  if (!application.profile.photoUrl) {
     return null;
   }
 
   const srcUrl = thumbnail
-    ? application.photo.thumbnails.medium?.url
-    : application.photo.downloadUrl;
+    ? application.profile.photoUrl
+    : application.profile.photoUrl;
 
   return <img className={classes.root} src={srcUrl} alt="" loading="lazy" />;
 };
