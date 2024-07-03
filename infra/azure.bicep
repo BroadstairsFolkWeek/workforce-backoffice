@@ -2,8 +2,10 @@
 @allowed(['dev', 'prod'])
 param environmentName string
 
+param resourceSuffix string
+
 @description('Common part of the name of the resources to be created')
-param resourceBaseName string
+param resourceBaseName string = 'wfbackoffice${resourceSuffix}'
 
 @description('Client ID of the application registration in Azure AD that represents the Azure Functions app. This is used to authenticate requests to the Azure Functions app.')
 param aadAppClientId string

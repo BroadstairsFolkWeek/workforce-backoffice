@@ -5,8 +5,8 @@
     "environmentName": {
       "value": "${{TEAMSFX_ENV}}"
     },
-    "resourceBaseName": {
-      "value": "wfbackoffice${{RESOURCE_SUFFIX}}"
+    "resourceSuffix": {
+      "value": "${{RESOURCE_SUFFIX}}"
     },
     "aadAppClientId": {
       "value": "${{AAD_APP_CLIENT_ID}}"

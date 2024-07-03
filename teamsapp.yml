@@ -61,7 +61,7 @@ provision:
           # Relative path to this yaml file.
           # Placeholders will be replaced with corresponding environment
           # variable before ARM deployment.
-          parameters: ./infra/azure.parameters.json
+          parameters: ./infra/azure.parameters.substituted.json
           # Required when deploying ARM template
           deploymentName: Create-resources-for-tab
       # Teams Toolkit will download this bicep CLI version from github for you,
