@@ -2,6 +2,9 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "environmentName": {
+      "value": "${{TEAMSFX_ENV}}"
+    },
     "resourceBaseName": {
       "value": "wfbackoffice${{RESOURCE_SUFFIX}}"
     },
@@ -34,15 +37,6 @@
     },
     "groupId": {
       "value": "${{GROUP_ID}}"
-    },
-    "functionAppSKU": {
-      "value": "B1"
-    },
-    "storageSKU": {
-      "value": "Standard_LRS"
-    },
-    "functionStorageSKU": {
-      "value": "Standard_LRS"
     }
   }
 }

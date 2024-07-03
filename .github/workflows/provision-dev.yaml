@@ -1,0 +1,36 @@
+name: provision-dev
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "infra/**"
+      - ".github/workflows/provision-dev.yml"
+
+  workflow_dispatch:
+
+env:
+  SECRET_AAD_APP_CLIENT_SECRET: ${{ secrets.AAD_APP_CLIENT_SECRET_DEV }}
+  SECRET_WF_API_CLIENT_AUTH_CLIENT_SECRET: ${{ secrets.WF_API_CLIENT_AUTH_CLIENT_SECRET_DEV }}
+
+jobs:
+  deploy-apps-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "18"
+
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+      - name: Sign in to Azure
+        run: |
+          npm exec --yes --package @microsoft/teamsapp-cli -- teamsapp auth login azure --service-principal true \
+          --interactive false \
+          --tenant ${{vars.AZURE_TENANT_ID}} --username ${{vars.AZURE_SERVICE_PRINCIPAL_CLIENT_ID}} \
+          --password ${{secrets.AZURE_SERVICE_PRINCIPAL_CLIENT_SECRET}}
+
+      - name: Provision hosting environment
+        run: |
+          npm exec --yes --package @microsoft/teamsapp-cli -- teamsapp provision --debug --env ${{vars.TEAMSFX_ENV_NAME}} --interactive false
