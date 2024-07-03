@@ -16,7 +16,7 @@ on:
       - "main"
     paths:
       - "infra/**"
-      - ".github/workflows/provision-dev.yml"
+      - ".github/workflows/provision-dev.yaml"
 
   workflow_dispatch:
 
