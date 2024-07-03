@@ -40,6 +40,15 @@ param tags object = {
   environment: environmentName
 }
 
+module monitoring 'modules/azure-monitor.bicep' = {
+  name: 'azure-monitor'
+  params: {
+    resourceBaseName: resourceBaseName
+    location: location
+    tags: tags
+  }
+}
+
 module frontEnd 'modules/azure-frontend.bicep' = {
   name: 'azure-frontend'
   params: {
@@ -58,6 +67,7 @@ module azureFunctions 'modules/azure-functions.bicep' = {
     resourceBaseName: resourceBaseName
     location: location
     tags: tags
+    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
     allowedOrigins: [frontEnd.outputs.tabEndpoint]
     aadAppTenantId: aadAppTenantId
     aadAppClientId: aadAppClientId

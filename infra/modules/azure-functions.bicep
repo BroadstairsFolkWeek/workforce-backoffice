@@ -40,6 +40,9 @@ param frontEndStorageName string
 @description('API version of the storage account that hosts the frontend')
 param frontEndStorageApiVersion string
 
+@description('Resource ID of the Log Analytics workspace to be used by Application Insights')
+param logAnalyticsWorkspaceId string
+
 param functionAppSKU string = 'B1'
 param functionStorageName string = '${resourceBaseName}api'
 param functionStorageSKU string = 'Standard_LRS'
@@ -56,6 +59,19 @@ var officeUwpPwaClientId = '0ec893e0-5785-4de6-99da-4ed124e5296c'
 var outlookOnlineAddInAppClientId = 'bc59ab01-8403-45c6-8796-ac3ef710b3e3'
 var authorizedClientApplicationIds = '${teamsMobileOrDesktopAppClientId};${teamsWebAppClientId};${officeWebAppClientId1};${officeWebAppClientId2};${outlookDesktopAppClientId};${outlookWebAppClientId};${officeUwpPwaClientId};${outlookOnlineAddInAppClientId}'
 var allowedClientApplications = '"${teamsMobileOrDesktopAppClientId}","${teamsWebAppClientId}","${officeWebAppClientId1}","${officeWebAppClientId2}","${outlookDesktopAppClientId}","${outlookWebAppClientId}","${officeUwpPwaClientId}","${outlookOnlineAddInAppClientId}"'
+
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: resourceBaseName
+  location: location
+  tags: tags
+  kind: 'other'
+  properties: {
+    Application_Type: 'web'
+    Flow_Type: 'Bluefield'
+    Request_Source: 'CustomDeployment'
+    WorkspaceResourceId: logAnalyticsWorkspaceId
+  }
+}
 
 // Azure Storage is required when creating Azure Functions instance
 resource functionStorage 'Microsoft.Storage/storageAccounts@2021-06-01' = {
@@ -93,6 +109,10 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
         allowedOrigins: allowedOrigins
       }
       appSettings: [
+        {
+          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+          value: applicationInsights.properties.InstrumentationKey
+        }
         {
           name: ' AzureWebJobsDashboard'
           value: 'DefaultEndpointsProtocol=https;AccountName=${functionStorage.name};AccountKey=${functionStorage.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}' // Azure Functions internal setting
