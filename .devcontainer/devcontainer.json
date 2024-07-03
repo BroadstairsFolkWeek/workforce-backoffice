@@ -33,7 +33,6 @@
     }
   },
 
-
   // Use 'postCreateCommand' to run commands after the container is created.
   // "postCreateCommand": "yarn install",
 
@@ -47,7 +46,8 @@
         "ms-azuretools.vscode-azurefunctions",
         "TeamsDevApp.ms-teams-vscode-extension",
         "ms-vscode.vscode-node-azure-pack",
-        "ms-azuretools.vscode-bicep"
+        "ms-azuretools.vscode-bicep",
+        "GitHub.vscode-github-actions"
       ]
     }
   }
