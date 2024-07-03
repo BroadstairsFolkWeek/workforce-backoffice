@@ -58,4 +58,4 @@ jobs:
           resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP_NAME }}
           deploymentName: ${{ github.run_number }}
           template: ${{ github.workspace }}/infra/azure.bicep
-          parameters: ${{ github.workspace }}/infra/azure.parameters.sub.json
+          parameters: ${{ github.workspace }}/infra/azure.parameters.substituted.json
