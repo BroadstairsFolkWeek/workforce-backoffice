@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
 
       - name: Read environment variables for the target environment
-        run: cat "${{ github.workspace }}/env/.env.dev" >> "$GITHUB_ENV"
+        run: cat "${{ github.workspace }}/env/.env.dev" | grep -v '^#' >> "$GITHUB_ENV"
 
       - name: Login to Azure
         uses: azure/login@6c251865b4e6290e7b78be643ea2d005bc51f69a
