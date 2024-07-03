@@ -1,4 +1,15 @@
-name: provision-dev
+# Workflow to re-provision the azure resources to host/support the workforce-backoffice Teams App.
+#
+# Note, this workflow will only reprovision the azure resources used by the workforce-backoffice Teams App.
+# Actions associated with the 'teamsapp provision' command will not be executed since those actions are
+# concerned with creating/update the Microsoft Entra App, and registering the Teams app. These actions would
+# require logging on to the target M365 tenant, and are not suitable for automation.
+#
+# It is expected that, prior to execution of this workflow, the 'teamsapp provision' command (or the equivalent
+# step in the Teams Toolkit in vscode) would have already been execution to prepare the Microsoft Entra App and
+# register the Teams App. Those actions will populate the env/.env.{env-name} file used by this workflow.
+
+name: provision-azure-resources-dev
 on:
   push:
     branches:
@@ -14,23 +25,27 @@ env:
   SECRET_WF_API_CLIENT_AUTH_CLIENT_SECRET: ${{ secrets.WF_API_CLIENT_AUTH_CLIENT_SECRET_DEV }}
 
 jobs:
-  deploy-apps-dev:
+  provision-azure-resources-dev:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
-        with:
-          node-version: "18"
-
       - name: Checkout repository
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
 
-      - name: Sign in to Azure
-        run: |
-          npm exec --yes --package @microsoft/teamsapp-cli -- teamsapp auth login azure --service-principal true \
-          --interactive false \
-          --tenant ${{vars.AZURE_TENANT_ID}} --username ${{vars.AZURE_SERVICE_PRINCIPAL_CLIENT_ID}} \
-          --password ${{secrets.AZURE_SERVICE_PRINCIPAL_CLIENT_SECRET}}
+      - name: Read environment variables for the target environment
+        run: cat "${{ github.workspace }}/env/.env.dev" >> "$GITHUB_ENV"
 
-      - name: Provision hosting environment
-        run: |
-          npm exec --yes --package @microsoft/teamsapp-cli -- teamsapp provision --debug --env ${{vars.TEAMSFX_ENV_NAME}} --interactive false
+      - name: Login to Azure
+        uses: azure/login@6c251865b4e6290e7b78be643ea2d005bc51f69a
+        with:
+          client-id: ${{ vars.AZURE_SERVICE_PRINCIPAL_CLIENT_ID }}
+          creds: ${{ secrets.AAD_APP_CLIENT_SECRET_DEV }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+
+      - name: Provision base resources
+        uses: azure/arm-deploy@a1361c2c2cd398621955b16ca32e01c65ea340f5
+        with:
+          scope: resourcegroup
+          resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP_NAME }}
+          deploymentName: ${{ github.run_number }}
+          template: ${{ github.workspace }}/infra/azure.bicep
+          parameters: ${{ github.workspace }}/infra/azure.parameters.json
