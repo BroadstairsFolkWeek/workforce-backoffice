@@ -9,7 +9,7 @@ const config = {
 
 export function getApiEndpoint(): IOE.IOEither<Error, string> {
   return () =>
-    E.fromNullable(new Error("REACT_APP_FUNC_ENDPOINT is not set"))(
+    E.fromNullable(new Error("VITE_REACT_APP_FUNC_ENDPOINT is not set"))(
       config.apiEndpoint
     );
 }
