@@ -104,7 +104,7 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
     serverFarmId: serverfarms.id
     httpsOnly: true
     siteConfig: {
-      alwaysOn: true
+      alwaysOn: false
       cors: {
         allowedOrigins: allowedOrigins
       }
