@@ -88,8 +88,7 @@ resource serverfarms 'Microsoft.Web/serverfarms@2021-02-01' = {
   kind: 'functionapp'
   location: location
   sku: {
-    name: 'Y1'
-    tier: 'Dynamic'
+    name: 'B1'
   }
   properties: {}
   tags: tags
