@@ -7,7 +7,7 @@ on:
       - prod
 
 jobs:
-  provision-azure-resources-dev:
+  provision-azure-resources-prod:
     runs-on: ubuntu-latest
     environment: PROD
     permissions:
