@@ -43,7 +43,6 @@ param frontEndStorageApiVersion string
 @description('Resource ID of the Log Analytics workspace to be used by Application Insights')
 param logAnalyticsWorkspaceId string
 
-param functionAppSKU string = 'B1'
 param functionStorageName string = '${resourceBaseName}api'
 param functionStorageSKU string = 'Standard_LRS'
 
@@ -89,7 +88,8 @@ resource serverfarms 'Microsoft.Web/serverfarms@2021-02-01' = {
   kind: 'functionapp'
   location: location
   sku: {
-    name: functionAppSKU
+    name: 'Y1'
+    tier: 'Dynamic'
   }
   properties: {}
   tags: tags
