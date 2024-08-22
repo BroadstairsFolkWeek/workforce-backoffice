@@ -9,7 +9,6 @@ on:
 jobs:
   provision-azure-resources-prod:
     runs-on: ubuntu-latest
-    environment: PROD
     permissions:
       id-token: write
       contents: read
