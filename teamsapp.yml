@@ -149,7 +149,7 @@ deploy:
     name: install dependencies
     with:
       workingDirectory: api
-      args: install
+      args: ci
   - uses: cli/runNpmCommand
     name: build app
     with:
