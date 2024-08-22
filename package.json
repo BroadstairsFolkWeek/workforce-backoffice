@@ -2,7 +2,7 @@
   "name": "workforce-backoffice",
   "version": "0.1.0",
   "engines": {
-    "node": "16 || 18"
+    "node": "18"
   },
   "private": true,
   "dependencies": {
@@ -21,7 +21,6 @@
     "runtypes": "^6.7.0"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@microsoft/teamsapp-cli": "^3.0.0",
     "@types/node": "^18.19.45",
     "@types/react": "^18.0.0",
