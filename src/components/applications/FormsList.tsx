@@ -12,17 +12,17 @@ import {
   shorthands,
 } from "@fluentui/react-components";
 import { FC, useMemo } from "react";
-import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
+import FormAvailabilityIndicator from "./FormAvailabilityIndicator";
 import ProfilePhoto from "./ProfilePhoto";
-import { ApplicationInfo } from "../../interfaces/application-data";
+import { Form } from "../../interfaces/form";
 
-type Item = ApplicationInfo;
+type Item = Form;
 
-type ApplicationsListProps = {
-  applications: ApplicationInfo[];
-  selectedApplication: ApplicationInfo | undefined;
-  applicationSelected: (application: ApplicationInfo) => void;
-  clearSelectedApplication: () => void;
+type FormsListProps = {
+  forms: readonly Form[];
+  selectedForm: Form | undefined;
+  formSelected: (form: Form) => void;
+  clearSelectedForm: () => void;
 };
 
 const useStyles = makeStyles({
@@ -63,11 +63,11 @@ const useStyles = makeStyles({
   },
 });
 
-const ApplicationsList: FC<ApplicationsListProps> = ({
-  applications,
-  selectedApplication,
-  applicationSelected,
-  clearSelectedApplication,
+const FormsList: FC<FormsListProps> = ({
+  forms,
+  selectedForm,
+  formSelected,
+  clearSelectedForm,
 }) => {
   const classes = useStyles();
 
@@ -79,12 +79,12 @@ const ApplicationsList: FC<ApplicationsListProps> = ({
         renderCell: (item) => (
           <div className={classes.photoCell}>
             <div className={classes.img}>
-              {item.profile.photoUrl ? (
-                <ProfilePhoto application={item} thumbnail={true} />
+              {item.profile.metadata.photoThumbnailUrl ? (
+                <ProfilePhoto form={item} thumbnail={true} />
               ) : null}
             </div>
             <div className={classes.availabilityIndicator}>
-              <ApplicationAvailabilityIndicator application={item} />
+              <FormAvailabilityIndicator form={item} />
             </div>
           </div>
         ),
@@ -119,9 +119,7 @@ const ApplicationsList: FC<ApplicationsListProps> = ({
             <div>
               <Text>{item.profile?.email}</Text>
             </div>
-            <div>
-              <Text>{item.telephone}</Text>
-            </div>
+            <div>{/* <Text>{item.telephone}</Text> */}</div>
           </div>
         ),
       }),
@@ -131,15 +129,9 @@ const ApplicationsList: FC<ApplicationsListProps> = ({
         renderHeaderCell: () => "Requested teams",
         renderCell: (item) => (
           <div>
-            <div>
-              <Text>{item.teamPreference1}</Text>
-            </div>
-            <div>
-              <Text>{item.teamPreference2}</Text>
-            </div>
-            <div>
-              <Text>{item.teamPreference3}</Text>
-            </div>
+            <div>{/* <Text>{item.teamPreference1}</Text> */}</div>
+            <div>{/* <Text>{item.teamPreference2}</Text> */}</div>
+            <div>{/* <Text>{item.teamPreference3}</Text> */}</div>
           </div>
         ),
       }),
@@ -147,21 +139,27 @@ const ApplicationsList: FC<ApplicationsListProps> = ({
       createTableColumn<Item>({
         columnId: "status",
         renderHeaderCell: () => "Status / Options",
-        renderCell: (item) => <Text>{item.status}</Text>,
+        renderCell: (item) => <Text>{item.submissionStatus}</Text>,
       }),
 
       createTableColumn<Item>({
         columnId: "createdDateTime",
         renderHeaderCell: () => "Created",
-        renderCell: (item) => <Text>{item.createdDate.toLocaleString()}</Text>,
-        compare: (a, b) => a.createdDate.getTime() - b.createdDate.getTime(),
+        renderCell: (item) => (
+          <Text>{item.createdDateTimeUtc.toLocaleString()}</Text>
+        ),
+        compare: (a, b) =>
+          a.createdDateTimeUtc.getTime() - b.createdDateTimeUtc.getTime(),
       }),
 
       createTableColumn<Item>({
         columnId: "modifiedDateTime",
         renderHeaderCell: () => "Modified",
-        renderCell: (item) => <Text>{item.modifiedDate.toLocaleString()}</Text>,
-        compare: (a, b) => a.modifiedDate.getTime() - b.modifiedDate.getTime(),
+        renderCell: (item) => (
+          <Text>{item.modifiedDateTimeUtc.toLocaleString()}</Text>
+        ),
+        compare: (a, b) =>
+          a.modifiedDateTimeUtc.getTime() - b.modifiedDateTimeUtc.getTime(),
       }),
     ],
     [classes.availabilityIndicator, classes.img, classes.photoCell]
@@ -170,10 +168,10 @@ const ApplicationsList: FC<ApplicationsListProps> = ({
   return (
     <DataGrid
       className={classes.grid}
-      items={applications}
+      items={[...forms]}
       columns={columns}
       sortable
-      getRowId={(item) => item.applicationId}
+      getRowId={(item) => item.id}
       focusMode="none"
       selectionMode="single"
       resizableColumns
@@ -182,18 +180,12 @@ const ApplicationsList: FC<ApplicationsListProps> = ({
         name: { minWidth: 200 },
         contact: { minWidth: 300 },
       }}
-      selectedItems={
-        selectedApplication ? [selectedApplication.applicationId] : []
-      }
+      selectedItems={selectedForm ? [selectedForm.id] : []}
       onSelectionChange={(e, data) => {
         if (data.selectedItems.size > 0) {
-          applicationSelected(
-            applications.find((app) =>
-              data.selectedItems.has(app.applicationId)
-            )!
-          );
+          formSelected(forms.find((form) => data.selectedItems.has(form.id))!);
         } else {
-          clearSelectedApplication();
+          clearSelectedForm();
         }
       }}
     >
@@ -224,4 +216,4 @@ const ApplicationsList: FC<ApplicationsListProps> = ({
   );
 };
 
-export default ApplicationsList;
+export default FormsList;

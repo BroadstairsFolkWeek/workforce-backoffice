@@ -8,11 +8,11 @@ import {
 
 import Privacy from "./Privacy";
 import TermsOfUse from "./TermsOfUse";
-import ApplicationsRoute, {
-  applicationsLoader,
-} from "./applications/ApplicationsRoute";
+import FormsRoute, { formsLoader } from "./applications/FormsRoute";
 import Root from "../routes/Root";
 import ErrorPage from "./Error";
+import { Provider } from "react-redux";
+import store from "../store/store";
 
 const AppRouter: React.FC = () => {
   const router = createBrowserRouter(
@@ -23,8 +23,8 @@ const AppRouter: React.FC = () => {
           <Route path="termsofuse" element={<TermsOfUse />} />
           <Route
             path="applications"
-            element={<ApplicationsRoute />}
-            loader={applicationsLoader}
+            element={<FormsRoute />}
+            loader={formsLoader}
           />
           <Route path="*" element={<Navigate to={"/applications"} />}></Route>
         </Route>
@@ -32,7 +32,11 @@ const AppRouter: React.FC = () => {
     )
   );
 
-  return <RouterProvider router={router} />;
+  return (
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  );
 };
 
 export default AppRouter;

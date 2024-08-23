@@ -1,8 +1,8 @@
 import { makeStyles } from "@fluentui/react-components";
-import { ApplicationInfo } from "../../interfaces/application-data";
+import { Form } from "../../interfaces/form";
 
 interface ProfilePhotoProps {
-  application: ApplicationInfo;
+  form: Form;
   thumbnail: boolean;
 }
 
@@ -15,18 +15,18 @@ const useStyles = makeStyles({
 });
 
 const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
-  application,
+  form: application,
   thumbnail,
 }) => {
   const classes = useStyles();
 
-  if (!application.profile.photoUrl) {
+  if (!application.profile.metadata.photoUrl) {
     return null;
   }
 
   const srcUrl = thumbnail
-    ? application.profile.photoThumbnailUrl
-    : application.profile.photoUrl;
+    ? application.profile.metadata.photoThumbnailUrl
+    : application.profile.metadata.photoUrl;
 
   return <img className={classes.root} src={srcUrl} alt="" loading="lazy" />;
 };

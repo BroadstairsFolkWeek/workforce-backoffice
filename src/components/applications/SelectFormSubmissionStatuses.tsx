@@ -1,10 +1,11 @@
 import { Checkbox, makeStyles } from "@fluentui/react-components";
 import { ApplicationStatus } from "../../interfaces/application-data";
 import { useCallback, useMemo } from "react";
+import { Form } from "../../interfaces/form";
 
-export interface SelectApplicationStatusesProps {
-  selectedStatuses: Set<ApplicationStatus>;
-  setSelectedStatuses: (statuses: Set<ApplicationStatus>) => void;
+export interface SelectFormSubmissionStatusesProps {
+  selectedStatuses: Set<Form["submissionStatus"]>;
+  setSelectedStatuses: (statuses: Set<Form["submissionStatus"]>) => void;
 }
 
 const useStyles = makeStyles({
@@ -16,13 +17,13 @@ const useStyles = makeStyles({
   },
 });
 
-export interface ApplicationCheckboxProps {
-  status: ApplicationStatus;
+export interface FormCheckboxProps {
+  status: Form["submissionStatus"];
   selected: boolean;
-  setSelected: (status: ApplicationStatus, selected: boolean) => void;
+  setSelected: (status: Form["submissionStatus"], selected: boolean) => void;
 }
 
-const ApplicationCheckbox: React.FC<ApplicationCheckboxProps> = ({
+const FormCheckbox: React.FC<FormCheckboxProps> = ({
   status,
   selected,
   setSelected,
@@ -36,24 +37,20 @@ const ApplicationCheckbox: React.FC<ApplicationCheckboxProps> = ({
   );
 };
 
-const selectableStatuses: ApplicationStatus[] = [
-  "profile-required",
-  "info-required",
-  "photo-required",
-  "documents-required",
-  "ready-to-submit",
+const selectableStatuses: Form["submissionStatus"][] = [
+  "draft",
+  "submittable",
   "submitted",
-  "complete",
+  "accepted",
 ];
 
-const SelectApplicationStatuses: React.FC<SelectApplicationStatusesProps> = ({
-  selectedStatuses,
-  setSelectedStatuses,
-}) => {
+const SelectFormSubmissionStatuses: React.FC<
+  SelectFormSubmissionStatusesProps
+> = ({ selectedStatuses, setSelectedStatuses }) => {
   const classes = useStyles();
 
   const addRemoveSelectedStatus = useCallback(
-    (status: ApplicationStatus, selected: boolean) => {
+    (status: Form["submissionStatus"], selected: boolean) => {
       const newSelectedStatuses = new Set(selectedStatuses);
       if (selected) {
         newSelectedStatuses.add(status);
@@ -68,7 +65,7 @@ const SelectApplicationStatuses: React.FC<SelectApplicationStatusesProps> = ({
 
   const checkboxElements = useMemo(() => {
     return selectableStatuses.map((selectableStatus) => (
-      <ApplicationCheckbox
+      <FormCheckbox
         key={selectableStatus}
         status={selectableStatus}
         selected={selectedStatuses.has(selectableStatus)}
@@ -80,4 +77,4 @@ const SelectApplicationStatuses: React.FC<SelectApplicationStatusesProps> = ({
   return <div className={classes.root}>{checkboxElements}</div>;
 };
 
-export default SelectApplicationStatuses;
+export default SelectFormSubmissionStatuses;

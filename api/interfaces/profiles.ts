@@ -1,27 +1,23 @@
-import * as t from "io-ts";
+import { Schema as S } from "@effect/schema";
 
-// Set of fields that are optional for a profile.
-const profilePartialFields = {
-  displayName: t.string,
-  email: t.string,
-  givenName: t.string,
-  surname: t.string,
-  address: t.string,
-  telephone: t.string,
-};
+export const ProfileId = S.String.pipe(S.brand("ProfileId"));
+export type ProfileId = S.Schema.Type<typeof ProfileId>;
 
-// Set of fields that must be present for a profile.
-const profileRequiredFields = {};
-
-const profileMetadata = {
-  profileId: t.string,
-};
-
-// Profile type that is a combination of the optional and required fields.
-export const Profile = t.intersection([
-  t.partial(profilePartialFields),
-  t.type(profileRequiredFields),
-  t.type(profileMetadata),
-]);
-
-export type Profile = t.TypeOf<typeof Profile>;
+export const Profile = S.Struct({
+  id: ProfileId,
+  email: S.String,
+  displayName: S.String,
+  givenName: S.optional(S.String),
+  surname: S.optional(S.String),
+  address: S.optional(S.String),
+  telephone: S.optional(S.String),
+  metadata: S.Struct({
+    version: S.Number,
+    photoId: S.optional(S.String),
+    photoUrl: S.optional(S.String),
+    photoThumbnailUrl: S.optional(S.String),
+    photoRequired: S.Boolean,
+    profileInformationRequired: S.Boolean,
+  }),
+});
+export interface Profile extends S.Schema.Type<typeof Profile> {}

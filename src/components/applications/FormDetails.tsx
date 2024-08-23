@@ -6,17 +6,17 @@ import {
   shorthands,
 } from "@fluentui/react-components";
 import { tokens } from "@fluentui/react-theme";
-import ApplicationAvailabilityIndicator from "./ApplicationAvailabilityIndicator";
+import FormAvailabilityIndicator from "./FormAvailabilityIndicator";
 import ProfilePhoto from "./ProfilePhoto";
-import { ApplicationStatus } from "../../../api/interfaces/applications";
 import StatusSelection, { StatusSelectionProps } from "./StatusSelection";
-import { ApplicationInfo } from "../../interfaces/application-data";
+import { Form } from "../../interfaces/form";
 
-export type ApplicationsDetailsProps =
-  StatusSelectionProps<ApplicationStatus> & {
-    application: ApplicationInfo;
-    emailSelected: (email: string) => void;
-  };
+export type FormDetailsProps = StatusSelectionProps<
+  Form["submissionStatus"]
+> & {
+  form: Form;
+  emailSelected: (email: string) => void;
+};
 
 const useStyles = makeStyles({
   root: {
@@ -101,8 +101,8 @@ const useStyles = makeStyles({
   },
 });
 
-const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
-  application,
+const FormDetails: FC<FormDetailsProps> = ({
+  form,
   emailSelected,
   ...statusSelectProps
 }) => {
@@ -116,24 +116,24 @@ const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
       <div className={classes.personalDetailsSection}>
         <div className={classes.photoCell}>
           <div className={classes.img}>
-            {application.profile.photoUrl ? (
-              <ProfilePhoto application={application} thumbnail={false} />
+            {form.profile.metadata.photoUrl ? (
+              <ProfilePhoto form={form} thumbnail={false} />
             ) : null}
           </div>
           <div className={classes.availabilityIndicator}>
-            <ApplicationAvailabilityIndicator application={application} />
+            <FormAvailabilityIndicator form={form} />
           </div>
         </div>
         <div className={classes.personalDetailsGrid}>
           <Text>Given name</Text>
-          <Text>{application.profile?.givenName}</Text>
+          <Text>{form.profile?.givenName}</Text>
           <Text>Surname</Text>
-          <Text>{application.profile?.surname}</Text>
+          <Text>{form.profile?.surname}</Text>
           <Text>Display name</Text>
-          <Text>{application.profile?.displayName}</Text>
+          <Text>{form.profile?.displayName}</Text>
           <Text>Address</Text>
           <Text style={{ whiteSpace: "pre-line" }}>
-            {application.profile?.address}
+            {form.profile?.address}
           </Text>
           <Text>Email</Text>
           <div>
@@ -141,121 +141,121 @@ const ApplicationsDetails: FC<ApplicationsDetailsProps> = ({
               <Button
                 onClick={(e) => {
                   e.preventDefault();
-                  if (application.profile?.email) {
-                    emailSelected(application.profile.email);
+                  if (form.profile?.email) {
+                    emailSelected(form.profile.email);
                   }
                 }}
               >
-                {application.profile?.email}
+                {form.profile?.email}
               </Button>
             </div>
           </div>
           <Text>Telephone</Text>
-          <Text>{application.profile?.telephone}</Text>
+          <Text>{form.profile?.telephone}</Text>
           <Text>Age group</Text>
-          <Text>{application.ageGroup}</Text>
+          {/* <Text>{form.ageGroup}</Text> */}
         </div>
       </div>
       <div className={classes.applicationDetailsSection}>
         <div className={classes.applicationDetailsGrid}>
-          <Text>Accepted T&Cs</Text>
-          <Text>{application.acceptedTermsAndConditions ? "Yes" : "No"}</Text>
+          {/* <Text>Accepted T&Cs</Text>
+          <Text>{form.acceptedTermsAndConditions ? "Yes" : "No"}</Text> */}
 
-          <Text>Emergency contact</Text>
+          {/* <Text>Emergency contact</Text>
           <div>
             <div>
-              <Text>{application.emergencyContactName}</Text>
+              <Text>{form.emergencyContactName}</Text>
             </div>
             <div>
-              <Text>{application.emergencyContactTelephone}</Text>
+              <Text>{form.emergencyContactTelephone}</Text>
             </div>
-          </div>
+          </div> */}
 
-          <Text>Previous volunteer</Text>
+          {/* <Text>Previous volunteer</Text>
           <div>
             <div>
-              <Text>{application.previousVolunteer ? "Yes" : "No"}</Text>
+              <Text>{form.previousVolunteer ? "Yes" : "No"}</Text>
             </div>
             <div>
-              <Text>{application.previousTeam}</Text>
+              <Text>{form.previousTeam}</Text>
             </div>
-          </div>
+          </div> */}
 
-          <Text>First aid certificate</Text>
-          <Text>{application.firstAidCertificate ? "Yes" : "No"}</Text>
+          {/* <Text>First aid certificate</Text>
+          <Text>{form.firstAidCertificate ? "Yes" : "No"}</Text>
 
           <Text>Occupation / Skills</Text>
-          <Text>{application.occupationOrSkills}</Text>
+          <Text>{form.occupationOrSkills}</Text> */}
 
-          {application.dbsDisclosureNumber ? (
+          {/* {form.dbsDisclosureNumber ? (
             <>
               <Text>DBS disclosure number/date</Text>
               <div>
                 <div>
-                  <Text>{application.dbsDisclosureNumber}</Text>
+                  <Text>{form.dbsDisclosureNumber}</Text>
                 </div>
                 <div>
-                  <Text>{application.dbsDisclosureDate}</Text>
+                  <Text>{form.dbsDisclosureDate}</Text>
                 </div>
               </div>
             </>
-          ) : null}
+          ) : null} */}
 
-          <Text>Camping required</Text>
-          <Text>{application.camping ? "Yes" : "No"}</Text>
+          {/* <Text>Camping required</Text>
+          <Text>{form.camping ? "Yes" : "No"}</Text>
 
           <Text>Tshirt size</Text>
-          <Text>{application.tShirtSize}</Text>
+          <Text>{form.tShirtSize}</Text>
 
           <Text>Other information</Text>
-          <Text>{application.otherInformation}</Text>
+          <Text>{form.otherInformation}</Text> */}
 
-          <Text>Requested teams</Text>
+          {/* <Text>Requested teams</Text>
           <div>
             <div>
-              <Text>{application.teamPreference1}</Text>
+              <Text>{form.teamPreference1}</Text>
             </div>
             <div>
-              <Text>{application.teamPreference2}</Text>
+              <Text>{form.teamPreference2}</Text>
             </div>
             <div>
-              <Text>{application.teamPreference3}</Text>
+              <Text>{form.teamPreference3}</Text>
             </div>
-          </div>
+          </div> */}
 
-          <Text>Requested people</Text>
-          <Text>{application.personsPreference}</Text>
+          {/* <Text>Requested people</Text>
+          <Text>{form.personsPreference}</Text> */}
 
-          <Text>Constraints</Text>
-          <Text>{application.constraints}</Text>
+          {/* <Text>Constraints</Text>
+          <Text>{form.constraints}</Text> */}
 
-          <Text>Join WhatsApp group</Text>
-          <Text>{application.whatsApp ? "Yes" : "No"}</Text>
+          {/* <Text>Join WhatsApp group</Text>
+          <Text>{form.whatsApp ? "Yes" : "No"}</Text> */}
 
-          <Text>Consent NewLife Wills</Text>
-          <Text>{application.consentNewlifeWills ? "Yes" : "No"}</Text>
+          {/* <Text>Consent NewLife Wills</Text>
+          <Text>{form.consentNewlifeWills ? "Yes" : "No"}</Text> */}
         </div>
       </div>
       <div className={classes.metadataSection}>
         <div className={classes.metaDetailsGrid}>
           <Text size={100}>Application ID</Text>
-          <Text size={100}>{application.applicationId}</Text>
+          <Text size={100}>{form.id}</Text>
 
           <Text size={100}>Profile ID</Text>
-          <Text size={100}>{application.profileId}</Text>
+          <Text size={100}>{form.profileId}</Text>
 
           <Text size={100}>Photo ID</Text>
-          <Text size={100}>{application.photoId}</Text>
+          <Text size={100}>{form.profile.metadata.photoId}</Text>
 
           <Text size={100}>Created</Text>
-          <Text size={100}>{application.createdDate.toLocaleString()}</Text>
+          <Text size={100}>{form.createdDateTimeUtc.toLocaleString()}</Text>
 
           <Text size={100}>Modified</Text>
-          <Text size={100}>{application.modifiedDate.toLocaleString()}</Text>
+          <Text size={100}>{form.modifiedDateTimeUtc.toLocaleString()}</Text>
         </div>
       </div>
     </div>
   );
 };
 
-export default ApplicationsDetails;
+export default FormDetails;

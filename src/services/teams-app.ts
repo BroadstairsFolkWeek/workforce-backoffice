@@ -1,3 +1,4 @@
+import { Effect } from "effect";
 import * as E from "fp-ts/lib/Either";
 import * as IOE from "fp-ts/lib/IOEither";
 import { TeamsUserCredential } from "@microsoft/teamsfx";
@@ -20,4 +21,8 @@ export function getTeamsUserCredentialIOE(): IOE.IOEither<
     E.fromNullable(new Error("TeamsUserCredential is not set"))(
       teamsUserCredential
     );
+}
+
+export function getTeamsUserCredentialEffect() {
+  return Effect.fromNullable(teamsUserCredential);
 }

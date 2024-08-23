@@ -8,6 +8,7 @@ import {
   httpPatchApplication,
   httpPostApplicationStatus,
 } from "./application";
+import httpGetForms from "./forms";
 
 const teamsFxContextInput = input.generic({
   type: "TeamsFx",
@@ -48,4 +49,10 @@ app.http("draftMail", {
   methods: ["POST"],
   extraInputs: [teamsFxContextInput],
   handler: draftMailHttpTrigger,
+});
+
+app.http("forms", {
+  methods: ["GET"],
+  extraInputs: [teamsFxContextInput],
+  handler: httpGetForms,
 });

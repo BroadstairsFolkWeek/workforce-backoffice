@@ -106,26 +106,26 @@ export const apiSetApplicationStatus =
     );
   };
 
-export const apiSetApplicationStatusTE =
-  (applicationId: string) => (version: number) => (status: ApplicationStatus) =>
-    pipe(
-      callApiPostTE<ApplicationStatusUpdateResponse>(
-        `applications/${applicationId}/status`,
-        {
-          status,
-          version,
-        }
-      ),
-      TE.chainEitherKW(sanitiseApplicationStatusUpdateResponse),
-      TE.mapLeft((error: Error | AxiosError | ApiValidationError) => {
-        if (axios.isAxiosError(error)) {
-          if (error?.response?.status === 404) {
-            return "not-found";
-          } else if (error?.response?.status === 409) {
-            return "conflict";
-          }
-        }
-        return error as Error;
-      }),
-      TE.map((response) => response.application)
-    );
+// export const apiSetApplicationStatusTE =
+//   (applicationId: string) => (version: number) => (status: ApplicationStatus) =>
+//     pipe(
+//       callApiPostTE<ApplicationStatusUpdateResponse>(
+//         `applications/${applicationId}/status`,
+//         {
+//           status,
+//           version,
+//         }
+//       ),
+//       TE.chainEitherKW(sanitiseApplicationStatusUpdateResponse),
+//       TE.mapLeft((error: Error | AxiosError | ApiValidationError) => {
+//         if (axios.isAxiosError(error)) {
+//           if (error?.response?.status === 404) {
+//             return "not-found";
+//           } else if (error?.response?.status === 409) {
+//             return "conflict";
+//           }
+//         }
+//         return error as Error;
+//       }),
+//       TE.map((response) => response.application)
+//     );

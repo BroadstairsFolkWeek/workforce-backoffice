@@ -91,7 +91,6 @@ const Application = t.intersection([
 
 export const ApplicationInfo = t.intersection([
   Application,
-  t.partial({ profile: Profile }),
   t.partial({ photo: PhotoUrlSet }),
 ]);
 

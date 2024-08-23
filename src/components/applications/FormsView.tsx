@@ -10,25 +10,20 @@ import {
 } from "@fluentui/react-components";
 import { Dismiss24Regular } from "@fluentui/react-icons";
 
-import {
-  ApplicationInfo,
-  ApplicationStatus,
-} from "../../interfaces/application-data";
-import ApplicationsList from "./ApplicationsList";
-import ApplicationsHeaderView from "./ApplicationsHeaderView";
-import ApplicationsDetails, {
-  ApplicationsDetailsProps,
-} from "./ApplicationDetails";
+import FormsList from "./FormsList";
+import FormsHeaderView from "./FormsHeaderView";
+import FormDetails, { FormDetailsProps } from "./FormDetails";
+import { Form } from "../../interfaces/form";
 
-type ApplicationsViewProps = Omit<ApplicationsDetailsProps, "application"> & {
-  applications: ApplicationInfo[];
-  selectedApplication: ApplicationInfo | undefined;
+type FormsViewProps = Omit<FormDetailsProps, "form"> & {
+  forms: readonly Form[];
+  selectedForm: Form | undefined;
   filterString: string;
-  filterSelectedStatuses: Set<ApplicationStatus>;
+  filterSelectedStatuses: Set<Form["submissionStatus"]>;
   setFilterString: (s: string) => void;
-  setFilterSelectedStatuses: (statuses: Set<ApplicationStatus>) => void;
-  applicationSelected: (application: ApplicationInfo) => void;
-  clearSelectedApplication: () => void;
+  setFilterSelectedStatuses: (statuses: Set<Form["submissionStatus"]>) => void;
+  formSelected: (form: Form) => void;
+  clearSelectedForm: () => void;
   emailSelected: (email: string) => void;
 };
 
@@ -47,44 +42,44 @@ const useStyles = makeStyles({
   },
 });
 
-const ApplicationsView: React.FC<ApplicationsViewProps> = ({
-  applications,
-  selectedApplication,
+const FormsView: React.FC<FormsViewProps> = ({
+  forms,
+  selectedForm,
   filterString,
   filterSelectedStatuses,
   setFilterString,
   setFilterSelectedStatuses,
-  applicationSelected,
-  clearSelectedApplication,
+  formSelected,
+  clearSelectedForm,
   ...applicationDetailsProps
 }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <ApplicationsHeaderView
+      <FormsHeaderView
         filterString={filterString}
         filterSelectedStatuses={filterSelectedStatuses}
-        counterValue={applications.length}
+        counterValue={forms.length}
         setFilterString={setFilterString}
         setFilterSelectedStatuses={setFilterSelectedStatuses}
       />
 
       <Divider />
 
-      <ApplicationsList
-        applications={applications}
-        selectedApplication={selectedApplication}
-        applicationSelected={applicationSelected}
-        clearSelectedApplication={clearSelectedApplication}
+      <FormsList
+        forms={forms}
+        selectedForm={selectedForm}
+        formSelected={formSelected}
+        clearSelectedForm={clearSelectedForm}
       />
 
-      {selectedApplication ? (
+      {selectedForm ? (
         <OverlayDrawer
           size="medium"
           position="end"
           open={true}
-          onOpenChange={() => clearSelectedApplication()}
+          onOpenChange={() => clearSelectedForm()}
         >
           <DrawerHeader>
             <DrawerHeaderTitle
@@ -93,19 +88,15 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
                   appearance="subtle"
                   aria-label="Close"
                   icon={<Dismiss24Regular />}
-                  onClick={() => clearSelectedApplication()}
+                  onClick={() => clearSelectedForm()}
                 />
               }
             >
-              {selectedApplication.profile?.givenName}{" "}
-              {selectedApplication.profile?.surname}
+              {selectedForm.profile?.givenName} {selectedForm.profile?.surname}
             </DrawerHeaderTitle>
           </DrawerHeader>
           <DrawerBody className={classes.drawerBody}>
-            <ApplicationsDetails
-              {...applicationDetailsProps}
-              application={selectedApplication}
-            />
+            <FormDetails {...applicationDetailsProps} form={selectedForm} />
           </DrawerBody>
         </OverlayDrawer>
       ) : null}
@@ -113,4 +104,4 @@ const ApplicationsView: React.FC<ApplicationsViewProps> = ({
   );
 };
 
-export default ApplicationsView;
+export default FormsView;

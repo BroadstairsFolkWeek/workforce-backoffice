@@ -4,7 +4,7 @@ import {
   shorthands,
 } from "@fluentui/react-components";
 import { useMemo } from "react";
-import { ApplicationInfo } from "../../interfaces/application-data";
+import { Form } from "../../interfaces/form";
 
 const useStyles = makeStyles({
   root: {
@@ -67,29 +67,25 @@ const BooleanBlockIndicatorRow: React.FC<{
   return <div className={classes.root}>{indicators}</div>;
 };
 
-const ApplicationAvailabilityIndicator: React.FC<{
-  application: ApplicationInfo;
-}> = ({ application }) => {
+const FormAvailabilityIndicator: React.FC<{
+  form: Form;
+}> = ({ form }) => {
+  const answers = form.answers as any;
   const values = useMemo(
     () => [
-      application.availableFirstFriday,
-      application.availableSaturday,
-      application.availableSunday,
-      application.availableMonday,
-      application.availableTuesday,
-      application.availableWednesday,
-      application.availableThursday,
-      application.availableLastFriday,
+      answers?.day1 ?? false,
+      answers?.day2 ?? false,
+      answers?.day3 ?? false,
+      answers?.day4 ?? false,
+      answers?.day5 ?? false,
+      answers?.day6 ?? false,
+      answers?.day7 ?? false,
+      answers?.day8 ?? false,
     ],
-    [application]
+    [form]
   );
 
-  return (
-    <BooleanBlockIndicatorRow
-      values={values}
-      keyPrefix={application.applicationId}
-    />
-  );
+  return <BooleanBlockIndicatorRow values={values} keyPrefix={form.id} />;
 };
 
-export default ApplicationAvailabilityIndicator;
+export default FormAvailabilityIndicator;

@@ -1,3 +1,11 @@
+import { Data, Effect } from "effect";
+import {
+  HttpClient,
+  HttpClientRequest,
+  HttpClientResponse,
+} from "@effect/platform";
+import { ResponseError } from "@effect/platform/HttpClientError";
+
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as IOE from "fp-ts/lib/IOEither";
@@ -14,10 +22,49 @@ import { URLSearchParams } from "url";
 
 import {
   getTeamsUserCredential,
+  getTeamsUserCredentialEffect,
   getTeamsUserCredentialIOE,
 } from "../services/teams-app";
-import config, { getApiEndpoint } from "../components/config";
+
 import { DraftMailResult } from "../../api/interfaces/mail";
+import { getApiEndpoint, getApiEndpointEffect } from "../components/config";
+
+export class NotAuthenticated extends Data.TaggedClass("NotAuthenticated") {}
+
+export class VersionConflict extends Data.TaggedClass("VersionConflict") {}
+
+export class ServerError extends Data.TaggedClass("ServerError")<{
+  responseError: ResponseError;
+}> {}
+
+const getAccessTokenEffect = () =>
+  getTeamsUserCredentialEffect()
+    .pipe(
+      Effect.andThen((tuc) =>
+        Effect.tryPromise({
+          try: () => tuc.getToken(""),
+          catch: (error) => new NotAuthenticated(),
+        })
+      ),
+      Effect.andThen((token) => Effect.fromNullable(token)),
+      Effect.andThen((at) => at.token)
+    )
+    .pipe(
+      Effect.catchTags({
+        NoSuchElementException: () => Effect.fail(new NotAuthenticated()),
+      })
+    );
+
+export const apiGetJson = (path: string) =>
+  Effect.all([getAccessTokenEffect(), getUrlEffect(path)]).pipe(
+    Effect.andThen(([accessToken, url]) =>
+      HttpClientRequest.get(url).pipe(
+        HttpClientRequest.bearerToken(accessToken),
+        HttpClient.fetchOk,
+        HttpClientResponse.json
+      )
+    )
+  );
 
 const getAccessToken = (): TE.TaskEither<Error, string> => {
   return pipe(
@@ -37,6 +84,12 @@ const getUrl = (path: string) =>
     getApiEndpoint(),
     IOE.map(buildFullEndpointPath(path)),
     IOE.map((href) => new URL(href))
+  );
+
+const getUrlEffect = (path: string) =>
+  getApiEndpointEffect().pipe(
+    Effect.andThen(buildFullEndpointPath(path)),
+    Effect.andThen((href) => new URL(href))
   );
 
 const applySearchParamsToUrl =
